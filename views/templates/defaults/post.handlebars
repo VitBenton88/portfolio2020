@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row">
+        
+        <div class="col-12">
+            {{> shared/notifications}}
+        </div>
+
+        <div class="col-12 mt-4">
+            <h1>{{page_data.title}}</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-12">
+            <p>Published: {{moment page_data.published format="MMM DD YYYY"}}</p>
+        </div>
+        
+        <div class="col-12 mt-4">
+            {{{page_data.content}}}
+        </div>
+
+        <div class="col-12">
+            {{{form 'gsdg'}}}
+        </div>
+    </div>
+</div>

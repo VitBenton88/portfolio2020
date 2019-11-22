@@ -1,0 +1,83 @@
+<div class="container-fluid users page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-users=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading='Users'}}
+
+        {{> shared/notifications}}
+
+        <div class="container page-body">
+
+          <div class="row justify-content-end">
+            <div class="col-12 col-lg-8 col-xl-6 pr-0 d-flex justify-content-end">
+              <form id="searchusers" class="form-inline">
+                <div class="form-group">
+                  <input name="search" type="search" class="form-control" placeholder="Search Users ..."
+                    value="{{search}}">
+                    {{#if this.orderBy}}<input type="hidden" name="orderBy" value="{{this.orderBy}}">{{/if}}
+                    {{#if this.sort}}<input type="hidden" name="sort" value="{{this.sort}}">{{/if}}
+                </div>
+                <button type="submit" class="btn btn-light ml-3">Search</button>
+              </form>
+            </div>
+          </div>
+
+          {{#if search}}
+          <h5>Search Results: "{{search}}"</h5>
+          {{/if}}
+
+          {{#if users}}
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <table class="table table-striped table-responsive-sm mt-5" id="users">
+                  <thead>
+                    <tr>
+                      <th><a href="?orderBy=username&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Username</a>
+                      </th>
+                      <th><a href="?orderBy=nickname&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Nickname</a></th>
+                      <th><a href="?orderBy=email&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Email</a></th>
+                      <th><a href="?orderBy=role&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Role</a></th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each users}}
+                    <tr>
+                      <td><a href="users/edit/{{this.id}}">{{this.username}}</a></td>
+                      <td>{{this.nickname}}</td>
+                      <td>{{this.email}}</td>
+                      <td>{{this.role}}</td>
+                      <td><a href="users/edit/{{this.id}}" class="btn btn-outline-info">Edit</a></td>
+                    </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+
+              {{> admin/components/pagination data=users}}
+
+              <div class="mt-5"></div>
+
+              {{#eq sessionUser.role "Administrator"}}
+              {{> admin/components/accordian name='add' title='Add User' style="primary" content="admin/pages/users/add"}}
+              {{/eq}}
+
+            </div>
+          </div>
+          {{else}}
+          <div class="alert alert-warning fade show mb-3 mt-3" role="alert">
+            <strong>Sorry, no users found.</strong>
+          </div>
+          {{/if}}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

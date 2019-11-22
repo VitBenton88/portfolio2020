@@ -1,0 +1,35 @@
+<div class="container-fluid edit-user page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-users=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading=(add "Edit User: " user.username)}}
+
+        {{> shared/notifications}}
+
+        <div class="container page-body">
+
+          {{> admin/components/accordian name='basic' title='Basic Information' style="warning" content="admin/pages/edit/user/basic" expanded=true}}
+
+          {{> admin/components/accordian name='password' title='Password' style="info" content="admin/pages/edit/user/password"}}
+
+          <hr>
+
+          {{#has sessionUser.role "Administrator"}}
+          <div class="row">
+            <form action="/deleteuser" method="POST" class="d-inline-block">
+                <input name="_id" type="hidden" value="{{user.id}}">
+                <button type="submit" class="btn btn-outline-danger">Delete User</button>
+            </form>
+          </div>
+          {{/has}}
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

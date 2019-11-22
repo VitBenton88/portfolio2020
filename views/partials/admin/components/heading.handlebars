@@ -1,0 +1,35 @@
+<div class="heading jumbotron container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col-10">
+                <h1 class="display-4">{{heading}}</h1>
+                {{#if created}}
+                    <p><strong>Created:</strong> {{moment created format="MMM DD YYYY LT"}}</p>
+                {{/if}}
+                {{#if updated}}
+                    <strong><p>Updated:</strong> {{moment updated format="MMM DD YYYY LT"}}</p>
+                {{/if}}
+                {{#if this.author}}
+                    <p>Created by: 
+                    {{#if this.author.nickname}}
+                        <span> {{this.author.nickname}}</span>
+                    {{else if this.author.username}}
+                        <span> {{this.author.username}}</span>
+                    {{else}}
+                        <span> <i>Authored by user who may have been deleted.</i></span>
+                    {{/if}}
+                    </strong>
+                {{/if}}
+                {{#if form}}
+                    <p><strong>Form:</strong> {{this.form}}</p>
+                {{/if}}
+                {{#if this.slug}}
+                    <p><strong>Slug:</strong> {{this.slug}}</p>
+                {{/if}}
+            </div>
+            <div class="col-2">
+                <a class="btn btn-light" href="/" target="_blank" role="button">View Site</a>
+            </div>
+        </div>
+    </div>
+</div>

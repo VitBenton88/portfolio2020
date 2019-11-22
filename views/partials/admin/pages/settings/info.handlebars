@@ -1,0 +1,12 @@
+<form action="/updatesiteinformation" method="POST" id="updatesiteinformation">
+    <div class="form-group">
+        <small id="siteNameHelp" class="form-text text-muted">The name of your website.</title></small>
+        <input name="name" id="site_name" class="form-control" type="text" aria-describedby="siteNameHelp" placeholder="Enter new site name ..." value="{{site_data.settings.name}}">
+        <small id="siteDescHelp" class="form-text text-muted">The description of your website. As a default, renders in <xmp><metaname="description"></xmp> meta tag.</title></small>
+        <textarea name="description" id="site_description" class="form-control" aria-describedby="siteDescHelp" placeholder="Enter tags ..." rows="6">{{site_data.settings.description}}</textarea>
+        <small id="siteAddressHelp" class="form-text text-muted">Site Address (URL)</title></small>
+        <input name="address" id="site_address" class="form-control" type="text" aria-describedby="siteAddressHelp" placeholder="https://www ..." rows="6" value="{{site_data.settings.address}}">
+    </div>
+    <input name="_id" type="hidden" value="{{site_data.id}}">
+    <button type="submit" class="btn btn-outline-info">Update</button>
+</form>

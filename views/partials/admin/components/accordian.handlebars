@@ -1,0 +1,15 @@
+<div class="row {{name}}-accordian">
+
+    <div class="section-head alert alert-{{style}} d-flex justify-content-between align-items-center" role="alert" data-toggle="collapse" href="#{{name}}">
+        <span>{{title}}</span>
+    <div class="section-toggle-controls{{#if expanded}} expanded{{/if}}">
+        <i class="fa fa-plus toggle-control" aria-hidden="true"></i>
+        <i class="fa fa-minus toggle-control" aria-hidden="true"></i>
+    </div>
+    </div>
+
+    <div id="{{name}}" class="collapse col-12{{#if expanded}} show{{/if}}">
+        {{> (lookup . "content")}}
+    </div>
+    
+</div>

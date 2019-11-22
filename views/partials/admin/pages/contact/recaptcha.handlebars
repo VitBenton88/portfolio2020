@@ -1,0 +1,16 @@
+<form action="/updaterecaptcha" method="POST" class="mb-5" id="updaterecaptcha" autocomplete="off">
+    <div class="form-group">
+        <label for="smtpHost">Site Key</label>
+        <input autocomplete="off" name="site_key" type="text" class="form-control" id="site_key" aria-describedby="site_key_help"
+            placeholder="Enter your site key ..." value="{{recaptcha.site_key}}">
+        <small id="site_key_help" class="form-text text-muted">Site Key for your site's reCAPTCHA configuration.</small>
+    </div>
+    <div class="form-group">
+        <label for="smtpHost">Secret Key</label>
+        <input autocomplete="off" name="secret_key" type="text" class="form-control" id="secret_key" aria-describedby="secret_key_help"
+            placeholder="Enter your site key ..." value="{{recaptcha.secret_key}}">
+        <small id="secret_key_help" class="form-text text-muted">Secret Key for your site's reCAPTCHA configuration.</small>
+    </div>
+    <input name="_id" type="hidden" value="{{recaptcha.id}}">
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>

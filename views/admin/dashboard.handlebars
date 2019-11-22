@@ -1,0 +1,48 @@
+<div class="container-fluid dashboard page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-dashboard=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading='Dashboard'}}
+
+        {{> shared/notifications}}
+
+        <div class="container page-body">
+
+          <div class="row">
+              <div class="row quick-glance">
+                <div class="col-12">
+                  <h4>Quick Glance ...</h4>
+                </div>
+                <div class="col-12 mt-2">
+                  <ul class="list-group">
+                    <a href="/admin/pages" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                      Pages
+                      <span class="badge badge-primary badge-pill">{{pages.length}}</span>
+                    </a>
+                    <a href="/admin/posts" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                      Posts
+                      <span class="badge badge-primary badge-pill">{{posts.length}}</span>
+                    </a>
+                    <a href="/admin/contact/entries?orderBy=created&sort=desc" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center{{#if unreadEntries.length}} list-group-item-success{{/if}}">
+                      Unread Entries
+                      <span class="badge badge-primary badge-pill">{{unreadEntries.length}}</span>
+                    </a>
+                    <a href="/admin/users" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                      Users
+                      <span class="badge badge-primary badge-pill">{{users.length}}</span>
+                    </a>
+                  </ul>
+                </div>
+              </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

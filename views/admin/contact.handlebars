@@ -1,0 +1,24 @@
+<div class="container-fluid smtp page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-contactSettings=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading='Contact Settings'}}
+
+        {{> shared/notifications}}
+
+        <div class="container page-body">
+
+          {{> admin/components/accordian name='smtp' title='SMTP' style="primary" content="admin/pages/contact/smtp"}}
+
+          {{> admin/components/accordian name='recaptcha' title='reCAPTCHA (v3)' style="secondary" content="admin/pages/contact/recaptcha"}}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

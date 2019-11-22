@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-12 col-lg-8 col-xl-6">
+        <div class="row custom-fields-notifications"></div>
+        <form action="/edituserbasic" method="POST" id="edituser" enctype="multipart/form-data" autocomplete="off">
+            <div class="form-group">
+                <small id="usernameHelp" class="form-text text-muted">User's username.</small>
+                <input name="username" type="text" aria-describedby="usernameHelp" class="form-control"
+                    placeholder="Username" value="{{user.username}}" autocomplete="off">
+                <small id="emailHelp" class="form-text text-muted">User's email.</small>
+                <input name="email" type="email" aria-describedby="emailHelp" class="form-control" placeholder="Email"
+                    value="{{user.email}}">
+                <small id="nicknameHelp" class="form-text text-muted">User's nickname.</small>
+                <input name="nickname" type="text" aria-describedby="nicknameHelp" class="form-control"
+                    placeholder="Nickname" value="{{user.nickname}}">
+                {{#eq sessionUser.role "Administrator"}}
+                    <small id="roleHelp" class="form-text text-muted">User Role.</small>
+                    <select name="role" class="form-control" id="role" aria-describedby="roleHelp">
+                        <option value="Administrator"{{#eq user.role "Administrator"}} selected{{/eq}}>Administrator</option>
+                        <option value="User"{{#eq user.role "User"}} selected{{/eq}}>User</option>
+                        <option value="Visitor"{{#eq user.role "Visitor"}} selected{{/eq}}>Visitor</option>
+                    </select>
+                {{/eq}}
+            </div>
+            <div class="form-group">
+
+                {{> admin/components/thumbnail-upload 
+                image=user.image 
+                id=user.id 
+                delurl='/deleteuserimage'
+                caption='User Image'}}
+
+            </div>
+
+            <input id="_image" name="image" type="hidden" value="{{user.image.id}}">
+            <input name="_id" type="hidden" value="{{user.id}}">
+            <button type="submit" class="btn btn-outline-info">Update</button>
+        </form>
+    </div>
+</div>

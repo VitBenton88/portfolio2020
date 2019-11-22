@@ -1,0 +1,47 @@
+    <footer class="d-flex justify-content-around align-items-center">
+        <p class="copyright">Copyright &copy;{{year}}</p>
+    </footer>
+
+    <!--minified & concat JS libraries -->
+    <script src="/assets/admin-libraries.js"></script>
+
+    <!--minified common JS file -->
+    <script src="/assets/common.js"></script>
+
+    {{~#has originalUrl '/admin/lists/edit'}}
+    <!--minified lists JS file -->
+    <script src="/assets/list.js"></script>
+    {{~/has~}}
+
+    {{~#has originalUrl '/admin/media'}}
+    <!--minified media JS file -->
+    <script src="/assets/media.js"></script>
+    {{~/has~}}
+
+    {{~#has originalUrl '/admin/menus/edit'}}
+    <!--minified menus JS file -->
+    <script src="/assets/menu.js"></script>
+    {{~/has~}}
+
+    {{~#has originalUrl '/admin/redirects'}}
+    <!--minified redirects JS file -->
+    <script src="/assets/redirects.js"></script>
+    {{~/has~}}
+
+    {{~#has originalUrl '/admin/settings'}}
+    <!--minified settings JS file -->
+    <script src="/assets/settings.js"></script>
+    {{~/has~}}
+
+    {{~#has originalUrl '/admin/contact/forms/'}}
+    <!--minified form builder react JS files -->
+    <script src="/assets/form-builder.js"></script>
+    {{~/has~}}
+
+    {{~#has originalUrl '/admin/contact/settings'}}
+    <!--minified form builder react JS files -->
+    <script src="/assets/contact.js"></script>
+    {{~/has~}}
+
+</body>
+</html>

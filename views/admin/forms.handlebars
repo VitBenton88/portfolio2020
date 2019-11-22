@@ -1,0 +1,103 @@
+<div class="container-fluid forms page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-contactForms=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading='Forms'}}
+
+        {{> shared/notifications}}
+
+        <div class="container page-body">
+
+          <div class="row justify-content-end">
+            <div class="col-12 col-lg-8 col-xl-6 pr-0 d-flex justify-content-end">
+              <form id="searchforms" class="form-inline">
+                <div class="form-group">
+                  <input name="search" type="search" class="form-control" placeholder="Search Forms ..."
+                    value="{{search}}">
+                </div>
+                <button type="submit" class="btn btn-light ml-3">Search</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-12">
+                  {{#if search}}
+                  <h5>Search Results: "{{search}}"</h5>
+                  {{/if}}
+                </div>
+                {{#if forms}}
+                <div class="col-12">
+                  <select id="multi-edit-select" disabled>
+                    <option hidden disabled selected value>select</option>
+                    <option value="delete">Delete Forms</option>
+                  </select>
+                </div>
+                <div class="col-12 mt-3">
+                  <button id="submit_list_multi_edit" data-url="/updateformmulti" type="button"
+                    class="btn btn-primary btn-sm" disabled>Submit</button>
+                </div>
+                <table class="table table-striped table-responsive-sm mt-3" id="list">
+                  <thead>
+                    <tr>
+                      <th><input type="checkbox" name="Select All Forms" value class="listCheckbox selectAll"></th>
+                      <th><a href="?orderBy=name&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Name</a></th>
+                      <th><a href="?orderBy=slug&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Slug</a></th>
+                      <th><a href="?orderBy=submissions&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Submissions</a></th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each forms}}
+                    <tr>
+                      <td><input type="checkbox" name="{{this.name}}" value="{{this.id}}"
+                          class="listCheckbox selectSingle"></td>
+                      <td><a href="forms/edit/{{this.id}}">{{this.name}}</a></td>
+                      <td>{{this.slug}}</td>
+                      <td>{{this.entries.length}}</td>
+                      <td>
+                        <div class="dropdown">
+                          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="forms/edit/{{this.id}}">Edit</a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+                {{else}}
+                <div class="alert alert-warning fade show mb-3 mt-3" role="alert">
+                  <strong>Sorry, no forms found.</strong>
+                </div>
+                {{/if}}
+              </div>
+
+            </div>
+          </div>
+
+          {{> admin/components/pagination data=forms}}
+
+          <div class="row">
+            <div class="col-12">
+
+              <a href="/admin/contact/forms/add" class="btn btn-outline-info">Add Form</a>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

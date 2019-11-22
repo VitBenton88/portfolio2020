@@ -1,0 +1,69 @@
+<div class="col-5 col-sm-4 col-lg-2 cms-menu px-0">
+  <ul class="nav flex-column">
+    <li class="nav-item space d-block d-lg-none py-4"></li>
+
+    <li class="nav-item">
+      <a class="d-block nav-link{{#if menu-dashboard}} active{{/if}}" href="/admin/dashboard" target="_self">Dashboard</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="d-block nav-link{{#if menu-media}} active{{/if}}" href="/admin/media" target="_self">Media</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="d-block nav-link{{#if menu-menus}} active{{/if}}" href="/admin/menus" target="_self">Menus</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="d-block nav-link{{#if menu-pages}} active{{/if}}" href="/admin/pages" target="_self">Pages</a>
+    </li>
+
+    <li class="nav-item nav-has-submenu{{#if menu-posts}} current{{/if}}{{#if menu-taxonomies}} current{{/if}}">
+      <a class="d-block nav-link" href="/admin/posts" target="_self">Posts</a>
+      <ul class="nav-submenu">
+        <li><a class="d-block nav-link{{#if menu-posts}} active{{/if}}" href="/admin/posts" target="_self">All Posts</a></li>
+        <li><a class="d-block nav-link{{#if menu-taxonomies}} active{{/if}}" href="/admin/taxonomies" target="_self">Taxonomies</a></li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a class="d-block nav-link{{#if menu-users}} active{{/if}}" href="/admin/users" target="_self">Users</a>
+    </li>
+
+    <li class="nav-item nav-has-submenu{{#if menu-redirects}} current{{/if}}{{#if menu-pagesnotfound}} current{{/if}}">
+      <a class="d-block nav-link" href="/admin" target="_self" onclick="return false;">Traffic</a>
+      <ul class="nav-submenu">
+        <li><a class="d-block nav-link{{#if menu-redirects}} active{{/if}}" href="/admin/redirects" target="_self">Redirects</a></li>
+        <li><a class="d-block nav-link{{#if menu-pagesnotfound}} active{{/if}}" href="/admin/pagesnotfound" target="_self">404s</a></li>
+      </ul>
+    </li>
+
+    <li class="nav-item nav-has-submenu{{#if menu-contactForms}} current{{/if}}{{#if menu-contactEntries}} current{{/if}}{{#if menu-contactSettings}} current{{/if}}">
+      <a class="d-block nav-link" href="/admin" target="_self" onclick="return false;">Contact</a>
+      <ul class="nav-submenu">
+        <li><a class="d-block nav-link{{#if menu-contactForms}} active{{/if}}" href="/admin/contact/forms" target="_self">Forms</a></li>
+        <li><a class="d-block nav-link{{#if menu-contactEntries}} active{{/if}}" href="/admin/contact/entries?orderBy=created&sort=desc" target="_self">Entries</a></li>
+        <li><a class="d-block nav-link{{#if menu-contactSettings}} active{{/if}}" href="/admin/contact/settings" target="_self">Settings</a></li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a class="d-block nav-link{{#if menu-settings}} active{{/if}}" href="/admin/settings" target="_self">Settings</a>
+    </li>
+  </ul>
+
+    <div class="user-info">
+      <p>{{sessionUser.username}}</p>
+      <form action="/logout" method="POST" id="logout" class="d-inline">
+          <input name="_id" type="hidden" value="{{sessionUser._id}}">
+          <button type="submit" class="btn btn-link">Logout</button>
+      </form>
+
+      <a href="/admin/users/edit/{{sessionUser._id}}" target="_self" class="edit">Edit</a>
+    </div>
+</div>
+
+<div class="col-2 d-block d-lg-none cms-mobile-menu-controls">
+  <i class="fa fa-bars fa-2x mobile-menu-open mobile-menu-toggle" aria-hidden="true"></i>
+  <i class="fa fa-times fa-2x mobile-menu-close mobile-menu-toggle" aria-hidden="true"></i>
+</div>

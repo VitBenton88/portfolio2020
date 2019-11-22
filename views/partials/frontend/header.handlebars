@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+
+    {{#if page_data.meta.title}}
+    <title>{{page_data.meta.title}} - {{site_data.settings.name}}</title>
+    {{else if page_data.title}}
+    <title>{{page_data.title}} - {{site_data.settings.name}}</title>
+    {{else}}
+    <title>{{site_data.settings.name}}</title>
+    {{/if}}
+
+    {{#if page_data.meta.description}}
+    <meta name="description" content="{{page_data.meta.description}}">
+    {{else}}
+    <meta name="description" content="{{site_data.settings.description}}">
+    {{/if}}
+    
+    <!--VIEWPORT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    {{{site_data.meta_head}}}
+
+    <!--LOCAL CSS -->
+    <link rel="stylesheet" type="text/css" href="/assets/style.css">
+    <!--FAVICON -->
+    <link rel="icon" type="image/ico" href="/assets/favicon.png">
+</head>
+
+<body class="{{generateBodyClasses}}">
+    {{{site_data.meta_body}}}

@@ -1,0 +1,1 @@
+"use strict";$(".redirect-edit-show").click(function(){var t=$(this).data("target"),i=$(this).data("info");$(t).show(),$(i).hide()}),$(".redirect-edit-hide").click(function(){var t=$(this).data("target"),i=$(this).data("info");$(t).hide(),$(i).show()});

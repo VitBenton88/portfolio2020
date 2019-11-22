@@ -1,0 +1,44 @@
+{{#if image}}
+    <div class="image-upload-thumb-wrap">
+        <p id="image-upload-thumb-rm" data-id="{{id}}" data-delajaxurl="{{delurl}}"><span>Remove &otimes;</span></p>
+        <div class="image-upload-thumb image-exists d-flex justify-content-center align-items-center" role="img" aria-label="Page Featured Image" style="background-image: url('{{image.path}}')">
+            <i class="fas fa-file-image d-none"></i>
+        </div>
+        {{#if caption}}
+            <span>{{caption}}</span>
+        {{/if}}
+    </div>
+{{else}}
+    <div class="image-upload-thumb-wrap">
+        <div class="image-upload-thumb no-image d-flex justify-content-center align-items-center">
+            <i class="fas fa-file-image"></i>
+            <i class="fas fa-upload"></i>
+        </div>
+        {{#if caption}}
+            <span>{{caption}}</span>
+        {{/if}}
+    </div>
+{{/if}}
+
+<div class="analog-modal media-select">
+    <div class="container modal-content">
+        <div class="row">
+            <header class="col-12 modal-header">
+                <h4>Select Media</h4>
+                <div class="form-group">
+                    <label for="media-select-search">Search media</label>
+                    <input type="text" class="form-control" id="media-select-search" placeholder="Search ...">
+                </div>
+            </header>
+
+            <div class="modal-body col-12">
+                <div class="row media-grid"></div>
+            </div>
+
+            <div class="modal-footer col-12">
+                <button type="button" class="btn btn-secondary dismiss" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary select">Select</button>
+            </div>
+        </div>
+    </div>
+</div>

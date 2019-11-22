@@ -1,0 +1,26 @@
+<div class="container-fluid settings page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-settings=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading='Settings'}}
+
+        {{> shared/notifications}}
+
+        <div class="container page-body">
+
+          {{> admin/components/accordian name='information' title='Site Information' style="primary" content="admin/pages/settings/info"}}
+
+          {{> admin/components/accordian name='meta' title='Meta' style="secondary" content="admin/pages/settings/meta"}}
+
+          {{> admin/components/accordian name='storage' title='Storage' style="info" content="admin/pages/settings/storage"}}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

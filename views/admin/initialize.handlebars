@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            {{> shared/notifications}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 mx-auto mb-5 mt-5">
+            <form action="/initialize" method="POST">
+            <h4>Site Information</h4>
+            <div class="form-group">
+                <label for="name">Site Name</label>
+                <input type="text" class="form-control" name="name" id="name" aria-describedby="nameHelp" placeholder="Name ...">
+                <small id="nameHelp" class="form-text text-muted">The name or title of your website.</small>
+            </div>
+            <div class="form-group">
+                <label for="name">Site Description</label>
+                <textarea class="form-control" name="description" id="name" aria-describedby="descriptionHelp" placeholder="Description ..."></textarea>
+                <small id="descriptionHelp" class="form-text text-muted">A description of your website.</small>
+            </div>
+            <div class="form-group">
+                <label for="name">Site Address (URL)</label>
+                <textarea class="form-control" name="address" id="address" aria-describedby="addressHelp" placeholder="https://www ..."></textarea>
+                <small id="addressHelp" class="form-text text-muted">A address (url) of your website.</small>
+            </div>
+            <h4>Add Admin User</h4>
+            <div class="form-group">
+                <label for="name">Admin Username</label>
+                <input name="username" type="text" aria-describedby="usernameHelp" class="form-control" placeholder="Username ...">
+                <small id="usernameHelp" class="form-text text-muted">The admin user's username.</small>
+            </div>
+            <div class="form-group">
+                <label for="name">Admin's Email</label>
+                <input name="email" type="email" aria-describedby="emailHelp" class="form-control" placeholder="Email ...">
+                <small id="emailHelp" class="form-text text-muted">The admin user's email address.</small>
+            </div>
+            <div class="form-group">
+                <label for="name">Admin password</label>
+                <input name="password" type="password" aria-describedby="passwordHelp" class="form-control" placeholder="Password ...">
+                <small id="passwordHelp" class="form-text text-muted">The admin user's password.</small>
+            </div>
+            <div class="form-group">
+                <label for="name">Re-type password.</label>
+                <input name="passwordCheck" type="password" aria-describedby="passwordCheckHelp" class="form-control" placeholder="Retype Password ...">
+                <small id="passwordCheckHelp" class="form-text text-muted">The admin user's password.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="container-fluid media page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-media=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading='Media'}}
+
+        {{> shared/notifications}}
+
+        <div class="container page-body">
+
+        <div class="row justify-content-end">
+          <div class="col-12 col-lg-8 col-xl-6 pr-0 d-flex justify-content-end">
+            <form id="searchpages" class="form-inline">
+              <div class="form-group">
+                <input name="search" type="search" class="form-control" placeholder="Search Media ..."
+                  value="{{search}}">
+                  {{#if orderBy}}<input type="hidden" name="orderBy" value="{{orderBy}}">{{/if}}
+              </div>
+              <button type="submit" class="btn btn-light ml-3">Search</button>
+            </form>
+          </div>
+        </div>
+
+          <div class="row">
+
+            <div class="col-12">
+              <form id="uploadmedia" enctype="multipart/form-data" method="POST" action="/uploadmedia">
+                <input id="fileupload" name="media" type="file" multiple required />
+                <button type="submit" class="btn btn-primary">Add Media</button>
+              </form>
+              {{#if orderBy}}
+                {{#if media}}<button id="media-select-on" data-toggle="button" class="btn btn-outline-info mt-4" type="button">Select Multiple</button>{{/if}}
+                {{#if media}}<button id="media-delete-multi" data-toggle="button" class="btn btn-outline-danger mt-4" type="button" disabled>Delete Multiple</button>{{/if}}
+              {{/if}}
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+
+                {{#if search}}
+                <div class="col-12 mt-4">
+                  <h5>Search Results: "{{search}}"</h5>
+                </div>
+                {{/if}}
+
+                <div class="col-12 media-grid-filters mt-5">
+                  <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                      <a class="nav-link{{#unless orderBy}} active{{/unless}}" href="/admin/media">All</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link{{#eq orderBy 'local'}} active{{/eq}}" href="?orderBy=local">Local{{#eq site_data.settings.storage.type 'local'}} (Current Storage){{/eq}}</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link{{#eq orderBy 'googleCloud'}} active{{/eq}}" href="?orderBy=googleCloud">Google Cloud Storage{{#eq site_data.settings.storage.type 'googleCloud'}} (Current Storage){{/eq}}</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link{{#eq orderBy 'aws'}} active{{/eq}}" href="?orderBy=aws">AWS S3{{#eq site_data.settings.storage.type 'aws'}} (Current Storage){{/eq}}</a>
+                    </li>
+                  </ul>
+                </div>
+
+                  {{#if media}}
+                  <div class="col-12 media-grid mt-3">
+                    <div class="custom-fields-notifications"></div>
+                    <div class="row">
+                      {{#each media}}
+                      <div id="media-{{@key}}" data-id="{{this.id}}" class="col-4 col-md-3 col-lg-2 media-grid-item"
+                        style="background-image: url('{{this.path}}')">
+                          <i class="fa fa-check-square toggle-control" aria-hidden="true"></i>
+                          <div class="media-grid-item-inner d-flex align-items-center justify-content-center">
+                            <button type="button" class="btn btn-primary btn-sm mr-1 media-grid-item-edit" data-media="#media-{{@key}}" data-id="{{this.id}}">Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm media-grid-item-del" data-media="#media-{{@key}}">Delete</button>
+                          </div>
+                        </div>
+                      {{/each}}
+                    </div>
+                  </div>
+
+                  {{else}}
+
+                  <div class="col-12">
+                    <div class="alert alert-warning fade show mb-3 mt-3" role="alert">
+                      <strong>Sorry, there is no media found.</strong>
+                    </div>
+                  </div>
+                {{/if}}
+                
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+  </div>
+
+  {{> admin/components/modals/media-edit }}
+
+</div>

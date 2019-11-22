@@ -1,0 +1,1 @@
+"use strict";$(".storage-tabs .nav-link").click(function(){event.preventDefault();var a=$(this),e=a.data("target");if(a.hasClass("active"))return!1;$(".storage-body").addClass("hidden"),$(".storage-tabs .nav-link.active").removeClass("active"),a.addClass("active"),$(e).removeClass("hidden")});
