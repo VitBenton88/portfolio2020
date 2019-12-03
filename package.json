@@ -4,11 +4,11 @@
   "description": "Analog CMS, a node.js content managemnt system",
   "main": "server.js",
   "engines": {
-    "node": "10.15.0"
+    "node": "12.13.1"
   },
   "dependencies": {
     "@google-cloud/storage": "^3.5.0",
-    "aws-sdk": "^2.577.0",
+    "aws-sdk": "^2.582.0",
     "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -21,7 +21,7 @@
     "express-recaptcha": "^5.0.1",
     "express-session": "^1.17.0",
     "handlebars-helpers": "^0.10.0",
-    "mongoose": "^5.7.12",
+    "mongoose": "^5.7.13",
     "mongoose-autopopulate": "^0.9.1",
     "mongoose-sequence": "^5.2.2",
     "nodemailer": "^4.7.0",
@@ -35,8 +35,28 @@
     "url-slug": "^2.2.0",
     "validator": "^11.1.0"
   },
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "autoprefixer": "^9.7.3",
+    "browser-sync": "^2.26.7",
+    "browserslist": "^4.8.0",
+    "cssnano": "^4.1.10",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2"
+  },
+  "browserslist": [
+    "defaults"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd config/form-builder && npm install && npm run build",
+    "build": "gulp production",
     "start": "node server.js"
   },
   "repository": {
