@@ -8,6 +8,12 @@ const Smtp = {
     try {
         const smtp = await db.Smtp.findOne()
         const { host, port, secure, user, password } = smtp
+
+        // if smtp config is not 100%, throw error
+        if (!host || !password || !port || !user) {
+            throw new Error('SMTP configuration not complete.')
+        }
+
         const auth = { user, pass: password }
         let transporterOptions = { host, port, secure, auth }
         // add 'from' to mailData
@@ -29,6 +35,7 @@ const Smtp = {
         reject(new Error(error))
     }
   }),
+  
   verify: () => new Promise(async (resolve, reject) => {
     try {
         const smtp = await db.Smtp.findOne()

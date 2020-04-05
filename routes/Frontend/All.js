@@ -21,7 +21,7 @@ module.exports = (app, db, Recaptcha) => {
 
       // handle homepage
       if (isHomePage) {
-        page_data = await db.Pages.findOne({ active: true, homepage: true }).populate('forms').populate('permalink')
+        page_data = await db.Pages.findOne({ active: true, homepage: true, private: false }).populate('forms').populate('permalink')
 
         if (page_data) {
           customHomepage = true
@@ -38,6 +38,12 @@ module.exports = (app, db, Recaptcha) => {
         
         // collect permalink data
         const { ownerModel, owner } = permalink_data
+
+        // handle private pages
+        if ( owner.private && req.isAuthenticated() ) {
+          return next()
+        }
+
         // get page data
         page_data = await db[ownerModel].findOne({ _id: owner._id }).populate('forms').populate('permalink')
         // collect taxonomy data if this is a post

@@ -101,7 +101,7 @@ module.exports = {
         let formToBuild = {}
 
         if (!forms) {
-            return false
+            return
         }
 
         for (let form of forms) {
@@ -114,7 +114,7 @@ module.exports = {
         const {_id, fields, slug} = formToBuild
         
         if (!forms || !fields) {
-            return false
+            return
         }
 
         const storageIsLocal = type === 'local'

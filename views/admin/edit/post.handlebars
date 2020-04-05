@@ -24,13 +24,19 @@
               
               <div class="col d-block d-md-flex align-items-center top-post-form">
 
-                <div class="custom-control custom-switch">
+                <div class="custom-control custom-switch mr-3">
                   <input id="activeSwitch" name="active" type="checkbox" class="custom-control-input"
                     {{#if post.active}}checked{{/if}}>
                   <label class="custom-control-label" for="activeSwitch">Active</label>
                 </div>
 
-                <div class="custom-control custom-switch ml-0 ml-md-3">
+                <div class="custom-control custom-switch mr-3">
+                  <input id="privateSwitch" name="private" type="checkbox" class="custom-control-input"
+                    {{#if post.private}}checked{{/if}}>
+                  <label class="custom-control-label" for="privateSwitch">Private</label>
+                </div>
+
+                <div class="custom-control custom-switch">
                   <input id="sitemapSwitch" name="sitemap" type="checkbox" class="custom-control-input"
                     {{#if post.permalink.sitemap}}checked{{/if}}>
                   <label class="custom-control-label" for="sitemapSwitch">Include in Sitemap</label>

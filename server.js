@@ -153,7 +153,7 @@ require("./routes/Api")(app, db)
 
 // import Frontend Routes
 // =============================================================
-require("./routes/Frontend")(app, db, passport, Recaptcha, Utils)
+require("./routes/Frontend")(app, bcrypt, db, passport, Recaptcha, Utils, validator)
 
 // import Admin Routes
 // =============================================================

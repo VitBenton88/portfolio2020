@@ -21,7 +21,7 @@ module.exports = (app, bcrypt, db) => {
         }
     })
 
-    // ADD USER & CREATE ANALOG CMS - POST
+    // CREATE ANALOG CMS & ADD USER - POST
     // =============================================================
     app.post("/initialize", async (req, res) => {
         try {

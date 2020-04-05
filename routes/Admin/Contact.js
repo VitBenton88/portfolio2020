@@ -86,7 +86,7 @@ module.exports = (app, db, Utils) => {
                 throw new Error('Recipient email not provided for SMTP test email.')
             }
 
-            let mailData = {
+            const mailData = {
                 to: emailTo,
                 subject: 'Analog CMS Successful Test Email',
                 text: 'This is a successful test email sent from an Analog CMS.',

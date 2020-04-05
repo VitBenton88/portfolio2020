@@ -1,0 +1,91 @@
+.cms-menu {
+    background: $grey;
+    max-width: 180px;
+    min-height: 500px;
+
+    @include max-width($screen-md-max) {
+        box-shadow: 0 15px 30px 0 rgba(0,0,0,0.11),
+        0 5px 15px 0 rgba(0,0,0,0.08);
+        left: -100vw;
+        position: fixed;
+        min-height: 550px;
+        transition: left 0.3s ease;
+        z-index: 5000;
+    }
+
+    a {
+        padding: 15px;
+        transition: all 0.3s ease;
+        width: 100%;
+
+        &.active {
+            background: $teal;
+        }
+
+        &.edit {
+            padding: 0;
+            width: auto;
+        }
+    }
+
+    .user-info {
+        border-top: 1px solid $grey;
+        margin: 0 auto;
+        text-align: center;
+
+        #logout {
+            button {
+                padding-bottom: 10px;
+            }
+        }
+    }
+
+    .nav-item.nav-has-submenu {
+        .nav-submenu {
+            background: $light-grey;
+            display: none;
+            list-style: none;
+            padding: 0;
+    
+            li a {
+                padding-left: 40px;
+            }
+        }
+
+        &.expanded, &.current {
+            .nav-submenu {
+                display: block;
+            }
+        }
+    }
+}
+
+.cms-mobile-menu-controls {
+    margin: 10px 0 0 15px;
+    position: fixed;
+    z-index: 10000;
+
+    .mobile-menu-toggle {
+        cursor: pointer;
+    }
+
+    .mobile-menu-close {
+        display: none;
+    }
+}
+
+body.mobile-menu-active {
+    .cms-menu {
+        left: 0;
+    }
+
+    .cms-mobile-menu-controls {
+        .mobile-menu-close {
+            display: block;
+        }
+
+        .mobile-menu-open {
+            display: none;
+        }
+    }
+}

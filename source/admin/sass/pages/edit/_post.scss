@@ -1,0 +1,32 @@
+.admin .edit-post, .admin .add-post {
+    .updatecustomfield {
+        display: none;
+    }
+
+    .custom-field.row {
+        margin-top: 5px;
+
+        &:first-of-type {
+            margin-top: 0;
+        }
+    }
+
+    .image-upload-thumb-wrap {
+        position: absolute;
+        right: 0;
+
+        @include max-width($screen-sm-max) {
+            display: inline-block;
+            margin-top: 15px;
+            position: static;
+        }
+    }
+
+    .main-post-form, .top-post-form {
+        margin-top: 75px;
+
+        @include max-width($screen-sm-max) {
+            margin-top: 15px;
+        }
+    }
+}

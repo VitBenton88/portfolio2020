@@ -76,10 +76,15 @@ module.exports = (app, db, Utils) => {
     // =============================================================
     app.post("/addredirect", async (req, res) => {
         try {
-            const {
+            let {
+                active,
+                type,
                 source,
                 target
             } = req.body
+
+            // make sure values for 'active' are boolean
+            active = active == 'true'
     
             // some basic validation, make sure routes start with backslash
             if (source.charAt(0) !== "/" || target.charAt(0) !== "/") {
@@ -91,7 +96,7 @@ module.exports = (app, db, Utils) => {
             }
 
             // create in db
-            await db.Redirects.create({source, target})
+            await db.Redirects.create({active, type, source, target})
 
             req.flash(
                 'success',
@@ -103,7 +108,7 @@ module.exports = (app, db, Utils) => {
             console.error(error)
             const errorMessage = error.errmsg || error.toString()
             req.flash('error', errorMessage)
-            res.redirect(`/admin/redirects`)
+            res.redirect('/admin/redirects')
         }
     })
 
@@ -111,11 +116,16 @@ module.exports = (app, db, Utils) => {
     // =============================================================
     app.post("/updateredirect", async (req, res) => {
         try {
-            const {
+            let {
                 _id,
+                active,
+                type,
                 source,
                 target
             } = req.body
+
+            // make sure values for 'active' are boolean
+            active = active == 'true'
     
             // some basic validation, make sure routes start with backslash
             if (source.charAt(0) !== "/" || target.charAt(0) !== "/") {
@@ -127,7 +137,7 @@ module.exports = (app, db, Utils) => {
             }
 
             // run db update query
-            await db.Redirects.updateOne({_id}, {source, target, hits: 0})
+            await db.Redirects.updateOne({_id}, {active, type, source, target, hits: 0})
 
             req.flash(
                 'success',
@@ -139,7 +149,7 @@ module.exports = (app, db, Utils) => {
             console.error(error)
             const errorMessage = error.errmsg || error.toString()
             req.flash('error', errorMessage)
-            res.redirect(`/admin/redirects`)
+            res.redirect('/admin/redirects')
         }
     })
 
@@ -147,24 +157,34 @@ module.exports = (app, db, Utils) => {
     // =============================================================
     app.post("/updateredirectsmulti", async (req, res) => {
         try {
-            const {
+            let {
                 list_id_arr,
                 update_criteria,
                 update_value
             } = req.body
     
             // check if this is a delete query
-            const deleteQuery = update_criteria === 'delete';
+            const deleteQuery = update_criteria == 'delete';
+
+            // set default update settings as 'type' update
+            let $set = {type: update_value}
     
             // change update config based on values passed in by user
             if (update_criteria == "target") {
                 // some basic validation, make sure targets begin with backslash
                 if (update_value.charAt(0) !== "/") {
-                    throw new Error('Redirect add attempt failed. Source or target does not start with backslash.')
+                    throw new Error('Redirect bulk edit failed. Target does not start with backslash.')
                 }
     
                 $set = {
                     target: update_value
+                }
+            } else if (update_criteria == "active") {
+                // make sure values for 'active' are boolean
+                update_value = update_value == 'true'
+
+                $set = {
+                    active: update_value
                 }
             }
     
@@ -193,7 +213,7 @@ module.exports = (app, db, Utils) => {
             console.error(error)
             const errorMessage = error.errmsg || error.toString()
             req.flash('error', errorMessage)
-            res.redirect(`/admin/redirects`)
+            res.redirect('/admin/redirects')
         }
     })
 
@@ -213,7 +233,7 @@ module.exports = (app, db, Utils) => {
         } catch (error) {
             console.error(error)
             req.flash('error', error.errmsg)
-            res.redirect(`/admin/redirects`)
+            res.redirect('/admin/redirects')
         }
     })
 

@@ -1,1 +1,1 @@
-"use strict";$(".redirect-edit-show").click(function(){var t=$(this).data("target"),i=$(this).data("info");$(t).show(),$(i).hide()}),$(".redirect-edit-hide").click(function(){var t=$(this).data("target"),i=$(this).data("info");$(t).hide(),$(i).show()});
+"use strict";$(".redirect-edit-show").click(function(){var t=$(this),i=t.data("target"),a=t.data("info");$(i).show(),$(a).hide()}),$(".redirect-edit-hide").click(function(){var t=$(this),i=t.data("target"),a=t.data("info");$(i).hide(),$(a).show()});

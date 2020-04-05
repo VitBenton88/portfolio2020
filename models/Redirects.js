@@ -7,6 +7,14 @@ const RedirectSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  type: {
+    type: Number,
+    default: 301
+  },
+  active: {
+    type: Boolean,
+    default: true
+  },
   source: {
     type: String,
     unique: true

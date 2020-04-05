@@ -1,0 +1,270 @@
+/**
+ * Desktop
+**/
+
+.ua-desktop {
+
+    // menu hovers
+    .cms-menu {
+        .page {
+
+            // add item overlay
+            .add-item-overlay {
+                &:hover {
+                    background: $grey;
+                }
+            }
+        }
+
+        a {
+            &:hover {
+                background: $lightTeal;
+                text-decoration: none;
+            }
+
+            &.active {
+                &:hover {
+                    background: $teal;
+                }
+            }
+
+            &.edit {
+                &:hover {
+                    background: none;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    // thumbnail hovers
+    .image-upload-thumb-wrap {
+        .image-upload-thumb {
+            &.no-image {
+                &:hover {
+                    background: $blue;
+                    border: 2px solid $dark-blue;
+    
+                    .fa-file-image {
+                        display: none;
+                    }
+                    .fa-upload {
+                        display: block;
+                    }
+                }
+            }
+        }
+        
+        #image-upload-thumb-rm {
+            &:hover {
+                color: $dark-red;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    // media grid hovers
+    .media-grid {
+        .media-grid-item {
+            &:hover {
+                border: 4px solid $grey;
+
+                .media-grid-item-inner {
+                    background: $white;
+                    opacity: 1;
+                    user-select: all;
+                    z-index: 5;
+                }
+            }
+
+            &.selected {
+                &:hover {
+                    border: 4px solid $blue;
+                }
+            }
+        }
+
+        &.select-mode {
+            .media-grid-item {
+                &:hover {
+                    border: 4px solid $pink;
+                }
+    
+                &.selected {
+                    &:hover {
+                        border: 4px solid $blue;
+                    }
+                }
+
+                // prevent delete/edit menu from showing while in select mode
+                &:hover {
+                    border: 4px solid $pink;
+    
+                    .media-grid-item-inner {
+                        opacity: 0;
+                        user-select: none;
+                        z-index: 0;
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+/**
+     * Chrome (Desktop)
+    **/
+
+.ua-desktop.ua-chrome {
+
+    // Inputs
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="text"],
+    input[type="url"] {
+        &:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px $white inset;
+        }
+    }
+}
+
+/**
+     * Firefox (Desktop)
+    **/
+
+.ua-desktop.ua-firefox {
+
+    // Selects
+    select {
+        &:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 $black;
+        }
+    }
+}
+
+/**
+ * Mobile
+**/
+
+.ua-mobile {}
+
+/**
+ * Android
+**/
+
+.ua-android {}
+
+/**
+     * Chrome (Android)
+    **/
+
+.ua-android.ua-chrome {}
+
+/**
+     * Firefox (Android)
+    **/
+
+.ua-android.ua-firefox {
+
+    // Selects
+    select {
+        &:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 $black;
+        }
+    }
+}
+
+/**
+ * iOS
+**/
+
+.ua-ios {}
+
+/**
+     * Chrome (iOS)
+    **/
+
+.ua-ios.ua-chrome {}
+
+/**
+     * Firefox (iOS)
+    **/
+
+.ua-ios.ua-firefox {}
+
+/**
+     * Safari (iOS)
+    **/
+
+.ua-ios.ua-safari {}
+
+/**
+ * macOS
+**/
+
+.ua-mac_os_x {}
+
+/**
+     * Chrome (macOS)
+    **/
+
+.ua-mac_os_x.ua-chrome {}
+
+/**
+     * Firefox (macOS)
+    **/
+
+.ua-mac_os_x.ua-firefox {}
+
+/**
+     * Safari (macOS)
+    **/
+
+.ua-mac_os_x.ua-safari {}
+
+/**
+ * Windows
+**/
+
+.ua-windows_nt {}
+
+/**
+     * Chrome (Windows)
+    **/
+
+.ua-windows_nt.ua-chrome {}
+
+/**
+     * Firefox (Windows)
+    **/
+
+.ua-windows_nt.ua-firefox {}
+
+/**
+     * Internet Explorer (Windows)
+    **/
+
+.ua-windows_nt.ua-ie {
+
+    // Selects
+    select {
+        &::-ms-expand {
+            display: none;
+        }
+    }
+
+    //browser warning
+    #browser-warning {
+        display: block;
+    }
+}
+
+/**
+     * Microsoft Edge (Windows)
+    **/
+
+.ua-windows_nt.ua-edge {}

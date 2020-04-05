@@ -1,0 +1,9 @@
+.admin .pages {
+    #select-template, #select-status {
+        display: none;
+    }
+
+    #multi-edit-select, #submit_page_multi_edit {
+        transition: .3s;
+    }
+}

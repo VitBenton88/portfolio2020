@@ -161,6 +161,7 @@ module.exports = (app, db, slugify, Utils) => {
       image,
       metaTitle,
       metaDescription,
+      private,
       published,
       sitemap,
       taxonomies,
@@ -177,6 +178,7 @@ module.exports = (app, db, slugify, Utils) => {
       // format fields for db
       published = published ? new Date(published) : new Date()
       active = active == "on" ? true : false
+      private = private == "on" ? true : false
       sitemap = sitemap == "on" ? true : false
       image = image === '' ? null : image
       const author = user._id
@@ -190,7 +192,7 @@ module.exports = (app, db, slugify, Utils) => {
       }
 
       // create new post in db
-      const createdPost = await db.Posts.create({active, author, content, forms, image, published, taxonomies, template, title})
+      const createdPost = await db.Posts.create({active, author, content, forms, image, private, published, taxonomies, template, title})
       const ownerModel = 'Posts'
       const owner = createdPost.id
 
@@ -234,6 +236,7 @@ module.exports = (app, db, slugify, Utils) => {
       metaTitle,
       metaDescription,
       originalRoute,
+      private,
       published,
       route,
       sitemap,
@@ -251,6 +254,7 @@ module.exports = (app, db, slugify, Utils) => {
       // format fields for db
       published = published ? new Date(published) : undefined
       active = active == "on" ? true : false
+      private = private == "on" ? true : false
       sitemap = sitemap == "on" ? true : false
       image = image === '' ? null : image
       const updated = Date.now()
@@ -259,7 +263,7 @@ module.exports = (app, db, slugify, Utils) => {
       route = slugify(route)
 
       // update post in db
-      const updatedPost = await db.Posts.findOneAndUpdate({_id}, {active, content, forms, image, published, taxonomies, template, title, updated})
+      const updatedPost = await db.Posts.findOneAndUpdate({_id}, {active, content, forms, image, private, published, taxonomies, template, title, updated})
       const owner = updatedPost.id
 
       // then update the permalink in the Permalinks document ...

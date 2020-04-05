@@ -128,6 +128,7 @@ module.exports = (app, db, slugify, Utils) => {
       metaTitle,
       metaDescription,
       parent,
+      private,
       sitemap,
       template,
       title
@@ -140,12 +141,15 @@ module.exports = (app, db, slugify, Utils) => {
       }
   
       active = active == "on" ? true : false
+      private = private == "on" ? true : false
       homepage = homepage == "on" ? true : false
       parent = parent === 'none' ? null : parent
       sitemap = sitemap == "on" ? true : false
       image = image === '' ? null : image
       const author = user._id
       let route = slugify(title)
+      
+      console.log(private);
 
       // check if provided permalink already exists before page is created
       const permalinkExists = await Utils.Permalinks.permalinkExists(route)
@@ -155,7 +159,7 @@ module.exports = (app, db, slugify, Utils) => {
       }
 
       // create page in db ...
-      const createdPage = await db.Pages.create({active, author, content, forms, homepage, image, template, title})
+      const createdPage = await db.Pages.create({active, author, content, forms, homepage, image, private, template, title})
       const ownerModel = 'Pages'
       const owner = createdPage.id
 
@@ -239,6 +243,7 @@ module.exports = (app, db, slugify, Utils) => {
       metaDescription,
       originalRoute,
       parent,
+      private,
       route,
       sitemap,
       template,
@@ -252,6 +257,7 @@ module.exports = (app, db, slugify, Utils) => {
       }
       
       active = active == "on" ? true : false
+      private = private == "on" ? true : false
       homepage = homepage == "on" ? true : false
       sitemap = sitemap == "on" ? true : false
       image = image === '' ? null : image
@@ -264,7 +270,7 @@ module.exports = (app, db, slugify, Utils) => {
       // make sure route is in slug format
       route = slugify(route)
       // update post's fields in db ...
-      const updatedPage = await db.Pages.findOneAndUpdate({_id}, {active, content, forms, homepage, image, template, title, updated})
+      const updatedPage = await db.Pages.findOneAndUpdate({_id}, {active, content, forms, homepage, image, private, template, title, updated})
       // capture the id of updated page
       const owner = updatedPage.id
       // then update the permalink in the Permalinks document ...

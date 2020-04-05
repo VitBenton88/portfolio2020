@@ -10,6 +10,7 @@ module.exports = {
   Meta: require("./Meta"),
   PagesNotFound: require("./PagesNotFound"),
   Pages: require("./Pages"),
+  PasswordToken: require("./PasswordToken"),
   Permalinks: require("./Permalinks"),
   Posts: require("./Posts"),
   Recaptcha: require("./Recaptcha"),

@@ -25,9 +25,9 @@
             </div>
           </div>
 
-            {{#if search}}
+          {{#if search}}
             <h5 class="mt-3">Search Results: "{{search}}"</h5>
-            {{/if}}
+          {{/if}}
 
           {{#if redirects}}
           <div class="row">
@@ -35,14 +35,35 @@
               <select id="multi-edit-select" disabled>
                 <option hidden disabled selected value>select</option>
                 <option value="delete">Delete Redirects</option>
+                <option value="active">Update Status</option>
                 <option value="target">Update Target</option>
+                <option value="type">Update Type</option>
               </select>
             </div>
 
-            <div class="col-6 multiple-target-field mt-3">
+            <div class="col-6 multiple-target-field multiple-edit-field mt-3">
               <small id="multiTargetHelp" class="form-text text-muted">Enter target for these redirects.</small>
               <input type="text" id="select-target" name="target" class="form-control" placeholder="/target/example ..."
                 aria-describedby="multiTargetHelp">
+            </div>
+
+            <div class="col-6 multiple-type-field multiple-edit-field mt-3">
+              <small id="multiTypeHelp" class="form-text text-muted">Select a type for these redirects.</small>
+              <select name="type" id="select-type" class="custom-select" aria-describedby="multiTypeHelp">
+                  <option selected value="301">301 Permanent Redirect</option>
+                  <option value="302">302 Found</option>
+                  <option value="303">303 See Other</option>
+                  <option value="307">307 Temporary Redirect</option>
+                  <option value="308">308 Permanent Redirect</option>
+              </select>
+            </div>
+
+            <div class="col-6 multiple-active-field multiple-edit-field mt-3">
+              <small id="multiActiveHelp" class="form-text text-muted">Status of redirects.</small>
+              <select name="active" class="custom-select" aria-describedby="multiActiveHelp">
+                  <option value="true" selected>Active</option>
+                  <option value="false">Inactive</option>
+              </select>
             </div>
 
             <div class="col-12 mt-3">
@@ -56,10 +77,10 @@
               <tr>
                 <th><input type="checkbox" name="Select All Redirects" value class="listCheckbox selectAll"></th>
                 <th><a href="?orderBy=source&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Source</a></th>
-                <th><a href="?orderBy=target&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Target</a>
-                </th>
-                <th><a href="?orderBy=hits&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Hits</a>
-                </th>
+                <th><a href="?orderBy=target&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Target</a></th>
+                <th><a href="?orderBy=type&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Type</a></th>
+                <th><a href="?orderBy=active&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Status</a></th>
+                <th><a href="?orderBy=hits&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Hits</a></th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -70,6 +91,8 @@
                 </td>
                 <td>{{this.source}}</td>
                 <td>{{this.target}}</td>
+                <td>{{this.type}}</td>
+                <td>{{#if this.active}}Active{{else}}Inactive{{/if}}</td>
                 <td>{{this.hits}}</td>
                 <td>
                   <button type="button" class="btn btn-info redirect-edit-show" data-target="#redirect-{{@key}}"
@@ -83,16 +106,38 @@
                 <td>
                   <form action="/updateredirect" method="POST" class="">
                     <div class="row align-items-end">
+
                       <div class="col">
                         <small id="sourceHelp" class="form-text text-muted">The relative url that is redirected.</small>
                         <input name="source" type="text" class="form-control" aria-describedby="sourceHelp"
                           placeholder="/source/example ..." value="{{this.source}}" required>
                       </div>
+
                       <div class="col">
                         <small id="targetHelp" class="form-text text-muted">The destination of the redirect.</small>
                         <input name="target" type="text" class="form-control" aria-describedby="targetHelp"
                           placeholder="/target/example ..." value="{{this.target}}" required>
                       </div>
+
+                      <div class="col">
+                        <small id="typeHelp" class="form-text text-muted">The type of redirect.</small>
+                        <select name="type" class="custom-select" aria-describedby="typeHelp" required>
+                            <option value="301"{{#eq this.type 301}} selected="selected" {{/eq}}>301 Permanent Redirect</option>
+                            <option value="302"{{#eq this.type 302}} selected="selected" {{/eq}}>302 Found</option>
+                            <option value="303"{{#eq this.type 303}} selected="selected" {{/eq}}>303 See Other</option>
+                            <option value="307"{{#eq this.type 307}} selected="selected" {{/eq}}>307 Temporary Redirect</option>
+                            <option value="308"{{#eq this.type 308}} selected="selected" {{/eq}}>308 Permanent Redirect</option>
+                        </select>
+                      </div>
+
+                      <div class="col">
+                        <small id="activeHelp" class="form-text text-muted">Status of redirect.</small>
+                        <select name="active" class="custom-select" aria-describedby="activeHelp" required>
+                            <option value="true"{{#if this.active}} selected="selected" {{/if}}>Active</option>
+                            <option value="false"{{#unless this.active}} selected="selected" {{/unless}}>Inactive</option>
+                        </select>
+                      </div>
+                      
                       <div class="col">
                         <input name="_id" type="hidden" value="{{this.id}}">
                         <button type="submit" class="btn btn-success">Update</button>
@@ -114,22 +159,53 @@
 
           {{> admin/components/pagination data=redirects}}
 
-          <h5>Add Redirect</h5>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <h5>Add Redirect</h5>
+              </div>
+            </div>
+          </div>
+
           <form action="/addredirect" method="POST" id="addredirect" class='mb-5 container'>
             <div class="row align-items-end">
+
               <div class="col">
                 <small id="sourceHelp" class="form-text text-muted">The relative url that is redirected.</small>
                 <input name="source" type="text" class="form-control" aria-describedby="sourceHelp"
                   placeholder="/source/example ..." required>
               </div>
+
               <div class="col">
                 <small id="targetHelp" class="form-text text-muted">The destination of the redirect.</small>
                 <input name="target" type="text" class="form-control" aria-describedby="targetHelp"
                   placeholder="/target/example ..." required>
               </div>
+
+              <div class="col">
+                <small id="typeHelp" class="form-text text-muted">The type of redirect.</small>
+                <select name="type" class="custom-select" aria-describedby="typeHelp" required>
+                    <option selected value="301">301 Permanent Redirect</option>
+                    <option value="302">302 Found</option>
+                    <option value="303">303 See Other</option>
+                    <option value="307">307 Temporary Redirect</option>
+                    <option value="308">308 Permanent Redirect</option>
+                </select>
+              </div>
+
+              <div class="col">
+                <small id="activeHelp" class="form-text text-muted">Status of redirect.</small>
+                <select name="active" class="custom-select" aria-describedby="activeHelp" required>
+                    <option selected value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+              </div>
+
               <div class="col">
                 <button type="submit" class="btn btn-primary">Add</button>
               </div>
+
             </div>
           </form>
         </div>

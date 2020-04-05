@@ -1,0 +1,9 @@
+.admin .posts {
+    #select-template, #select-status {
+        display: none;
+    }
+
+    #multi-edit-select, #submit_post_multi_edit {
+        transition: .3s;
+    }
+}

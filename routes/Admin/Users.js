@@ -134,7 +134,7 @@ module.exports = (app, bcrypt, db, Utils, validator) => {
       }
       // check if email provided is an email
       if (!validator.isEmail(email)) {
-        throw new Error('Email provided not an email.')
+        throw new Error('Email provided is not an email.')
       }
   
       // check if password verification passes
@@ -271,7 +271,7 @@ module.exports = (app, bcrypt, db, Utils, validator) => {
       password = await bcrypt.hash(password, salt)
 
       // update user in database
-      await db.Users.updateOne({_id}, {password, passwordCheck})
+      await db.Users.updateOne({_id}, {password})
 
       req.flash(
         'success',

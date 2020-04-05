@@ -1,5 +1,4 @@
 const LocalStrategy = require('passport-local').Strategy
-const mongoose = require("mongoose")
 const bcrypt = require('bcrypt')
 
 //User Model
@@ -9,22 +8,25 @@ module.exports = (passport) => {
     passport.use(
         new LocalStrategy({usernameField: 'username'}, async (username, password, done) => {
             try {
+                // default error message
+                const message = "Incorrect username or password."
+
                 // lookup user
                 const user = await db.Users.findOne({username})
                 // if user does not exist, reject
                 if (!user) {
-                    return done(null, false, { message: 'That username is not registered.' })
+                    return done(null, false, { message })
                 }
                 
                 // compare user
                 const isMatch = await bcrypt.compare(password, user.password)
                 
                 if (!isMatch) {
-                    //Decline password entered if no match
-                    return done(null, false, { message: 'Incorrect password.' })
+                    // decline password entered if no match
+                    return done(null, false, { message })
                 }
 
-                //Confirm correct password was entered
+                // confirm correct password was entered
                 done(null, user)
 
             } catch (error) {

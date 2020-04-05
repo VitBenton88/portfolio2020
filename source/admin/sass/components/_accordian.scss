@@ -1,0 +1,19 @@
+//controls to toggle view each section
+.section-head {
+    cursor: pointer;
+}
+
+.section-toggle-controls {
+    .fa-minus {
+        display: none;
+    }
+
+    &.expanded {
+        .fa-plus {
+            display: none;
+        }
+        .fa-minus {
+            display: block;
+        }
+    }
+}

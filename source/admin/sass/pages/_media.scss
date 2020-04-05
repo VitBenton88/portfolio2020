@@ -1,0 +1,9 @@
+.admin .media {
+    #media-select-on {
+        transition: .3s;
+        
+        &.select-mode {
+            background: $teal;
+        }
+    }
+}

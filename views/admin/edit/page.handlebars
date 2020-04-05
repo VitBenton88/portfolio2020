@@ -38,6 +38,12 @@
                 </div>
 
                 <div class="custom-control custom-switch mr-3">
+                  <input id="privateSwitch" name="private" type="checkbox" class="custom-control-input"
+                    {{#if page.private}}checked{{/if}}>
+                  <label class="custom-control-label" for="privateSwitch">Private</label>
+                </div>
+
+                <div class="custom-control custom-switch mr-3">
                   <input id="homepageSwitch" name="homepage" type="checkbox" class="custom-control-input"
                     {{#if page.homepage}}checked{{/if}}>
                   <label class="custom-control-label" for="homepageSwitch">Homepage</label>
@@ -91,7 +97,7 @@
                 <small id="routeHelp" class="form-text text-muted">Permalink of page, leave out the beginning backslash
                   "/"</small>
                 <div class="d-flex align-items-center">
-                  <small class="mr-1">{{site_data.settings.address}}/{{remove page.permalink.full page.permalink.route}}</small>
+                  <small class="mr-1">{{site_data.settings.address}}{{remove page.permalink.full page.permalink.route}}</small>
                   <input name="route" type="text" class="form-control" style="width: auto;" aria-describedby="routeHelp"
                   placeholder="Enter permalink ..." value="{{page.permalink.route}}" required></input>
                 </div>

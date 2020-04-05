@@ -1,0 +1,21 @@
+<section id="password_forgot">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mt-5 d-flex justify-content-center">
+                <h1>Forgot Password</h1>
+            </div>
+            <div class="col-12 col-md-6 mx-auto mt-5">
+                {{> shared/notifications}}
+                <form id="forgotpassword" action="/forgotpassword" method="POST">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" aria-describedby="emailHelp" required>
+                        <small id="emailHelp" class="form-text text-muted">A link to reset your password will be sent to this email.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Reset Link</button>
+                </form>
+                <a class="mt-3 d-block" href="/login">Return to login page</a>
+            </div>
+        </div>
+    </div>
+</section>
