@@ -1,0 +1,26 @@
+.notifications .alert {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    padding: .75rem 1.25rem;
+    font-family: $Karla;
+    color: $darkGreen;
+    font-size: 17px;
+    line-height: 25px;
+    
+    &.alert-success {
+        background: $msg-success-green;
+    }
+
+    &.alert-warning {
+        background: $msg-error-red;
+    }
+
+    button.close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        float: right;
+    }
+}

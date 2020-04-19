@@ -1,0 +1,15 @@
+#graphs {
+    canvas {
+        @include max-width($screen-sm-max) {
+            padding-left: 0;
+        }
+    }
+
+    #canvas-backend {
+        margin-top: 30px;
+
+        @include max-width($screen-md-max) {
+            margin-top: 0;
+        }
+    }
+}

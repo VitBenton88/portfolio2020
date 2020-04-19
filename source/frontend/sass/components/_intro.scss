@@ -1,0 +1,65 @@
+#intro {
+    height: 90vh;
+
+    @include max-width($screen-md-max) {
+        height: 95vh;
+    }
+
+    @include max-width($screen-sm-max) {
+        height: 93vh;
+    }
+
+    .social-icon-wrap {
+        margin: 100px auto 0;
+
+        @include landscape-sm() {
+            margin: 30px auto 0;
+        }
+    }
+
+    a.learn-more-wrap {
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        position: absolute;
+        text-align: center;
+        text-decoration: none;
+
+        h2 {
+            margin-bottom: 65px;
+            transition: .3s ease-in-out;
+        }
+
+        i {
+          animation: MoveUpDown 2s ease-in-out infinite;
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+        }
+
+        @keyframes MoveUpDown {
+          0%, 100% {
+            bottom: 0;
+          }
+          50% {
+            bottom: 20px;
+          }
+        }
+
+        &:focus {
+            -webkit-tap-highlight-color:  rgba(255, 255, 255, 0); 
+        }
+
+        &:hover {
+            @include min-width($screen-lg-min) {
+                cursor: pointer;
+
+                h2, i {
+                    color: $darkBlue;
+                }
+            }
+        }
+    }
+}

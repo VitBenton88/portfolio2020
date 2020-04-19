@@ -1,0 +1,24 @@
+#browser-warning {
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    overflow: hidden;
+    position: fixed;
+    padding-top: 200px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+
+    article {
+        background: $primary;
+        padding: 50px;
+        position: relative;
+
+        .fa-times {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    }
+}

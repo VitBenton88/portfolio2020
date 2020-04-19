@@ -86,7 +86,7 @@
                 placeholder="The post ...">{{post.content}}</textarea>
             </div>
 
-            {{> admin/components/accordian name='post-taxonomies' title='Taxonomies' style="dark" content="admin/pages/edit/post/taxonomies"}}
+            {{> admin/components/accordian name='post-taxonomies' title='Taxonomies' style="dark" editing=true content="admin/pages/edit/post/taxonomies"}}
 
             {{> admin/components/accordian name='post-blocks' title='Blocks' local_blocks=post.blocks style="success" content="admin/pages/edit/page/blocks"}}
 

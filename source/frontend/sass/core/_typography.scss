@@ -1,0 +1,26 @@
+a, p, span, li, label, h1, h2, h3, h4, h5 {
+    font-display: swap;
+}
+
+h1, h2, h3, h4, h5, a {
+    font-family: $Quicksand;
+    color: $darkGreen;
+}
+
+p, span, li {
+    font-family: $Karla;
+    color: $darkGreen;
+    font-size: 17px;
+    line-height: 25px;
+
+}
+
+h1 {
+    font-size: 38px;
+}
+
+h2 {
+    font-size: 28px;
+}
+
+$commonBorder: 2px solid $darkGreen;

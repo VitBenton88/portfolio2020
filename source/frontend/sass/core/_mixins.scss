@@ -1,0 +1,117 @@
+/**
+ * Media Queries
+**/
+
+@mixin min-and-max-height($min-size, $max-size) {
+	@media only screen and (min-height: $min-size + px) and (max-height: $max-size + px) {
+        @content;
+    }
+}
+
+@mixin min-and-max-width($min-size, $max-size) {
+	@media only screen and (min-width: $min-size + px) and (max-width: $max-size + px) {
+        @content;
+    }
+}
+
+@mixin min-height($size) {
+	@media only screen and (min-height: $size + px) {
+        @content;
+    }
+}
+
+@mixin min-width($size) {
+	@media only screen and (min-width: $size + px) {
+        @content;
+    }
+}
+
+@mixin min-width-and-max-height($min-width, $max-height) {
+	@media only screen and (min-width: $min-width + px) and (max-height: $max-height + px) {
+        @content;
+    }
+}
+
+@mixin max-height($size) {
+	@media only screen and (max-height: $size + px) {
+        @content;
+    }
+}
+
+@mixin max-width($size) {
+	@media only screen and (max-width: $size + px) {
+        @content;
+    }
+}
+
+@mixin landscape() {
+	@media only screen and (orientation: landscape) {
+		@content;
+	}
+}
+
+@mixin landscape-xl() {
+	@media only screen and (orientation: landscape) and (min-width: $screen-xl-min + px) {
+		@content;
+	}
+}
+
+@mixin landscape-lg() {
+	@media only screen and (orientation: landscape) and (min-width: $screen-lg-min + px) {
+		@content;
+	}
+}
+
+@mixin landscape-md() {
+	@media only screen and (orientation: landscape) and (min-width: $screen-md-min + px) and (max-width: $screen-md-max + px) {
+		@content;
+	}
+}
+
+@mixin landscape-md-max() {
+	@media only screen and (orientation: landscape) and (max-width: $screen-md-max + px) {
+		@content;
+	}
+}
+
+@mixin landscape-sm() {
+	@media only screen and (orientation: landscape) and (min-width: $screen-sm-min + px) and (max-width: $screen-sm-max + px) {
+		@content;
+	}
+}
+
+@mixin landscape-xs() {
+	@media only screen and (orientation: landscape) and (max-width: $screen-xs-max + px) {
+		@content;
+	}
+}
+
+@mixin portrait() {
+	@media only screen and (orientation: portrait) {
+		@content;
+	}
+}
+
+@mixin portrait-lg() {
+	@media only screen and (orientation: portrait) and (min-width: $screen-lg-min + px) {
+		@content;
+	}
+}
+
+@mixin portrait-md() {
+	@media only screen and (orientation: portrait) and (min-width: $screen-md-min + px) and (max-width: $screen-md-max + px) {
+		@content;
+	}
+}
+
+@mixin portrait-sm() {
+	@media only screen and (orientation: portrait) and (min-width: $screen-sm-min + px) and (max-width: $screen-sm-max + px) {
+		@content;
+	}
+}
+
+@mixin portrait-xs() {
+	@media only screen and (orientation: portrait) and (max-width: $screen-xs-max + px) {
+		@content;
+	}
+}

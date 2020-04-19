@@ -1,0 +1,72 @@
+#contact {
+    .row {
+        margin: 0;
+    }
+
+    article {
+        padding: 20px 0;
+
+        @include max-width($screen-md-max) {
+            margin-bottom: 80px;
+        }
+
+        @include max-width($screen-sm-max) {
+            padding: 20px 0;
+            text-align: justify;
+        }
+    }
+
+    ::placeholder{
+        color: $faded-darkGreen;
+    }
+
+    a.totop-wrap {
+        bottom: 10px;
+        left: 0;
+        top: 60%;
+        right: 0;
+        margin: 0 auto;
+        position: absolute;
+        text-align: center;
+        text-decoration: none;
+        transform: translate(-50%,-50%);
+
+        @include max-width($screen-md-max) {
+            position: static;
+        }
+
+        h2 {
+            transition: .3s ease-in-out;
+        }
+
+        i {
+          animation: MoveUpDown 2s ease-in-out infinite;
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          margin-bottom:65px;
+        }
+
+        @keyframes MoveUpDown {
+          0%, 100% {
+            bottom: 0;
+          }
+          50% {
+            bottom: 20px;
+          }
+        }
+
+        &:focus {
+            -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
+        }
+
+        &:hover {
+            cursor: pointer;
+
+            h2, i {
+                color: $darkBlue;
+            }
+        }
+    }
+}

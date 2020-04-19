@@ -1,0 +1,12 @@
+$Quicksand: 'Quicksand', sans-serif;
+$Karla: 'Karla', sans-serif;
+
+i {
+    color: $darkGreen;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+
+    &:hover {
+        color: $darkBlue;
+    }
+}

@@ -1,0 +1,5 @@
+#about {
+    @include max-width($screen-md-max) {
+        margin-top: 40px;
+    }
+}

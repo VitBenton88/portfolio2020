@@ -1,0 +1,19 @@
+/* CORE */
+@import "./core/colors";
+@import "./core/grid";
+@import './core/mixins';
+
+/* COMPONENTS */
+@import "./components/accordian";
+@import "./components/footer";
+@import "./components/heading";
+@import "./components/menu";
+@import "./components/notifications";
+
+/* PAGES */
+@import "./pages/common";
+@import "./pages/content";
+@import "./pages/dashboard";
+@import "./pages/edit-user";
+@import "./pages/settings";
+@import "./pages/users";

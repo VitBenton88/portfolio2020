@@ -1,0 +1,86 @@
+.cms-menu {
+    background: $pink;
+    max-width: 180px;
+
+    @include max-width($screen-md-max) {
+        box-shadow: 0 15px 30px 0 rgba(0,0,0,0.11),
+        0 5px 15px 0 rgba(0,0,0,0.08);
+        left: -100vw;
+        position: fixed;
+        min-height: 440px;
+        transition: left 0.3s ease;
+        z-index: 5;
+    }
+
+    a {
+        padding: 20px;
+        transition: all 0.3s ease;
+        width: 100%;
+
+        &:hover {
+            background: $lightTeal;
+            text-decoration: none;
+        }
+
+        &.active {
+            background: $teal;
+
+            &:hover {
+                background: $teal;
+            }
+        }
+
+        &.edit {
+            padding: 0;
+            width: auto;
+
+            &:hover {
+                background: none;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .user-info {
+        border-top: 1px solid $grey;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        position: absolute;
+        text-align: center;
+
+        #logout {
+            button {
+                padding-bottom: 10px;
+            }
+        }
+    }
+}
+
+.cms-mobile-menu-controls {
+    cursor: pointer;
+    margin: 10px 0 0 15px;
+    position: fixed;
+    z-index: 10;
+
+    .mobile-menu-close {
+        display: none;
+    }
+}
+
+body.mobile-menu-active {
+    .cms-menu {
+        left: 0;
+    }
+
+    .cms-mobile-menu-controls {
+        .mobile-menu-close {
+            display: block;
+        }
+
+        .mobile-menu-open {
+            display: none;
+        }
+    }
+}
