@@ -34,34 +34,12 @@
     "url-slug": "^2.3.1",
     "validator": "^13.0.0"
   },
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "autoprefixer": "^9.7.6",
-    "browser-sync": "^2.26.7",
-    "browserslist": "^4.11.1",
-    "cssnano": "^4.1.10",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-postcss": "^8.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2",
-    "nodemon": "^2.0.3"
-  },
   "browserslist": [
     "defaults"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cd config/form-builder && npm install && npm run build",
-    "build": "gulp production",
     "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/VitBenton88/Analog-CMS"
   },
   "author": "Vit Benton",
   "license": "ISC"
