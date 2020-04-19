@@ -8,23 +8,26 @@
 
                 {{> admin/components/heading heading=(add "Edit Menu: " menu.name) slug=menu.slug}}
 
-                {{> shared/notifications}}
+                {{> admin/components/notifications}}
 
                 <div class="container page-body">
                     <div class="row">
                         <div class="col-12">
+                            {{#with menu}}
                             <form action="/updatemenu" method="POST">
                                 <div class="form-row align-items-end">
                                     <div class="form-group col-md-6">
                                         <label for="name">Menu Name</label>
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="Menu Name" value="{{menu.name}}">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Menu Name" value="{{name}}">
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <input type="text" name="_id" value={{menu.id}} hidden>
+                                        <input name="_id" type="hidden" value="{{_id}}">
+                                        <input name="slug_from_cient" type="hidden" value="{{slug}}">
                                         <button type="submit" class="btn btn-primary">Update Name</button>
                                     </div>
                                 </div>
                             </form>
+                            {{/with}}
                         </div>
                     </div>
 
@@ -33,51 +36,51 @@
                     <div class="row draggableContainer">
 
                         {{#each menu.links}}
-                        <div id="{{this.id}}" class="col-12 col-sm-6 col-lg-4 menu-item draggable">
+                        <div id="{{this._id}}" class="col-12 col-sm-6 col-lg-4 menu-item draggable">
                             <div class="card{{#unless this.active}} border-danger{{/unless}}">
                                 <div class="card-body{{#unless this.active}} text-danger{{/unless}}">
                                     <h5 class="card-title">{{this.text}}</h5>
                                     <p class="card-text">URL: {{this.route}}</p>
                                     {{#eq this.target '_blank'}}<p class="card-text"><i>Opens in new tab</i></p>{{/eq}}
                                     {{#if this.submenu}}
-                                    <p class="d-inline-block"><i>Submenu:</i></p>
-                                    <ul class="submenu draggableContainer list-group pl-1 pb-3">
+                                        <p class="d-inline-block"><i>Submenu:</i></p>
+                                        <ul class="submenu draggableContainer list-group pl-1 pb-3">
                                         {{#each this.submenu}}
-                                        <li id="{{this.id}}" class="list-group-item submenu-item draggable{{#unless this.active}} list-group-item-danger{{/unless}}">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <a href="{{this.route}}" target="_blank">{{this.text}}</a>
-                                                <div class="d-flex justify-content-between">
-                                                    <button type="button" data-toggle="collapse"
-                                                        data-target="#submenu-item-{{@../index}}{{@key}}-edit" aria-expanded="false"
-                                                        aria-controls="submenu-item-{{@../index}}{{@key}}-edit"
-                                                        class="btn btn-info mr-1"><i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <form class="deletesubmenuitem" action="/deletesubmenuitem" method="POST">
-                                                        <input name="_id" type="hidden" value="{{../this.id}}">
-                                                        <input name="_submenu" type="hidden" value="{{this.id}}">
-                                                        <input name="slug" type="hidden" value="{{../../menu.slug}}">
-                                                        <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button>
-                                                    </form>
+                                            <li id="{{this._id}}" class="list-group-item submenu-item draggable{{#unless this.active}} list-group-item-danger{{/unless}}">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <a href="{{this.route}}" target="_blank">{{this.text}}</a>
+                                                    <div class="d-flex justify-content-between">
+                                                        <button type="button" data-toggle="collapse"
+                                                            data-target="#submenu-item-{{@../index}}{{@key}}-edit" aria-expanded="false"
+                                                            aria-controls="submenu-item-{{@../index}}{{@key}}-edit"
+                                                            class="btn btn-info mr-1"><i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <form class="deletesubmenuitem" action="/deletesubmenuitem" method="POST">
+                                                            <input name="_id" type="hidden" value="{{../this._id}}">
+                                                            <input name="_submenu" type="hidden" value="{{this._id}}">
+                                                            <input name="slug" type="hidden" value="{{../../menu.slug}}">
+                                                            <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <form action="/updatemenuitem" method="POST" id="submenu-item-{{@../index}}{{@key}}-edit" data-id="{{../../menu.id}}" class="updatesubmenuitem collapse">
-                                                <small id="text-help" class="form-text text-muted">Text that appears in this submenu item.</small>
-                                                <input name="text" class="form-control" type="text" aria-describedby="text-help" placeholder="Enter new text ..." value="{{this.text}}">
-                                                <small id="route-help" class="form-text text-muted">Url this submenu item points to.</small>
-                                                <input name="route" class="form-control" type="text" aria-describedby="route-help" placeholder="Enter new url ..." value="{{this.route}}">
-                                                <div class="custom-control custom-checkbox mt-3 mb-3">
-                                                    <input type="checkbox" name="target" class="custom-control-input" id="submenuitem-target-{{@../index}}{{@key}}" value="_blank" {{#eq this.target '_blank'}}checked{{/eq}}>
-                                                    <label class="custom-control-label" for="submenuitem-target-{{@../index}}{{@key}}">Open in new tab</label>
-                                                </div>
-                                                <input name="_id" type="hidden" value="{{this.id}}">
-                                                <input name="permalink" type="hidden" value="{{this.permalink.id}}">
-                                                <input name="originalRoute" type="hidden" value="/{{this.permalink.full}}" class="addmenuitem-or">
-                                                <input name="slug" type="hidden" value="{{../../menu.slug}}">
-                                                <button type="submit" class="btn btn-info mt-2 mb-2">Update</button>
-                                            </form>
-                                        </li>
+                                                <form action="/updatemenuitem" method="POST" id="submenu-item-{{@../index}}{{@key}}-edit" data-id="{{../../menu._id}}" class="updatesubmenuitem collapse">
+                                                    <small id="text-help" class="form-text text-muted">Text that appears in this submenu item.</small>
+                                                    <input name="text" class="form-control" type="text" aria-describedby="text-help" placeholder="Enter new text ..." value="{{this.text}}">
+                                                    <small id="route-help" class="form-text text-muted">Url this submenu item points to.</small>
+                                                    <input name="route" class="form-control" type="text" aria-describedby="route-help" placeholder="Enter new url ..." value="{{this.route}}">
+                                                    <div class="custom-control custom-checkbox mt-3 mb-3">
+                                                        <input type="checkbox" name="target" class="custom-control-input" id="submenuitem-target-{{@../index}}{{@key}}" value="_blank" {{#eq this.target '_blank'}}checked{{/eq}}>
+                                                        <label class="custom-control-label" for="submenuitem-target-{{@../index}}{{@key}}">Open in new tab</label>
+                                                    </div>
+                                                    <input name="_id" type="hidden" value="{{this._id}}">
+                                                    <input name="permalink" type="hidden" value="{{this.permalink._id}}">
+                                                    <input name="originalRoute" type="hidden" value="/{{this.permalink.full}}" class="addmenuitem-or">
+                                                    <input name="slug" type="hidden" value="{{../../menu.slug}}">
+                                                    <button type="submit" class="btn btn-info mt-2 mb-2">Update</button>
+                                                </form>
+                                            </li>
                                         {{/each}}
-                                    </ul>
+                                        </ul>
                                     {{/if}}
                                     <button class="btn btn-light btn-block" type="button" data-toggle="collapse"
                                         data-target="#menu-item-{{@key}}-submenu" aria-expanded="false"
@@ -100,16 +103,16 @@
                                                     <input type="checkbox" name="target" class="custom-control-input" id="menuitem-target-{{@key}}" value="_blank" {{#eq this.target '_blank'}}checked{{/eq}}>
                                                     <label class="custom-control-label" for="menuitem-target-{{@key}}">Open in new tab</label>
                                                 </div>
-                                                <input name="_id" type="hidden" value="{{this.id}}">
+                                                <input name="_id" type="hidden" value="{{this._id}}">
                                                 <input name="originalRoute" type="hidden" value="/{{this.permalink.full}}">
-                                                <input name="permalink" type="hidden" value="{{this.permalink.id}}">
+                                                <input name="permalink" type="hidden" value="{{this.permalink._id}}">
                                                 <input name="reference" type="hidden" value="{{this.is_ref}}">
                                                 <input name="slug" type="hidden" value="{{../menu.slug}}">
                                                 <button type="submit" class="btn btn-primary btn-block">Update</button>
                                             </form>
 
                                             <form class="mt-1" action="/deletemenuitem" method="POST">
-                                                <input name="_id" type="hidden" value="{{this.id}}">
+                                                <input name="_id" type="hidden" value="{{this._id}}">
                                                 <input name="slug" type="hidden" value="{{../menu.slug}}">
                                                 <button type="submit" class="btn btn-danger btn-block">Delete</button>
                                             </form>
@@ -131,7 +134,7 @@
                                                     <input type="checkbox" name="target" class="custom-control-input" id="submenuitem-target-new" value="_blank">
                                                     <label class="custom-control-label" for="submenuitem-target-new">Open in new tab</label>
                                                 </div>
-                                                <input name="_id" type="hidden" value="{{this.id}}">
+                                                <input name="_id" type="hidden" value="{{this._id}}">
                                                 <input name="slug" type="hidden" value="{{../menu.slug}}">
                                                 <input name="reference" type="hidden" value="false" class="addmenuitem-ref">
                                                 <input name="originalRoute" type="hidden" value="" class="addmenuitem-or">
@@ -142,7 +145,9 @@
                                             <select form="form-{{@key}}-submenu" class="custom-select menu-item-url-select" name="permalink" aria-describedby="submenu-help">
                                                 <option disabled selected value> -- select an option -- </option>
                                                 {{#each ../permalinks}}
-                                                    <option value="{{this.id}}" data-route="/{{this.full}}" data-title="{{this.owner.title}}" data-title="{{this.owner.title}}">{{this.owner.title}} - {{this.ownerModel}}</option>
+                                                {{#with this}}
+                                                    <option value="{{_id}}" data-route="/{{full}}" data-title="{{owner.title}}" data-title="{{owner.title}}">{{owner.title}} - {{ownerModel}}</option>
+                                                {{/with}}
                                                 {{/each}}
                                             </select>
                                         </div>
@@ -166,7 +171,7 @@
                                         <input type="checkbox" name="target" class="custom-control-input" id="menuitem-target-new" value="_blank">
                                         <label class="custom-control-label" for="menuitem-target-new">Open in new tab</label>
                                     </div>
-                                    <input name="_id" type="hidden" value="{{menu.id}}">
+                                    <input name="_id" type="hidden" value="{{menu._id}}">
                                     <input name="reference" type="hidden" value="false" class="addmenuitem-ref">
                                     <input name="originalRoute" type="hidden" value="" class="addmenuitem-or">
                                     <input name="slug" type="hidden" value="{{menu.slug}}">
@@ -176,7 +181,9 @@
                                 <select form="addmenuitem" class="custom-select menu-item-url-select" name="permalink" aria-describedby="submenu-help">
                                     <option disabled selected value> -- select an option -- </option>
                                     {{#each permalinks}}
-                                        <option value="{{this.id}}" data-route="/{{this.full}}" data-title="{{this.owner.title}}">{{this.owner.title}} - {{this.ownerModel}}</option>
+                                    {{#with this}}
+                                        <option value="{{_id}}" data-route="/{{full}}" data-title="{{owner.title}}">{{owner.title}} - {{ownerModel}}</option>
+                                    {{/with}}
                                     {{/each}}
                                 </select>
                                 <div class="add-item-overlay active d-flex align-items-center justify-content-center">
@@ -192,7 +199,7 @@
 
                     <div class="row mt-5">
                         <form action="/deletemenu" method="POST" class="d-inline-block">
-                            <input name="_id" type="hidden" value="{{menu.id}}">
+                            <input name="_id" type="hidden" value="{{menu._id}}">
                             <button type="submit" class="btn btn-danger">Delete Menu</button>
                         </form>
                     </div>

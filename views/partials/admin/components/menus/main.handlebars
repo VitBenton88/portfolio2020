@@ -26,12 +26,19 @@
       </ul>
     </li>
 
+    <li class="nav-item nav-has-submenu{{#if menu-content}} current{{/if}}{{#if menu-blocks}} current{{/if}}">
+      <a class="d-block nav-link" href="/admin/content/blocks" target="_self">Content</a>
+      <ul class="nav-submenu">
+        <li><a class="d-block nav-link{{#if menu-blocks}} active{{/if}}" href="/admin/content/blocks" target="_self">Blocks</a></li>
+      </ul>
+    </li>
+
     <li class="nav-item">
       <a class="d-block nav-link{{#if menu-users}} active{{/if}}" href="/admin/users" target="_self">Users</a>
     </li>
 
     <li class="nav-item nav-has-submenu{{#if menu-redirects}} current{{/if}}{{#if menu-pagesnotfound}} current{{/if}}">
-      <a class="d-block nav-link" href="/admin" target="_self" onclick="return false;">Traffic</a>
+      <a class="d-block nav-link" href="/admin/redirects" target="_self">Traffic</a>
       <ul class="nav-submenu">
         <li><a class="d-block nav-link{{#if menu-redirects}} active{{/if}}" href="/admin/redirects" target="_self">Redirects</a></li>
         <li><a class="d-block nav-link{{#if menu-pagesnotfound}} active{{/if}}" href="/admin/pagesnotfound" target="_self">404s</a></li>
@@ -39,7 +46,7 @@
     </li>
 
     <li class="nav-item nav-has-submenu{{#if menu-contactForms}} current{{/if}}{{#if menu-contactEntries}} current{{/if}}{{#if menu-contactSettings}} current{{/if}}">
-      <a class="d-block nav-link" href="/admin" target="_self" onclick="return false;">Contact</a>
+      <a class="d-block nav-link" href="/admin/contact/forms" target="_self">Contact</a>
       <ul class="nav-submenu">
         <li><a class="d-block nav-link{{#if menu-contactForms}} active{{/if}}" href="/admin/contact/forms" target="_self">Forms</a></li>
         <li><a class="d-block nav-link{{#if menu-contactEntries}} active{{/if}}" href="/admin/contact/entries?orderBy=created&sort=desc" target="_self">Entries</a></li>

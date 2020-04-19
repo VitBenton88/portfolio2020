@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-// Schema for Entry
+// Schema
 const FormsSchema = new Schema({
     created: {
         type: Date,
@@ -50,13 +50,11 @@ const FormsSchema = new Schema({
     }
 })
 
-//index all fields for searches by user
-FormsSchema.index({
-    '$**': 'text'
-})
+// Index all fields for searches by user
+FormsSchema.index({ '$**': 'text' })
 
-// This creates our model from the above schema, using mongoose's model method
+// Create model using mongoose's model method
 const Forms = mongoose.model("Forms", FormsSchema)
 
-// Export the Forms model
+// Export model
 module.exports = Forms

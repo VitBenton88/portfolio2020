@@ -3,28 +3,12 @@ module.exports = (app, db, Utils) => {
     // TAXONOMIES - GET
     // =============================================================
     app.get("/admin/taxonomies", async (req, res) => {
-        try {
-          const {
-            body,
-            query,
-            site_data,
-            user
-          } = req
-      
-          let {
-            limit,
-            orderBy,
-            paged,
-            search,
-            sort
-          } = query
-    
-          const sessionUser = {
-            role: user.role,
-            username: user.username,
-            _id: user._id
-          }
-    
+        const { body, query, site_data, user } = req
+        let { limit, orderBy, paged, search, sort } = query
+        const {role, username, _id} = user
+        const sessionUser = { role, username, _id }
+
+        try {    
           // if the orderBy queries don't exist in the url params, this is to ensure orderBy works with a search form
           orderBy = orderBy || body.orderBy
           sort = sort || body.sort
@@ -39,14 +23,14 @@ module.exports = (app, db, Utils) => {
           const skip = paged > 0 ? ((paged - 1) * limit) : 0
     
           // get query count for pagination
-          const count = await db.Taxonomies.find().count()
+          const count = await db.Taxonomies.find().count().lean()
           const pageCount = Math.ceil(count / limit)
           // setup query params
           const sortConfig = orderBy ? Utils.Sort.getConfig(orderBy, sort) : {'created': 1}
           const searchParams = search ? {$text: {$search: search} } : {}
     
           // query db
-          const taxonomies = await db.Taxonomies.find(searchParams).sort(sortConfig).skip(skip).limit(limit)
+          const taxonomies = await db.Taxonomies.find(searchParams).sort(sortConfig).skip(skip).limit(limit).lean()
           // swap sort after the query if there is an order requested, e.g. desc to asc
           sort = orderBy ? Utils.Sort.swapOrder(sort) : null
     
@@ -65,52 +49,45 @@ module.exports = (app, db, Utils) => {
     
         } catch (error) {
           console.error(error)
-          req.flash('error', error.errmsg)
+          const errorMessage = error.errmsg || error.toString()
+          req.flash('admin_error', errorMessage)
           res.redirect('/admin')
         }
     })
 
-    // ADD TAXONOMY PAGE - POST
+    // CREATE TAXONOMY PAGE - POST
     // =============================================================
     app.post("/addtaxonomy", async (req, res) => {
         const { name } = req.body
-
-        let redirectUrl = "/admin/taxonomies"
+        const redirectUrl = "/admin/taxonomies"
 
         try {
             // create taxonomy in db
             await db.Taxonomies.create({name})
 
             req.flash(
-                'success',
+                'admin_success',
                 'Taxonomy successfully added.'
             )
             res.redirect(redirectUrl)
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.redirect(redirectUrl)   
         }
     })
 
-    // EDIT TAXONOMY PAGE - GET
+    // UPDATE TAXONOMY PAGE - GET
     // =============================================================
     app.get("/admin/taxonomy/edit/:id", async (req, res) => {
-        const {
-            body,
-            params,
-            site_data,
-            user
-        } = req
+        const { body, params, site_data, user } = req
 
         try {
-            const sessionUser = {
-                username: user.username,
-                _id: user._id
-            }
+            const sessionUser = { username: user.username, _id: user._id }
             const _id = params.id
-            const taxonomy = await db.Taxonomies.findById({_id}).populate({path: 'terms', options: {sort: {"name": 1}} })
+            const taxonomy = await db.Taxonomies.findById({_id}).populate({path: 'terms', options: {sort: {"name": 1}} }).lean()
 
             res.render("admin/edit/taxonomy", {
                 taxonomy,
@@ -121,57 +98,50 @@ module.exports = (app, db, Utils) => {
             
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.redirect(body.originalUrl)
         }
     })
 
-    // EDIT TAXONOMY - POST
+    // UPDATE TAXONOMY - POST
     // =============================================================
     app.post("/edittaxonomy", async (req, res) => {
-        const {
-            _id,
-            name
-        } = req.body
+        const { _id, name } = req.body
+        const redirectUrl = `/admin/taxonomy/edit/${_id}`
 
         try {
             // update db
             await db.Taxonomies.updateOne({_id}, {name})
 
             req.flash(
-                'success',
+                'admin_success',
                 'Taxonomy successfully edited.'
             )
-            res.redirect(`/admin/taxonomy/edit/${_id}`)
+            res.redirect(redirectUrl)
             
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
-            res.redirect(`/admin/taxonomy/edit/${_id}`)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirectUrl)
         }
     })
 
     // UPDATE SEVERAL TAXONOMIES - POST
     // =============================================================
     app.post("/updatetaxonomiesmulti", async (req, res) => {
-        try {
-            const {
-                list_id_arr,
-                update_criteria,
-                update_value
-            } = req.body
-    
-            // check if this is a delete query
-            const deleteQuery = update_criteria === 'delete';
-    
-            // define db query based on update criteria
-            const Query = db.Taxonomies.deleteMany({
-                _id: {
-                    $in: list_id_arr
-                }
-            })
+        const { list_id_arr, update_criteria, update_value } = req.body
+        // check if this is a delete query
+        const deleteQuery = update_criteria === 'delete';
 
-            const taxonomies = await db.Taxonomies.find({_id: {$in: list_id_arr} })
+        try {    
+            // setup more db query params
+            const _id = owner = {$in: list_id_arr}
+            // define db query based on update criteria
+            const Query = db.Taxonomies.deleteMany({ _id })
+
+            const taxonomies = await db.Taxonomies.find({ _id })
             const _deletedTaxonomyTerms = []
             for (let i = 0; i < taxonomies.length; i++) {
                 const terms = taxonomies[i].terms;
@@ -185,21 +155,24 @@ module.exports = (app, db, Utils) => {
             // if this isn't a bulk delete fire response here
             if (!deleteQuery) {
                 req.flash(
-                    'success',
+                    'admin_success',
                     'Bulk edit successful.'
                 )
 
                 return res.send(true);
             }
 
+            // setup more db query params
+            const in_taxonomies = {$in: _deletedTaxonomyTerms}
+
             // bulk delete in db
-            await db.Terms.deleteMany({owner: {$in: list_id_arr} })
+            await db.Terms.deleteMany({ owner })
 
             // then remove all references to deleted terms in posts
-            await db.Posts.updateMany({ taxonomies: {$in: _deletedTaxonomyTerms} }, { $pull: {taxonomies: {$in: _deletedTaxonomyTerms}} })
+            await db.Posts.updateMany({ taxonomies: in_taxonomies }, { $pull: {taxonomies: in_taxonomies } })
 
             req.flash(
-                'success',
+                'admin_success',
                 'Taxonomies successfully deleted.'
             )
 
@@ -207,8 +180,9 @@ module.exports = (app, db, Utils) => {
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
-            res.redirect(`/admin/taxonomies`)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
+            res.redirect('/admin/taxonomies')
         }
     })
 
@@ -229,15 +203,18 @@ module.exports = (app, db, Utils) => {
                 _deletedTaxonomyTerms.push(terms[i]._id);
             }
 
+            // setup db query params
+            const taxonomies = {$in: _deletedTaxonomyTerms}
+
             // delete taxonomy in db
             await db.Taxonomies.deleteOne({_id})
             // delete all of its terms too
             await db.Terms.deleteMany({owner: _id})
             // pull from posts' list of terms
-            await db.Posts.updateMany({taxonomies: {$in: _deletedTaxonomyTerms} }, {$pull: {taxonomies: {$in: _deletedTaxonomyTerms}} })
+            await db.Posts.updateMany({ taxonomies }, {$pull: { taxonomies } })
 
             req.flash(
-                'success',
+                'admin_success',
                 'Taxonomy successfully deleted.'
             )
 
@@ -245,7 +222,8 @@ module.exports = (app, db, Utils) => {
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.redirect(`/admin/taxonomy/edit/${_id}`)
         }
     })

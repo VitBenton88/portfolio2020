@@ -14,7 +14,7 @@
     <p>Media will be saved locally, in the <mark>/public</mark> directory.</p>
 
     <form id="updatelocalstorage" action="/updatelocalstorage" method="POST">
-        <input name="_id" type="hidden" value="{{site_data.id}}">
+        <input name="_id" type="hidden" value="{{site_data._id}}">
         <button type="submit" class="btn btn-outline-info">Apply &amp; Update</button>
     </form>
 </section>
@@ -27,18 +27,17 @@
     <form id="googleCloudStorage" action="/updategooglecloudstorage" method="POST">
         <div class="form-group">
             <label for="projectId">Google Cloud Project ID</label>
-            <small id="projectIdHelp" class="form-text text-muted">Google Cloud project id can be found in the API
-                console.</small>
             <input name="projectId" id="projectId" class="form-control" type="text" aria-describedby="projectIdHelp"
                 placeholder="Project ID ..." value="{{site_data.settings.storage.configurations.googleCloud.projectId}}" required>
+            <small id="projectIdHelp" class="form-text text-muted">Google Cloud project id can be found in the API console.</small>
         </div>
         <div class="form-group">
             <label for="bucketName">Google Cloud Bucket Name</label>
-            <small id="bucketNameHelp" class="form-text text-muted">Name of bucket where uploads are stored</small>
             <input name="bucketName" id="bucketName" class="form-control" type="text" aria-describedby="bucketNameHelp"
                 placeholder="Bucket name ..." value="{{site_data.settings.storage.configurations.googleCloud.bucketName}}" required>
+            <small id="bucketNameHelp" class="form-text text-muted">Name of bucket where uploads are stored</small>
         </div>
-        <input name="_id" type="hidden" value="{{site_data.id}}">
+        <input name="_id" type="hidden" value="{{site_data._id}}">
         <button type="submit" class="btn btn-outline-info">Apply &amp; Update</button>
     </form>
 </section>
@@ -47,23 +46,23 @@
     <form id="awsstorage" action="/updateawsstorage" method="POST">
         <div class="form-group">
             <label for="accessKeyId">AWS Access Key ID</label>
-            <small id="accessKeyIdHelp" class="form-text text-muted">Generated in AWS's Security Credentials.</small>
             <input name="accessKeyId" id="accessKeyId" class="form-control" type="text" aria-describedby="accessKeyIdHelp"
                 placeholder="Access Key ID ..." value="{{site_data.settings.storage.configurations.aws.accessKeyId}}" required>
+            <small id="accessKeyIdHelp" class="form-text text-muted">Generated in AWS's Security Credentials.</small>
         </div>
         <div class="form-group">
             <label for="secretAccessKey">Secret Access Key</label>
-            <small id="secretAccessKeyHelp" class="form-text text-muted">Generated in AWS's Security Credentials.</small>
             <input name="secretAccessKey" id="secretAccessKey" class="form-control" type="text" aria-describedby="secretAccessKey"
                 placeholder="Secret Access Key ..." value="{{site_data.settings.storage.configurations.aws.secretAccessKey}}" required>
+            <small id="secretAccessKeyHelp" class="form-text text-muted">Generated in AWS's Security Credentials.</small>
         </div>
         <div class="form-group">
             <label for="bucketName">Bucket Name</label>
-            <small id="bucketNameHelp" class="form-text text-muted">Name of bucket where uploads are stored</small>
             <input name="bucketName" id="bucketName" class="form-control" type="text" aria-describedby="bucketNameHelp"
                 placeholder="Bucket name ..." value="{{site_data.settings.storage.configurations.aws.bucketName}}" required>
+            <small id="bucketNameHelp" class="form-text text-muted">Name of bucket where uploads are stored</small>
         </div>
-        <input name="_id" type="hidden" value="{{site_data.id}}">
+        <input name="_id" type="hidden" value="{{site_data._id}}">
         <button type="submit" class="btn btn-outline-info">Apply &amp; Update</button>
     </form>
 </section>

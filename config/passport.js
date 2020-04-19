@@ -1,10 +1,11 @@
+// Dependencies
+// =============================================================
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
-
-//User Model
 const db = require("../models")
 
 module.exports = (passport) => {
+
     passport.use(
         new LocalStrategy({usernameField: 'username'}, async (username, password, done) => {
             try {
@@ -35,13 +36,14 @@ module.exports = (passport) => {
         })
     )
 
-    passport.serializeUser((user, done) => {
+    passport.serializeUser( (user, done) => {
         done(null, user.id)
-      })
+    })
       
-    passport.deserializeUser((id, done) => {
+    passport.deserializeUser( (id, done) => {
         db.Users.findById(id, (err, user) => {
             done(err, user)
         })
     })
+    
 }

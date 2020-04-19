@@ -8,7 +8,7 @@
 
         {{> admin/components/heading heading=(add "Edit Term: " term.name)}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
 
@@ -18,7 +18,7 @@
                   <div class="form-group">
                     <label for="termName">Edit Name</label>
                     <input name="name" type="text" class="form-control" id="termName" placeholder="Term Name" value="{{term.name}}">
-                    <input name="_id" type="hidden" value="{{term.id}}">
+                    <input name="_id" type="hidden" value="{{term._id}}">
                   </div>
                   <button type="submit" class="btn btn-success">Submit</button>
               </form>
@@ -29,7 +29,7 @@
 
           <div class="row">
               <form action="/deleteterm" method="POST" class="d-inline-block">
-                  <input name="_id" type="hidden" value="{{term.id}}">
+                  <input name="_id" type="hidden" value="{{term._id}}">
                   <input name="_owner" type="hidden" value="{{term.owner}}">
                   <button type="submit" class="btn btn-outline-danger">Delete Term</button>
               </form>

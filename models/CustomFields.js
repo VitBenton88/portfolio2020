@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-// Schema for link
+// Schema
 const CustomFieldsSchema = new Schema({
     slug: {
         type: String,
@@ -26,8 +26,8 @@ const CustomFieldsSchema = new Schema({
     }
 })
 
-// This creates our model from the above schema, using mongoose's model method
+// Create model using mongoose's model method
 const CustomFields = mongoose.model("CustomFields", CustomFieldsSchema)
 
-// Export the Custom Fields model
+// Export model
 module.exports = CustomFields

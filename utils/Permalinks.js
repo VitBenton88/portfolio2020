@@ -3,18 +3,38 @@
 const db = require("../models")
 
 const Permalinks = {
-  permalinkExists: (route) => new Promise( async (resolve, reject) => {
-    try {
-      const permalink = await db.Permalinks.find({ permalink: route })
-      if (permalink.length) {
-        return resolve(true)
-      }
-      resolve(false)
-    } catch (error) {
-      console.error(error)
-      reject(new Error(error))
-    }
-  })
+
+	validate: (route = '', is_redirect_src = false) => new Promise( async (resolve, reject) => {
+		try {
+			if ( !route ) {
+				throw new Error('Validate method expects route.')
+			}
+
+            if ( route.charAt(0) !== "/" ) {
+                route = `/${route}`
+            }
+
+			const permalink = await db.Permalinks.find({ permalink: route }).lean()
+			const reserved_arr = ['/admin', '/login']
+			const chars_to_check = route.substring(0, 6)
+
+			if ( !is_redirect_src && permalink.length ) {
+				resolve(false)
+			}
+
+			if ( reserved_arr.includes(chars_to_check) ) {
+				const error_msg = is_redirect_src ? `A redirect's source cannot start with "${route}".` : `Permalinks cannot start with "${route}".`
+				throw new Error(error_msg)
+			}
+			
+			resolve(true)
+			
+		} catch (error) {
+			console.error(error)
+			reject( error )
+		}
+	})
+
 }
 
 // Export the helper function object

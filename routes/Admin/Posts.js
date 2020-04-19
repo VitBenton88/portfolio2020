@@ -1,423 +1,406 @@
 module.exports = (app, db, slugify, Utils) => {
 
-  // POSTS - GET
-  // =============================================================
-  app.get("/admin/posts", async (req, res) => {
-    try {
-      const {
-        body,
-        query,
-        site_data,
-        user
-      } = req
-  
-      let {
-        limit,
-        orderBy,
-        paged,
-        search,
-        sort
-      } = query
+// POSTS - GET
+// =============================================================
+app.get("/admin/posts", async (req, res) => {
+	const { body, query, site_data, user } = req
+	let { limit, orderBy, paged, search, sort } = query
+	const { _id, role, username } = user
+	const sessionUser = { username, _id, role }
 
-      const sessionUser = {
-        role: user.role,
-        username: user.username,
-        _id: user._id
-      }
+	try {
+		// if the orderBy queries don't exist in the url params, this is to ensure orderBy works with a search form
+		orderBy = orderBy || body.orderBy
+		sort = sort || body.sort
 
-      // if the orderBy queries don't exist in the url params, this is to ensure orderBy works with a search form
-      orderBy = orderBy || body.orderBy
-      sort = sort || body.sort
-  
-      // set query limit to 10 as default, or use defined limit (converted to int)
-      limit = limit ? parseInt(limit) : 10
-  
-      // set paged to 1 as default, or use defined query (converted to int)
-      paged = paged ? parseInt(paged) : 1
-  
-      //determine offset in query by current page in pagination
-      const skip = paged > 0 ? ((paged - 1) * limit) : 0
+		// set query limit to 10 as default, or use defined limit (converted to int)
+		limit = limit ? parseInt(limit) : 10
 
-      // get templated for user to select
-      const templates = await Utils.Templates.getAll()
+		// set paged to 1 as default, or use defined query (converted to int)
+		paged = paged ? parseInt(paged) : 1
 
-      // get query count for pagination
-      const count = await db.Posts.find().count()
-      const pageCount = Math.ceil(count / limit)
-      // setup query params
-      const sortConfig = orderBy ? Utils.Sort.getConfig(orderBy, sort) : {'created': 1}
-      const searchParams = search ? {$text: {$search: search} } : {}
+		//determine offset in query by current page in pagination
+		const skip = paged > 0 ? ((paged - 1) * limit) : 0
 
-      // query db
-      const posts = await db.Posts.find(searchParams).sort(sortConfig).skip(skip).limit(limit).populate('permalink')
-      // swap sort after the query if there is an order requested, e.g. desc to asc
-      sort = orderBy ? Utils.Sort.swapOrder(sort) : null
+		// get templated for user to select
+		const templates = await Utils.Templates.getAll()
 
-      res.render("admin/posts", {
-        limit,
-        orderBy,
-        pageCount,
-        paged,
-        posts,
-        search,
-        sessionUser,
-        site_data,
-        sort,
-        templates,
-        layout: "admin"
-      })
+		// get query count for pagination
+		const count = await db.Posts.find().count().lean()
+		const pageCount = Math.ceil(count / limit)
+		// setup query params
+		const sortConfig = orderBy ? Utils.Sort.getConfig(orderBy, sort) : {'created': 1}
+		const searchParams = search ? {$text: {$search: search} } : {}
 
-    } catch (error) {
-      console.error(error)
-      req.flash('error', error.errmsg)
-      res.redirect('/admin')
-    }
-  })
+		// query db
+		const posts = await db.Posts.find(searchParams).sort(sortConfig).skip(skip).limit(limit).populate('permalink').lean()
+		// swap sort after the query if there is an order requested, e.g. desc to asc
+		sort = orderBy ? Utils.Sort.swapOrder(sort) : null
 
-  // ADD POST PAGE - GET
-  // =============================================================
-  app.get("/admin/posts/add", async (req, res) => {
-    try {
-      const {
-        site_data,
-        user
-      } = req
-  
-      const sessionUser = {
-        username: user.username,
-        _id: user._id
-      }
-      
-      const templates = await Utils.Templates.getAll()
-      const taxonomies = await db.Taxonomies.find()
-      const forms = await db.Forms.find()
+		res.render("admin/posts", {
+			limit,
+			orderBy,
+			pageCount,
+			paged,
+			posts,
+			search,
+			sessionUser,
+			site_data,
+			sort,
+			templates,
+			layout: "admin"
+		})
 
-      res.render("admin/add/post", {
-        forms,
-        sessionUser,
-        site_data,
-        taxonomies,
-        templates,
-        layout: "admin"
-      })
-      
-    } catch (error) {
-      console.error(error)
-      req.flash('error', error.errmsg)
-      res.redirect('/admin/posts')
-    }
-  })
+	} catch (error) {
+		console.error(error)
+		const errorMessage = error.errmsg || error.toString()
+		req.flash('admin_error', errorMessage)
+		res.redirect('/admin')
+	}
+})
 
-  // EDIT POST PAGE - GET
-  // =============================================================
-  app.get("/admin/posts/edit/:id", async (req, res) => {
-    try {
-      const {
-        params,
-        site_data,
-        user
-      } = req
-  
-      const sessionUser = {
-        username: user.username,
-        _id: user._id
-      }
-      
-      // collect data for render method
-      const post = await db.Posts.findById({_id: params.id}).populate('permalink')
-      const templates = await Utils.Templates.getAll()
-      const taxonomies = await db.Taxonomies.find()
-      const forms = await db.Forms.find()
+// CREATE POST PAGE - GET
+// =============================================================
+app.get("/admin/posts/add", async (req, res) => {
+	const { site_data, user } = req
+	const { _id, username } = user
+	const sessionUser = { username, _id }
 
-      res.render("admin/edit/post", {
-        forms,
-        post,
-        site_data,
-        taxonomies,
-        templates,
-        sessionUser,
-        layout: "admin"
-      })
-      
-    } catch (error) {
-      console.error(error)
-      req.flash('error', error.errmsg)
-      res.redirect('/admin/posts')
-    }
-  })
+	try {      
+		const templates = await Utils.Templates.getAll()
+		const taxonomies = await db.Taxonomies.find().lean()
+		const forms = await db.Forms.find().lean()
 
-  // ADD POST - POST
-  // =============================================================
-  app.post("/addpost", async (req, res) => {
-    const {
-      body,
-      user
-    } = req
+		res.render("admin/add/post", {
+			forms,
+			sessionUser,
+			site_data,
+			taxonomies,
+			templates,
+			layout: "admin"
+		})
 
-    let {
-      active,
-      content,
-      forms,
-      image,
-      metaTitle,
-      metaDescription,
-      private,
-      published,
-      sitemap,
-      taxonomies,
-      template,
-      title
-    } = body
+	} catch (error) {
+		console.error(error)
+		const errorMessage = error.errmsg || error.toString()
+		req.flash('admin_error', errorMessage)
+		res.redirect('/admin/posts')
+	}
+})
 
-    try {
-      // basic validation
-      if (!template || !title) {
-        throw new Error('Please fill out all fields when adding a post.')
-      }
+// UPDATE POST PAGE - GET
+// =============================================================
+app.get("/admin/posts/edit/:id", async (req, res) => {
+	const { params, site_data, user } = req
+	const { _id, username } = user
+	const sessionUser = { username, _id }
 
-      // format fields for db
-      published = published ? new Date(published) : new Date()
-      active = active == "on" ? true : false
-      private = private == "on" ? true : false
-      sitemap = sitemap == "on" ? true : false
-      image = image === '' ? null : image
-      const author = user._id
-      let route = slugify(title)
+	try {      
+		// collect data for render method
+		const post_query = await db.Posts.findById({_id: params.id}).populate('permalink')
+		const post = post_query.toObject({ getters: true })
+		const templates = await Utils.Templates.getAll()
+		const forms = await db.Forms.find().lean()
+		const blocks = await db.Blocks.find().lean()
+		const taxonomies_query = await db.Taxonomies.find()
+		const taxonomies = taxonomies_query.map( (taxonomy) => taxonomy.toObject({ getters: true }) )
 
-      // check if provided permalink already exists before post is created
-      const permalinkExists = await Utils.Permalinks.permalinkExists(route)
+		res.render("admin/edit/post", {
+			blocks,
+			forms,
+			post,
+			site_data,
+			taxonomies,
+			templates,
+			sessionUser,
+			layout: "admin"
+		})
 
-      if (permalinkExists) {
-        route = `${route}2`
-      }
+	} catch (error) {
+		console.error(error)
+		const errorMessage = error.errmsg || error.toString()
+		req.flash('admin_error', errorMessage)
+		res.redirect('/admin/posts')
+	}
+})
 
-      // create new post in db
-      const createdPost = await db.Posts.create({active, author, content, forms, image, private, published, taxonomies, template, title})
-      const ownerModel = 'Posts'
-      const owner = createdPost.id
+// CREATE POST - POST
+// =============================================================
+app.post("/addpost", async (req, res) => {
+	const { body, user } = req
 
-      // then create its permalink in the Permalinks document ...
-      const createdPermalink = await db.Permalinks.create({route, owner, ownerModel, sitemap})
-      const permalink = createdPermalink.id
+	let {
+		active,
+		content,
+		forms,
+		image,
+		metaTitle,
+		metaDescription,
+		private,
+		published,
+		sitemap,
+		taxonomies,
+		template,
+		title
+	} = body
 
-      // then create its meta in the meta document ...
-      const createdMeta = await db.Meta.create({title: metaTitle, description: metaDescription, owner, ownerModel})
-      const meta = createdMeta.id
+	try {
+		// basic validation
+		if (!template || !title) {
+			throw new Error('Please fill out all fields when adding a post.')
+		}
 
-      // then add this post to the terms it is classified under ...
-      await db.Terms.updateMany({ _id: {$in: taxonomies} }, {$push: {associations: owner} })
+		// format fields for db
+		published = published ? new Date(published) : new Date()
+		active = active == "on" ? true : false
+		private = private == "on" ? true : false
+		sitemap = sitemap == "on" ? true : false
+		image = image === '' ? null : image
+		const author = user._id
+		let route = slugify(title)
 
-      // finally go back and assign that permalink and meta to the newly created post
-      await db.Posts.updateOne({_id: owner}, {permalink, meta})
+		// check if permalink already exists and checks against reserved routes
+		const permalinkExists = await Utils.Permalinks.validate(route)
 
-      req.flash(
-        'success',
-        'Post successfully added.'
-      )
-      res.redirect(`/admin/posts/edit/${owner}`)
+		if (permalinkExists) {
+			route = `${route}2`
+		}
 
-    } catch (error) {
-      console.error(error)
-      let errorMessage = error.errmsg || error.toString()
-      req.flash('error', errorMessage)
-      res.redirect('/admin/posts')
-    }
-  })
+		// create new post in db
+		const createdPost = await db.Posts.create({active, author, content, forms, image, private, published, taxonomies, template, title})
+		const ownerModel = 'Posts'
+		const owner = createdPost.id
 
-  // UPDATE POST - POST
-  // =============================================================
-  app.post("/updatepost", async (req, res) => {
-    let {
-      _id,
-      active,
-      content,
-      forms,
-      image,
-      metaTitle,
-      metaDescription,
-      originalRoute,
-      private,
-      published,
-      route,
-      sitemap,
-      taxonomies,
-      template,
-      title
-    } = req.body
+		// then create its permalink in the Permalinks document ...
+		const createdPermalink = await db.Permalinks.create({route, owner, ownerModel, sitemap})
+		const permalink = createdPermalink.id
 
-    try {
-      // basic validation
-      if (!template || !title || !route) {
-        throw new Error('Please fill out all required fields when editing a post.')
-      }
+		// then create its meta in the meta document ...
+		const createdMeta = await db.Meta.create({title: metaTitle, description: metaDescription, owner, ownerModel})
+		const meta = createdMeta.id
 
-      // format fields for db
-      published = published ? new Date(published) : undefined
-      active = active == "on" ? true : false
-      private = private == "on" ? true : false
-      sitemap = sitemap == "on" ? true : false
-      image = image === '' ? null : image
-      const updated = Date.now()
+		// then add this post to the terms it is classified under ...
+		await db.Terms.updateMany({ _id: {$in: taxonomies} }, {$push: {associations: owner} })
 
-      // make sure route is in slug format
-      route = slugify(route)
+		// finally go back and assign that permalink and meta to the newly created post
+		await db.Posts.updateOne({_id: owner}, {permalink, meta})
 
-      // update post in db
-      const updatedPost = await db.Posts.findOneAndUpdate({_id}, {active, content, forms, image, private, published, taxonomies, template, title, updated})
-      const owner = updatedPost.id
+		req.flash(
+			'admin_success',
+			'Post successfully added.'
+		)
+		res.redirect(`/admin/posts/edit/${owner}`)
 
-      // then update the permalink in the Permalinks document ...
-      const updatedPermalink = await db.Permalinks.findOneAndUpdate({owner}, {route, sitemap}, {new: true})
-      // then update the meta in the meta document ...
-      await db.Meta.updateOne({owner}, {description: metaDescription, title: metaTitle})
-      // finally update the terms so that associate to the post updates
-      await db.Terms.updateMany({ _id: {$in: taxonomies} }, {$push: {associations: _id} })
-      // finally update any links that use this post's route (that were created as a reference to an existing page)
-      await db.Links.updateMany({route: `/${originalRoute}`, is_ref: true}, {route: `/${updatedPermalink.full}`})
+	} catch (error) {
+		console.error(error)
+		let errorMessage = error.errmsg || error.toString()
+		// if this is a dup error, notify the user about it
+		if (error.code == 11000) {
+			if (errorMessage.includes('route')) {
+				errorMessage = `The permalink "${route}" is already in use.`
+			} else {
+				errorMessage = `The post title "${title}" is already in use.`
+			}
+		}
 
-      req.flash(
-        'success',
-        'Post successfully updated.'
-      )
-      res.redirect(`/admin/posts/edit/${_id}`)
-      
-    } catch (error) {
-      console.error(error)
+		req.flash('admin_error', errorMessage)
+		res.redirect('/admin/posts')
+	}
+})
 
-      let errorMessage = error.errmsg || error.toString()
-      // if this is a dup error, notify the user about it
-      if (error.code == 11000) {
-        if (errorMessage.includes('route')) {
-          errorMessage = `The permalink "${route}" is already taken.`
-        }
-      }
+// UPDATE POST - POST
+// =============================================================
+app.post("/updatepost", async (req, res) => {
+	let {
+		_id,
+		active,
+		blocks,
+		content,
+		forms,
+		image,
+		metaTitle,
+		metaDescription,
+		originalRoute,
+		private,
+		published,
+		route,
+		sitemap,
+		taxonomies,
+		template,
+		title
+	} = req.body
 
-      req.flash('error', errorMessage)
-      res.redirect(`/admin/posts/edit/${_id}`)
-    }
-  })
+	const redirect_url = `/admin/posts/edit/${_id}`
 
-  // UPDATE SEVERAL POSTS - POST
-  // =============================================================
-  app.post("/updatepostmulti", async (req, res) => {
-    try {
-      const {
-        list_id_arr,
-        update_criteria,
-        update_value
-      } = req.body
-  
-      const active = (update_value === 'active')
-      const updated = Date.now()
-  
-      // check if this is a delete query
-      const deleteQuery = update_criteria === 'delete';
+	try {
+		// basic validation
+		if (!template || !title || !route) {
+			throw new Error('Please fill out all required fields when editing a post.')
+		}
 
-      // collect info on all deleted items
-      const postsToDelete = await db.Posts.find({ _id: {$in: list_id_arr} }).lean()
-      const permalink_arr = postsToDelete.map(post => post.permalink)
-  
-      // change update config based on values passed in by user
-      $set = update_criteria == "template" ? {template: update_value, updated} : {active, updated}
+		// format fields for db
+		published = published ? new Date(published) : undefined
+		active = active == "on" ? true : false
+		private = private == "on" ? true : false
+		sitemap = sitemap == "on" ? true : false
+		image = image === '' ? null : image
+		const updated = Date.now()
 
-    // define db query based on update criteria
-    const Query = deleteQuery ? db.Posts.deleteMany({
-      _id: {
-        $in: list_id_arr
-      }
-    }) : db.Posts.updateMany({
-      _id: {
-        $in: list_id_arr
-      }
-    }, {
-      $set
-    })
+		// make sure route is in slug format
+		route = slugify(route)
 
-    // fire db query ...
-    await Query
+		// update post in db
+		const updatedPost = await db.Posts.findOneAndUpdate({_id}, {active, blocks, content, forms, image, private, published, taxonomies, template, title, updated}, { "new": true})
+		const owner = updatedPost.id
+		const taxonomies_after_update = updatedPost.taxonomies
 
-    // if this is not a delete query, respond here with appropriate success message
-    if (!deleteQuery) {
-      req.flash(
-        'success',
-        'Bulk edit successful.'
-      )
+		// then update the permalink in the Permalinks document ...
+		const updatedPermalink = await db.Permalinks.findOneAndUpdate({owner}, {route, sitemap}, {new: true})
+		// then update the meta in the meta document ...
+		await db.Meta.updateOne({owner}, {description: metaDescription, title: metaTitle})
+		// finally update the terms that associate to the post updates
+		await db.Terms.updateMany({associations: {$in: _id} }, {$pull: {associations: {$in: _id} } })
+		await db.Terms.updateMany({ _id: {$in: taxonomies_after_update} }, {$push: {associations: _id} })
+		// finally update any links that use this post's route (that were created as a reference to an existing page)
+		await db.Links.updateMany({route: `/${originalRoute}`, is_ref: true}, {route: `/${updatedPermalink.full}`})
 
-      return res.send(true)
-    }
+		req.flash(
+			'admin_success',
+			'Post successfully updated.'
+		)
+		res.redirect(redirect_url)
 
-    // if this is a delete query, delete all associations with the deleted posts ...
-    await db.Permalinks.deleteMany({ owner: {$in: list_id_arr} })
-    await db.Permalinks.updateMany({parent: {$in: permalink_arr}}, { $unset: {parent: 1} })
-    await db.Meta.deleteMany({ owner: {$in: list_id_arr} })
-    await db.Terms.updateMany({associations: {$in: list_id_arr} }, {$pull: {associations: {$in: list_id_arr} } })
-    // finally set any links that use the deleted posts' routes as a reference to inactive
-    await db.Links.updateMany({permalink: {$in: permalink_arr}, is_ref: true}, {active: false})
+	} catch (error) {
+		console.error(error)
+		let errorMessage = error.errmsg || error.toString()
+		// if this is a dup error, notify the user about it
+		if (error.code == 11000) {
+			if (errorMessage.includes('route')) {
+				errorMessage = `The permalink "${route}" is already in use.`
+			} else {
+				errorMessage = `The post title "${title}" is already in use.`
+			}
+		}
 
-    req.flash(
-      'success',
-      'Posts successfully deleted.'
-    )
+		req.flash('admin_error', errorMessage)
+		res.redirect(redirect_url)
+	}
+})
 
-    res.send(true)
+// UPDATE SEVERAL POSTS - POST
+// =============================================================
+app.post("/updatepostmulti", async (req, res) => {
+	const { list_id_arr, update_criteria, update_value } = req.body
+	const active = (update_value === 'active')
+	const updated = Date.now()
 
-    } catch (error) {
-      console.error(error)
-      req.flash('error', error.errmsg)
-      res.redirect(`/admin/posts`)
-    }
-  })
+	try {  
+		// check if this is a delete query
+		const deleteQuery = update_criteria === 'delete';
+		// setup db query params
+		const _id = owner = associations = { $in: list_id_arr }
 
-  // DELETE POST IMAGE - POST
-  // =============================================================
-  app.post("/deletepostimage", async (req, res) => {
-    try {
-      // remove image from post in db
-      await db.Posts.updateOne({_id: req.body._id}, { $unset: {image: 1} })
+		// collect info on all deleted items
+		const postsToDelete = await db.Posts.find({ _id }).lean()
+		const permalink_arr = postsToDelete.map(post => post.permalink)
 
-      res.json({
-        "response": 'Success.',
-        "message": 'Post image successfully deleted.'
-      })
+		// change update config based on values passed in by user
+		$set = update_criteria == "template" ? {template: update_value, updated} : {active, updated}
 
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({
-        "response": error,
-        "message": "Post image not deleted. Error occurred."
-      })
-    }
-  })
+		// define db query based on update criteria
+		const Query = deleteQuery ? db.Posts.deleteMany({ _id }) : db.Posts.updateMany({ _id }, { $set })
 
-  // DELETE POST - POST
-  // =============================================================
-  app.post("/deletepost", async (req, res) => {
-    const { _id } = req.body
+		// fire db query ...
+		await Query
 
-    try {
-      // delete post from db ...
-      const deletedPost = await db.Posts.findOneAndDelete({_id})
-      // then delete all associations to post ...
-      await db.Permalinks.deleteOne({ owner: _id })
-      await db.Permalinks.updateMany({parent: deletedPost.permalink}, { $unset: {parent: 1} })
-      await db.Meta.deleteOne({ owner: _id })
-      await db.Terms.updateMany({associations: {$in: _id} }, {$pull: {associations: {$in: _id} } })
-      await db.CustomFields.deleteMany({ owner: _id })
-      // finally set any links that use this post's route as a reference to inactive
-      await db.Links.updateMany({permalink: deletedPost.permalink, is_ref: true}, {active: false})
+		// if this is not a delete query, respond here with appropriate success message
+		if (!deleteQuery) {
+			req.flash(
+				'admin_success',
+				'Bulk edit successful.'
+			)
 
-      req.flash(
-        'success',
-        'Post successfully deleted.'
-      )
+			return res.send(true)
+		}
 
-      res.redirect('/admin/posts')
-      
-    } catch (error) {
-      console.error(error)
-      req.flash('error', error.errmsg)
-      res.redirect(`/admin/posts/edit/${_id}`)
-    }
-  })
+		// if this is a delete query, delete all associations with the deleted posts ...
+		await db.Permalinks.deleteMany({ owner })
+		await db.Permalinks.updateMany({parent: {$in: permalink_arr}}, { $unset: {parent: 1} })
+		await db.Meta.deleteMany({ owner })
+		await db.Terms.updateMany({ associations }, {$pull: {vassociations } })
+		// finally set any links that use the deleted posts' routes as a reference to inactive
+		await db.Links.updateMany({permalink: {$in: permalink_arr}, is_ref: true}, {active: false})
+
+		req.flash(
+			'admin_success',
+			'Posts successfully deleted.'
+		)
+
+		res.send(true)
+
+	} catch (error) {
+		console.error(error)
+		const errorMessage = error.errmsg || error.toString()
+		req.flash('admin_error', errorMessage)
+		res.redirect('/admin/posts')
+	}
+})
+
+// DELETE POST IMAGE - POST
+// =============================================================
+app.post("/deletepostimage", async (req, res) => {
+	try {
+		// remove image from post in db
+		await db.Posts.updateOne({_id: req.body._id}, { $unset: {image: 1} })
+
+		res.json({
+			"response": 'Success.',
+			"message": 'Post image successfully deleted.'
+		})
+
+	} catch (error) {
+		console.error(error)
+		const errorMessage = error.errmsg || error.toString()
+		res.status(500).json({
+			"response": errorMessage,
+			"message": "Post image not deleted. Error occurred."
+		})
+	}
+})
+
+// DELETE POST - POST
+// =============================================================
+app.post("/deletepost", async (req, res) => {
+	const { _id } = req.body
+
+	try {
+		// setup db query params
+		const owner = _id
+		const associations = {$in: _id}
+		// delete post from db ...
+		const deletedPost = await db.Posts.findOneAndDelete({_id})
+		// then delete all associations to post ...
+		await db.Permalinks.deleteOne({ owner })
+		await db.Permalinks.updateMany({parent: deletedPost.permalink}, { $unset: {parent: 1} })
+		await db.Meta.deleteOne({ owner })
+		await db.Terms.updateMany({ associations }, {$pull: { associations } })
+		await db.CustomFields.deleteMany({ owner })
+		// finally set any links that use this post's route as a reference to inactive
+		await db.Links.updateMany({permalink: deletedPost.permalink, is_ref: true}, {active: false})
+
+		req.flash(
+			'admin_success',
+			'Post successfully deleted.'
+		)
+
+		res.redirect('/admin/posts')
+
+	} catch (error) {
+			console.error(error)
+			const errorMessage = error.errmsg || error.toString()
+			req.flash('admin_error', errorMessage)
+			res.redirect(`/admin/posts/edit/${_id}`)
+		}
+	})
 
 }

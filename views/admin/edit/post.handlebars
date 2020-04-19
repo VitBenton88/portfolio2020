@@ -12,7 +12,7 @@
             created=(moment post.created)
             updated=(moment post.updated)}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
           <form action="/updatepost" method="POST" id="updatepost">
@@ -44,7 +44,7 @@
 
                 {{> admin/components/thumbnail-upload 
                 image=post.image 
-                id=post.id 
+                id=post._id 
                 delurl='/deletepostimage'
                 caption='Featured Image'}}
 
@@ -80,13 +80,15 @@
             <hr>
 
             <div class="form-group">
-              <label for="title">Post Content</label>
+              <label for="content">Post Content</label>
               <small id="contentHelp" class="form-text text-muted">The content of the post</small>
-              <textarea name="content" class="form-control summernote-editor" aria-describedby="contentHelp"
+              <textarea id="content" name="content" class="form-control summernote-editor" aria-describedby="contentHelp"
                 placeholder="The post ...">{{post.content}}</textarea>
             </div>
 
-            {{> admin/components/accordian name='post-taxonomies' title='Taxonomies' style="success" content="admin/pages/edit/post/taxonomies"}}
+            {{> admin/components/accordian name='post-taxonomies' title='Taxonomies' style="dark" content="admin/pages/edit/post/taxonomies"}}
+
+            {{> admin/components/accordian name='post-blocks' title='Blocks' local_blocks=post.blocks style="success" content="admin/pages/edit/page/blocks"}}
 
             {{> admin/components/accordian name='custom-fields' title='Custom Fields' style="info" content="admin/pages/edit/post/customfields"}}
 
@@ -94,9 +96,9 @@
 
             {{> admin/components/accordian name='page-forms' title='Forms' style="primary" content="admin/pages/edit/post/forms"}}
 
-            <input id="_image" name="image" type="hidden" value="{{post.image.id}}">
+            <input id="_image" name="image" type="hidden" value="{{post.image._id}}">
             <input name="originalRoute" type="hidden" value="{{post.permalink.full}}">
-            <input name="_id" type="hidden" value="{{post.id}}">
+            <input name="_id" type="hidden" value="{{post._id}}">
             <button type="submit" class="btn btn-outline-info">Update Post</button>
             <a class="btn btn-outline-warning" href="/admin/posts" role="button">Cancel</a>
             <a class="btn btn-primary" href="/{{post.permalink.route}}" target="_blank" role="button">View</a>
@@ -106,7 +108,7 @@
 
           <div class="row">
             <form action="/deletepost" method="POST" class="d-inline-block">
-              <input name="_id" type="hidden" value="{{post.id}}">
+              <input name="_id" type="hidden" value="{{post._id}}">
               <button type="submit" class="btn btn-danger">Delete Post</button>
             </form>
           </div>

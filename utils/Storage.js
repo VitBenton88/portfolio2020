@@ -3,18 +3,11 @@
 const AWS = require('aws-sdk')
 const db = require("../models")
 const fs = require("fs")
-const {
-    Storage
-} = require('@google-cloud/storage')
+const { Storage } = require('@google-cloud/storage')
 
 const Media = {
     delete: function (media, storageConfig) {
-        let {
-            _id,
-            fileName,
-            key,
-            path
-        } = media
+        let { _id, fileName, key, path } = media
         // storage and value needs to be dynamic, media.storage will be undefined for bulk deletions
         const storage = media.storage || storageConfig.type
         const isBulkDelete = Array.isArray(media)
@@ -30,8 +23,8 @@ const Media = {
             try {
                 // delete from storage depending on type:
 
-                    // HANDLE LOCAL DELETIONS
-                    // =============================================================
+                // HANDLE LOCAL DELETIONS
+                // =============================================================
                 if (storage == 'local') {
                     // HANDLE BULK LOCAL DELETIONS
                     // ==========================
@@ -167,6 +160,7 @@ const Media = {
             }
         })
     },
+    
     getRoute: function (fileObj, multipleFileUpload, multipleFileDeletion) {
         const routesArr = []
         const projectDir = __dirname.replace('/utils', '')
@@ -228,6 +222,7 @@ const Media = {
         }
 
     },
+
     deleteFileAndAssociations: (_id) => new Promise(async (resolve, reject) => {
         try {
             // delete file record from db
@@ -267,6 +262,7 @@ const Media = {
             reject(new Error(error))
         }
     }),
+
     write: async function (fileObj, storageConfig) {
         const multipleFileUpload = Array.isArray(fileObj)
         let paths = this.getRoute(fileObj, multipleFileUpload)
@@ -287,18 +283,16 @@ const Media = {
                     yearPath
                 } = paths
 
-                const {
-                    type,
-                    configurations
-                } = storageConfig
+                const { type, configurations } = storageConfig
 
-                const renames = []
-
+                // HANDLE LOCAL UPLOADS
+                // =============================================================
                 if (type == 'local') {
+                    const mediaArr = []
+                    const renames = []
+                    
                     // handle multiple file uploads
-                    if (multipleFileUpload) {
-                        const mediaArr = []
-      
+                    if (multipleFileUpload) {      
                         // collect each media item ...
                         fileObj.forEach(function (item, i) {
                             const {absolutePath, absolutePathNoFile, relativePath, yearPath} = paths[i]
@@ -322,6 +316,7 @@ const Media = {
                                 path: relativePath,
                                 size: item.size
                             }
+
                             mediaArr.push(mediaObj_toPush)
 
                             // if the directories created above do not exist, create them ...
@@ -338,7 +333,7 @@ const Media = {
                         // save records of uploads to db
                         let media = await db.Media.create(mediaArr)
 
-                        resolve({ media, renames})
+                        resolve({ media, renames })
 
                         // finally move files to proper dir
                         fileObj.forEach(function (item, i) {
@@ -346,7 +341,6 @@ const Media = {
 
                             item.mv(absolutePath, (error) => {
                                 if (error) {
-                                    console.error(error)
                                     throw error
                                 }
                             })
@@ -391,22 +385,20 @@ const Media = {
                     // finally move file to proper dir
                     fileObj.mv(absolutePath, (error) => {
                         if (error) {
-                            console.error(error)
                             throw error
                         }
                     })
                 }
 
+                // HANDLE GOOGLE CLOUD STORAGE UPLOADS
+                // =============================================================
                 if (type == 'googleCloud') {
                     // first check if AUTH JSON exists, without it nothing can be done
                     if (!fs.existsSync(gcsJSONpath)) {
                         throw new Error('Google Cloud Storage auth JSON file is not present.')
                     }
 
-                    const {
-                        bucketName,
-                        projectId
-                    } = configurations.googleCloud
+                    const { bucketName, projectId } = configurations.googleCloud
 
                     const storage = new Storage({
                         keyFilename: gcsJSONpath,
@@ -419,44 +411,47 @@ const Media = {
                             throw error
                         }
 
-                        // Uploads a local file to the bucket
-                        await storage.bucket(bucketName).upload(tmpPath, {
-                            // Support for HTTP requests made with `Accept-Encoding: gzip`
-                            gzip: true,
-                            // Make file public
-                            public: true,
-                            // By setting the option `destination`, you can change the name of the
-                            // object you are uploading to a bucket.
-                            metadata: {
-                                // Enable long-lived HTTP caching headers
-                                // Use only if the contents of the file will never change
-                                // (If the contents will change, use cacheControl: 'no-cache')
-                                cacheControl: 'public, max-age=31536000',
-                            }
-                        })
+                        let media = {}
 
-                        // save record of upload to db
-                        let media = await db.Media.create({
-                            type: fileObj.mimetype,
-                            fileName: fileObj.name,
-                            storage: type,
-                            path: `https://storage.googleapis.com/${bucketName}/${fileObj.name}`,
-                            size: fileObj.size
-                        })
+                        try {
+                            // Uploads a local file to the bucket
+                            await storage.bucket(bucketName).upload(tmpPath, {
+                                // Support for HTTP requests made with `Accept-Encoding: gzip`
+                                gzip: true,
+                                // Make file public
+                                public: true,
+                                // By setting the option `destination`, you can change the name of the
+                                // object you are uploading to a bucket.
+                                metadata: {
+                                    // Enable long-lived HTTP caching headers
+                                    // Use only if the contents of the file will never change
+                                    // (If the contents will change, use cacheControl: 'no-cache')
+                                    cacheControl: 'public, max-age=31536000',
+                                }
+                            })
 
-                        // delete from tmp dir
-                        fs.unlinkSync(tmpPath)
+                            // save record of upload to db
+                            media = await db.Media.create({
+                                type: fileObj.mimetype,
+                                fileName: fileObj.name,
+                                storage: type,
+                                path: `https://storage.googleapis.com/${bucketName}/${fileObj.name}`,
+                                size: fileObj.size
+                            })
+
+                        } finally {
+                            // delete from tmp dir
+                            fs.unlinkSync(tmpPath)
+                        }
 
                         resolve({ media })
                     })
                 }
 
+                // HANDLE AWS S3 UPLOADS
+                // =============================================================
                 if (type == 'aws') {
-                    const {
-                        accessKeyId,
-                        secretAccessKey,
-                        bucketName
-                    } = configurations.aws
+                    const { accessKeyId, secretAccessKey, bucketName } = configurations.aws
 
                     // then move file to temporary folder and upload to AWS on callback
                     fileObj.mv(tmpPath, async (error) => {
@@ -464,45 +459,46 @@ const Media = {
                             throw error
                         }
 
-                        // configuring the AWS environment
-                        AWS.config.update({
-                            accessKeyId,
-                            secretAccessKey
-                        })
+                        let media = {}
 
-                        const s3 = new AWS.S3()
+                        try {
+                            // configuring the AWS environment
+                            AWS.config.update({ accessKeyId, secretAccessKey })
+                            const s3 = new AWS.S3()
 
-                        // configuring parameters
-                        const params = {
-                            Bucket: bucketName,
-                            Body: fs.createReadStream(tmpPath),
-                            Key: awsPath
+                            // configuring parameters
+                            const params = {
+                                Bucket: bucketName,
+                                Body: fs.createReadStream(tmpPath),
+                                Key: awsPath
+                            }
+
+                            const s3FileData = await s3.upload(params).promise()
+
+                            // save record of upload to db
+                            media = await db.Media.create({
+                                type: fileObj.mimetype,
+                                fileName: fileObj.name,
+                                key: awsPath,
+                                storage: type,
+                                path: s3FileData.Location,
+                                size: fileObj.size
+                            })  
+
+                        } finally {
+                            // delete from tmp dir
+                            fs.unlinkSync(tmpPath)
                         }
 
-                        const s3FileData = await s3.upload(params).promise()
-
-                        // save record of upload to db
-                        let media = await db.Media.create({
-                            type: fileObj.mimetype,
-                            fileName: fileObj.name,
-                            key: awsPath,
-                            storage: type,
-                            path: s3FileData.Location,
-                            size: fileObj.size
-                        })
-
-                        // delete from tmp dir
-                        fs.unlinkSync(tmpPath)
-
-                        resolve({ media })
+                        resolve({ media }) 
                     })
                 }
 
             } catch (error) {
-                console.error(`Error on media write. Message: ${error}`)
+                const errorMessage = error.message|| error.toString()
+                console.error(`Error on media write. Message: ${errorMessage}`)
                 reject(error)
             }
-
         })
 
     }

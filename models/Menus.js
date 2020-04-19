@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-// Analog Schema
+// Schema
 const MenuSchema = new Schema({
     name: {
         type: String,
@@ -20,11 +20,11 @@ const MenuSchema = new Schema({
 
 })
 
-//index all fields for searches by user
-MenuSchema.index({'$**': 'text'})
+// Index all fields for searches by user
+MenuSchema.index( {'$**': 'text'} )
 
-// This creates our model from the above schema, using mongoose's model method
+// Create model using mongoose's model method
 const Menu = mongoose.model("Menu", MenuSchema)
 
-// Export the Menu model
+// Export model
 module.exports = Menu

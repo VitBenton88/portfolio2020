@@ -1,8 +1,8 @@
-module.exports = (app, db) => {
+module.exports = (app) => {
 
-    // SINGLE FORM REQUEST
+    // PROVIDE SITE DATA
     // =============================================================
-    app.get("/api/analog/sitedata", async (req, res) => {        
+    app.get("/api/analog/sitedata", (req, res) => {        
         try {
             const { site_data } = req
             // respond to client
@@ -11,8 +11,8 @@ module.exports = (app, db) => {
         } catch (error) {
             console.error(error)
             res.status(500).json({
-            "response": error,
-            "message": "Error occurred while fetching site data."
+                "response": error,
+                "message": "Error occurred while fetching site data."
             })
         }
     })

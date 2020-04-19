@@ -1,0 +1,59 @@
+<div class="container-fluid edit-entry page">
+    <div class="row">
+
+        {{> admin/components/menus/main menu-contactEntries=true}}
+
+        <div class="col-12 col-lg-10">
+            <div class="row no-gutters">
+
+                {{> admin/components/heading heading="Form Entry" created=entry.created form=entry.form}}
+
+                {{> admin/components/notifications}}
+
+                <div class="container page-body">
+                    <div class="row">
+                        <div class="col-12">
+                            {{#if entry.meta.ip}}
+                                <p><strong>User IP Address:</strong> {{entry.meta.ip}}</p>
+                            {{/if}}
+                            {{#if entry.meta.recaptchaScore}}
+                                <p><strong>reCAPTCHA Score:</strong> {{entry.meta.recaptchaScore}}</p>
+                            {{/if}}
+                        </div>
+                        <div class="col-12">
+                            {{#if entry.fields}}
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Field</th>
+                                    <th scope="col">Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {{#each entry.fields}}
+                                    {{#with this}}
+                                    <tr>
+                                        <td>{{#if label}}{{label}}{{else}}{{name}}{{/if}}</td>
+                                        <td>{{value}}</td>
+                                    </tr>
+                                    {{/with}}
+                                {{/each}}
+                                </tbody>
+                            </table>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <form action="/deleteentry" method="POST" class="d-inline-block">
+                                <input name="_id" type="hidden" value="{{entry._id}}">
+                                <button type="submit" class="btn btn-danger">Delete Entry</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

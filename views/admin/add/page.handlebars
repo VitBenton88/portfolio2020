@@ -8,7 +8,7 @@
 
         {{> admin/components/heading heading="Add Page"}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
 
@@ -48,7 +48,7 @@
 
                 {{> admin/components/thumbnail-upload 
                 image=page.image 
-                id=page.id 
+                id=page._id 
                 delurl='/deletepageimage'
                 caption='Featured Image'}}
                 
@@ -77,7 +77,9 @@
                 <select class="custom-select" name="parent" aria-describedby="parentHelp">
                   <option value="none" selected="selected">None</option>
                   {{#each pages}}
-                    <option value="{{this.permalink.id}}">{{this.title}}</option>
+                  {{#with this}}
+                    <option value="{{permalink._id}}">{{title}}</option>
+                  {{/with}}
                   {{/each}}
                 </select>
               </div>
@@ -86,9 +88,9 @@
             <hr>
 
             <div class="form-group">
-              <label for="title">Page Content</label>
+              <label for="content">Page Content</label>
               <small id="contentHelp" class="form-text text-muted">The content of the page</small>
-              <textarea name="content" class="form-control summernote-editor" aria-describedby="contentHelp"
+              <textarea id="content" name="content" class="form-control summernote-editor" aria-describedby="contentHelp"
                 placeholder="The content ..."></textarea>
             </div>
 

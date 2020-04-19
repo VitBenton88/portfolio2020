@@ -1,1 +1,179 @@
-"use strict";$("#media-delete-multi").click(function(){var s=[];if($(".media-grid.select-mode .media-grid-item.selected").each(function(e,a){$(a).addClass("to-be-deleted"),s.push($(a).data("id"))}),0===s.length)return!1;$.ajax({type:"POST",url:"/deletemediamulti",data:{_id_arr:s},success:function(e){$(".custom-fields-notifications").append('<div class="alert alert-success alert-dismissible fade show" role="alert">\n            <strong>Success: </strong> '.concat(e.message,'\n            <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n            <span aria-hidden="true">&times;</span>\n            </button>\n            </div>')),$(".media-grid-item.to-be-deleted").remove()},error:function(e){$(".custom-fields-notifications").append('<div class="alert alert-warning alert-dismissible fade show" role="alert">\n            <strong>Error: </strong> '.concat(e.message,'\n            <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n            <span aria-hidden="true">&times;</span>\n            </button>\n            </div>'))}}).always(function(){$(".custom-fields-notifications .alert").remove()})}),$(".media-grid-item-edit").click(function(){var e=$(this);if(e.closest(".media-grid").hasClass("select-mode"))return!1;var m=e.data("id");$.ajax({type:"GET",url:"/api/media/".concat(m),success:function(e){var a=e[0],s=a.type,t=a.fileName,i=a.storage,d=a.path,l=a.meta,o=l.alt,n=l.description,r=l.caption;$(".analog-modal .modal-body img").attr("src",d),$(".analog-modal .modal-body .media-name mark").text(t),$(".analog-modal .modal-body .media-type mark").text(s),$(".analog-modal .modal-body .media-storage mark").text(i),$(".analog-modal .modal-body .media-path mark").text(d),$(".analog-modal .modal-body #alt").val(o),$(".analog-modal .modal-body #description").val(n),$(".analog-modal .modal-body #caption").val(r),$(".analog-modal .modal-body #_id").val(m),$(".analog-modal").addClass("active")},error:function(e){alert(e.responseJSON.message)}})}),$(".media-grid-item-del").click(function(){var e=$(this);if(e.closest(".media-grid").hasClass("select-mode"))return!1;var a=e.data("media"),s=$(a),t=s.data("id");$.ajax({type:"POST",url:"/deletemedia",data:{_id:t},success:function(e){s.remove(),$(".custom-fields-notifications").append('<div class="alert alert-success alert-dismissible fade show" role="alert">\n            <strong>Success: </strong> '.concat(e.message,'\n            <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n            <span aria-hidden="true">&times;</span>\n            </button>\n            </div>'))},error:function(e){$(".custom-fields-notifications").append('<div class="alert alert-warning alert-dismissible fade show" role="alert">\n            <strong>Error: </strong> '.concat(e.responseJSON.message,'\n            <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n            <span aria-hidden="true">&times;</span>\n            </button>\n            </div>'))}}).always(function(){$(".custom-fields-notifications .alert").remove()})}),$("#media-select-on").click(function(){var e=$(".media-grid"),a=$(this);return a.hasClass("select-mode")?($("#media-delete-multi").prop("disabled",!0),a.removeClass("select-mode"),e.removeClass("select-mode"),$(".media-grid .media-grid-item.selected").removeClass("selected")):($("#media-delete-multi").prop("disabled",!1),e.addClass("select-mode"),a.addClass("select-mode")),!1}),$(".media-grid .media-grid-item").click(function(){var e=$(this);return $(".media-grid").hasClass("select-mode")&&(e.hasClass("selected")?e.removeClass("selected"):e.addClass("selected")),!1});
+/**
+ * CLICK
+ **/
+
+ // handle multiple media deletions
+ $('#media-delete-multi').click(() => {
+    const _id_arr = [];
+
+    $('.media-grid.select-mode .media-grid-item.selected').each(function (i, item) {
+        $(item).addClass('to-be-deleted')
+        _id_arr.push($(item).data('id'));
+    });
+
+    // if array is empty stop here
+    if (_id_arr.length === 0) {
+        return false;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: '/deletemediamulti',
+        data: {
+            _id_arr,
+        },
+        success: (result) => {
+            $('.custom-fields-notifications')
+                .append(
+                    `<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success: </strong> ${result.message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>`
+                );
+            // remove the deleted items from the DOM
+            $('.media-grid-item.to-be-deleted').remove();
+        },
+        error: (error) => {
+            $('.custom-fields-notifications')
+                .append(
+                    `<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error: </strong> ${error.message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>`
+                );
+        }
+    }).always(function () {
+        $('.custom-fields-notifications .alert').remove();
+    });
+})
+
+// handle edit media modal
+$('.media-grid-item-edit').click(function () {
+    const $this = $(this);
+    const $mediaGrid = $this.closest('.media-grid')
+    // if select mode is not, do nothing
+    if ($mediaGrid.hasClass('select-mode')) {
+        return false;
+    }
+
+    const _id = $this.data('id');
+
+    $.ajax({
+        type: "GET",
+        url: `/api/media/${_id}`,
+        success: function (media) {
+            const {type, fileName, storage, path, meta} = media[0]
+            const {alt, description, caption} = meta
+
+            // populate modal content
+            $('.analog-modal .modal-body img').attr('src', path);
+            $('.analog-modal .modal-body .media-name mark').text(fileName);
+            $('.analog-modal .modal-body .media-type mark').text(type);
+            $('.analog-modal .modal-body .media-storage mark').text(storage);
+            $('.analog-modal .modal-body .media-path mark').text(path);
+            // populate modal form values
+            $('.analog-modal .modal-body #alt').val(alt);
+            $('.analog-modal .modal-body #description').val(description);
+            $('.analog-modal .modal-body #caption').val(caption);
+            $('.analog-modal .modal-body #_id').val(_id);
+
+            // show modal
+            $('.analog-modal').addClass('active');
+        },
+        error: function (error) {
+            alert(error.responseJSON.message)
+        }
+    });
+})
+
+// dynamically delete media
+$('.media-grid-item-del').click(function () {
+    const $this = $(this);
+    const $mediaGrid = $this.closest('.media-grid');
+    // if select mode is on, do nothing
+    if ($mediaGrid.hasClass('select-mode')) {
+        return false;
+    }
+
+    const mediaEleId = $this.data('media');
+    const $mediaEle = $(mediaEleId);
+    const _id = $mediaEle.data('id');
+
+    $.ajax({
+        type: "POST",
+        url: "/deletemedia",
+        data: {
+            _id
+        },
+        success: function (result) {
+            $mediaEle.remove();
+            $('.custom-fields-notifications')
+                .append(
+                    `<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success: </strong> ${result.message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>`
+                );
+        },
+        error: function (error) {
+            $('.custom-fields-notifications')
+                .append(
+                    `<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error: </strong> ${error.responseJSON.message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>`
+                );
+        }
+    }).always(function () {
+        $('.custom-fields-notifications .alert').remove();
+    });
+})
+
+// toggle select mode on media page
+$('#media-select-on').click(function () {
+    const $mediaGrid = $('.media-grid');
+    const $this = $(this);
+
+    if ($this.hasClass('select-mode')) {
+         // disable bulk delete button
+         $('#media-delete-multi').prop('disabled', true);
+
+        $this.removeClass('select-mode');
+        $mediaGrid.removeClass('select-mode');
+        $('.media-grid .media-grid-item.selected').removeClass('selected');
+        return false;
+    }
+     // enable bulk delete button
+    $('#media-delete-multi').prop('disabled', false);
+
+    $mediaGrid.addClass('select-mode');
+    $this.addClass('select-mode');
+    return false;
+})
+
+// handle selecting media items
+$('.media-grid .media-grid-item').click(function () {
+    const $this = $(this);
+
+    // if select mode is not on, do nothing
+    if (!$('.media-grid').hasClass('select-mode')) {
+        return false;
+    }
+
+    if ($this.hasClass('selected')) {
+        $this.removeClass('selected')
+        return false;
+    }
+
+    $this.addClass('selected')
+    return false;
+})
+//# sourceMappingURL=media.js.map

@@ -47,6 +47,7 @@ module.exports = {
 
         return `<ul id="menu-${menuObj.slug}" class="navbar-nav">${submenuMap}</ul>`
     },
+
     generateBodyClasses: (pageData) => {
         let classes = ''
 
@@ -79,6 +80,7 @@ module.exports = {
 
         return classes
     },
+
     customField: (slug, pageData) => {
         const customFieldsArr = pageData.data.root.page_data.customFields
         let value = ''
@@ -94,6 +96,7 @@ module.exports = {
 
         return value
     },
+
     form: (formSlug, pageData) => {
         const {captcha, page_data, site_data, url} = pageData.data.root
         const {forms} = page_data
@@ -188,6 +191,7 @@ module.exports = {
         return `${formStart}${formBody}${formLocationField}${captchaField}${formEnd}`
 
     },
+
     times: (n, block) => {
         let accum = ''
         for(let i = 0; i < n; ++i) {
@@ -197,5 +201,18 @@ module.exports = {
             accum += block.fn(this);
         }
         return accum
+    },
+
+    inArray: (array, value, index=0, returnValueIfTrue) => {
+        let returnValue
+        if ( Array.isArray(array) ) {
+            for (let i = index; i < array.length; i++) {
+                if (array[i].toString() === value.toString()) {
+                    returnValue = returnValueIfTrue;
+                    break;
+                }
+            }
+        }
+        return returnValue
     }
 }

@@ -43,18 +43,16 @@ const EntriesSchema = new Schema({
       }
 })
 
-//index all fields for searches by user
-EntriesSchema.index({
-    '$**': 'text'
-})
+// Index all fields for searches by user
+EntriesSchema.index({ '$**': 'text' })
 
-FieldsSchema.index({
-    '$**': 'text'
-})
+FieldsSchema.index({ '$**': 'text' })
 
-// This creates our model from the above schema, using mongoose's model method
+// Insert autopopulate plugin
 EntriesSchema.plugin(require('mongoose-autopopulate'))
+
+// Create model using mongoose's model method
 const Entries = mongoose.model("Entries", EntriesSchema)
 
-// Export the Entries model
+// Export model
 module.exports = Entries

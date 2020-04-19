@@ -8,7 +8,7 @@
 
         {{> admin/components/heading heading="Add Post"}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
 
@@ -38,7 +38,7 @@
 
                 {{> admin/components/thumbnail-upload 
                 image=page.image 
-                id=page.id 
+                id=page._id 
                 delurl='/deletepageimage'
                 caption='Featured Image'}}
 
@@ -68,9 +68,9 @@
             <hr>
 
             <div class="form-group">
-              <label for="title">Post Content</label>
+              <label for="content">Post Content</label>
               <small id="contentHelp" class="form-text text-muted">The content of the post</small>
-              <textarea name="content" class="form-control summernote-editor" aria-describedby="contentHelp"
+              <textarea name="content" id="content" class="form-control summernote-editor" aria-describedby="contentHelp"
                 placeholder="The post ..."></textarea>
             </div>
 

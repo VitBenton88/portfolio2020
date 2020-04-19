@@ -4,7 +4,7 @@ module.exports = (app, bcrypt, db) => {
     // =============================================================
     app.get('/initialize', async (req, res) => {
         try {
-            const site_data = await db.Analog.findOne()
+            const site_data = await db.Analog.findOne().lean()
 
             if (!site_data) {
                 return res.render("admin/initialize", {
@@ -16,7 +16,8 @@ module.exports = (app, bcrypt, db) => {
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.status(500).end()
         }
     })
@@ -24,19 +25,13 @@ module.exports = (app, bcrypt, db) => {
     // CREATE ANALOG CMS & ADD USER - POST
     // =============================================================
     app.post("/initialize", async (req, res) => {
+        let { address, description, name, username, email, password, passwordCheck } = req.body
+
         try {
-            let {
-                address,
-                description,
-                name,
-                username,
-                email,
-                password,
-                passwordCheck
-            } = req.body
-            
             // basic validation
-            if (!username || !email || !password || !passwordCheck) throw new Error('Please fill out all fields when adding a new user.')
+            if (!username || !email || !password || !passwordCheck) {
+                throw new Error('Please fill out all fields when adding a new user.')
+            }
     
             //check if password verification passes
             if (password !== passwordCheck) throw new Error('Password verification failed.')
@@ -55,7 +50,7 @@ module.exports = (app, bcrypt, db) => {
             await db.Analog.create({'settings.address': address, 'settings.description': description, 'settings.name': name})
 
             req.flash(
-                'success',
+                'admin_success',
                 'Welcome to Analog CMS.'
             )
             res.redirect('/admin')
@@ -63,8 +58,8 @@ module.exports = (app, bcrypt, db) => {
         } catch (error) {
             console.error(error)
             const errorMessage = error.errmsg || error.toString()
-            req.flash('error', errorMessage)
-            res.redirect(`/initialize`)
+            req.flash('admin_error', errorMessage)
+            res.redirect('/initialize')
         }
     })
 }

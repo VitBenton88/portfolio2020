@@ -4,41 +4,40 @@
   <h5>Add User</h4>
     <form action="/adduser" method="POST" id="adduser">
       <div class="form-row">
-        <div class="col-12 col-lg-3">
-          <small id="usernameHelp" class="form-text text-muted">New user's username.</small>
-          <input name="username" type="text" aria-describedby="usernameHelp" class="form-control"
-            placeholder="Username">
+        <div class="col-12 col-lg-3 form-group">
+          <label for="new_username">New user's username.</label>
+          <input name="username" type="text" id="new_username" class="form-control" placeholder="Username">
         </div>
-        <div class="col-12 col-lg-3">
-          <small id="emailHelp" class="form-text text-muted">New user's email.</small>
-          <input name="email" type="email" aria-describedby="emailHelp" class="form-control" placeholder="Email">
+        <div class="col-12 col-lg-3 form-group">
+          <label for="new_email">New user's email.</label>
+          <input name="email" type="email" id="new_email" class="form-control" placeholder="Email">
         </div>
-        <div class="col-12 col-lg-3">
-          <small id="nicknameHelp" class="form-text text-muted">New user's nickname.</small>
-          <input name="nickname" type="text" aria-describedby="nicknameHelp" class="form-control"
-            placeholder="Nickname">
+        <div class="col-12 col-lg-3 form-group">
+          <label for="new_nickname">New user's nickname.</label>
+          <input name="nickname" type="text" id="new_nickname" class="form-control" placeholder="Nickname">
         </div>
       </div>
       <div class="form-row">
-        <div class="col-12 col-lg-3">
-          <small id="passwordHelp" class="form-text text-muted">New user's password.</small>
-          <input name="password" type="password" aria-describedby="passwordHelp" class="form-control"
-            placeholder="Password">
+        <div class="col-12 col-lg-3 form-group">
+          <label for="new_password">New user's password.</label>
+          <input name="password" type="password" id="new_password" class="form-control password_target" placeholder="Password">
+          <small class="form-text text-muted password_helper">Password: <input type="text" readonly></small>
         </div>
-        <div class="col-12 col-lg-3">
-          <small id="passwordCheckHelp" class="form-text text-muted">Re-type password.</small>
-          <input name="passwordCheck" type="password" aria-describedby="passwordCheckHelp" class="form-control"
-            placeholder="Retype Password ...">
+        <div class="col-12 col-lg-3 form-group">
+          <label for="new_password_verify">Re-type password.</label>
+          <input name="passwordCheck" type="password" id="new_password_verify" class="form-control verify_password_target" placeholder="Retype Password ...">
+          <small class="form-text text-muted password_helper">The password has been inserted.</small>
         </div>
-        <div class="col-12 col-lg-3">
-          <small id="roleHelp" class="form-text text-muted">User Role.</small>
-          <select name="role" class="form-control custom-select" id="role" aria-describedby="roleHelp">
+        <div class="col-12 col-lg-3 form-group">
+          <label for="role">User Role.</label>
+          <select name="role" class="form-control custom-select" id="role">
             <option value="Administrator">Administrator</option>
             <option value="User">User</option>
             <option value="Visitor" selected>Visitor</option>
           </select>
         </div>
       </div>
-      <button type="submit" class="btn btn-outline-info">Add User</button>
+      <button type="submit" class="btn btn-outline-success">Add User</button>
+      <button id="get_strong_pass" type="button" class="btn btn-info">Use Strong Password</button>
     </form>
 </div>

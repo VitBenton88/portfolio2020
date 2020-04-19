@@ -1,49 +1,40 @@
 module.exports = (app, db) => {
 
-    // ADD TERM - POST
+    // CREATE TERM - POST
     // =============================================================
     app.post("/addterm", async (req, res) => {
-        try {
-            const {
-                name,
-                _owner
-            } = req.body
+        const { name, _owner } = req.body
+        const redirect_url = req.header('Referer')
 
+        try {
             // create term in db
             const term = await db.Terms.create({name, owner: _owner})
             // add new term to taxonomy it belongs to
             await db.Taxonomies.updateOne({_id: _owner}, {$push: {terms: term._id} })
     
             req.flash(
-                'success',
+                'admin_success',
                 'Term successfully added.'
             )
-            res.redirect(req.header('Referer'))
+            res.redirect(redirect_url)
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
-            res.redirect(req.header('Referer'))
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirect_url)
         }
     })
 
-    // EDIT TERM PAGE - GET
+    // UPDATE TERM PAGE - GET
     // =============================================================
     app.get("/admin/term/edit/:id", async (req, res) => {
-        try {
-            const {
-                site_data,
-                params,
-                user
-            } = req
-    
-            const _id = params.id
-            const term = await db.Terms.findById({_id})
+        const {site_data, params, user } = req
+        const _id = params.id
+        const sessionUser = { username: user.username, _id: user._id }
 
-            const sessionUser = {
-                username: user.username,
-                _id: user._id
-            }
+        try {
+            const term = await db.Terms.findById({_id}).lean()
 
             res.render("admin/edit/term", {
                 sessionUser,
@@ -54,43 +45,40 @@ module.exports = (app, db) => {
             
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.redirect(req.body.originalUrl)
         }
     })
 
-    // EDIT TERM - POST
+    // UPDATE TERM - POST
     // =============================================================
     app.post("/editterm", async (req, res) => {
-        const {
-            _id,
-            name
-        } = req.body
+        const { _id, name } = req.body
+        const redirect_url = `/admin/term/edit/${_id}`
 
         try {
             // update in db
             await db.Terms.updateOne({_id}, {name})
 
             req.flash(
-                'success',
+                'admin_success',
                 'Term successfully edited.'
             )
-            res.redirect(`/admin/term/edit/${_id}`)
+            res.redirect(redirect_url)
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
-            res.redirect(`/admin/term/edit/${_id}`)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirect_url)
         }
     })
 
     // DELETE TERM - POST
     // =============================================================
     app.post("/deleteterm", async (req, res) => {
-        const {
-            _id,
-            _owner
-        } = req.body
+        const { _id, _owner } = req.body
 
         try {
             // db delete term query
@@ -101,14 +89,15 @@ module.exports = (app, db) => {
             await db.Posts.updateMany({taxonomies: {$in: _id} }, {$pull: {taxonomies: _id} })
 
             req.flash(
-                'success',
+                'admin_success',
                 'Term successfully deleted.'
             )
             res.redirect(`/admin/taxonomy/edit/${_owner}`)
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.redirect(`/admin/term/edit/${_id}`)
         }
     })

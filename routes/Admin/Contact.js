@@ -3,22 +3,16 @@ module.exports = (app, db, Utils) => {
     // SETTINGS PAGE - GET
     // =============================================================
     app.get("/admin/contact/settings", async (req, res) => {
-        try {
-            const {
-                originalUrl,
-                site_data,
-                user
-            } = req
-    
-            const sessionUser = {
-                username: user.username,
-                _id: user._id
-            }
+        const { originalUrl, query, site_data, user } = req
+        const { expand } = query
+        const sessionUser = { username: user.username, _id: user._id }
 
-            const recaptcha = await db.Recaptcha.findOne()
-            const smtp = await db.Smtp.findOne()
+        try {
+            const recaptcha = await db.Recaptcha.findOne().lean()
+            const smtp = await db.Smtp.findOne().lean()
 
             res.render("admin/contact", {
+                expand,
                 originalUrl,
                 recaptcha,
                 site_data,
@@ -29,7 +23,8 @@ module.exports = (app, db, Utils) => {
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.redirect('/admin/contact/settings')
         }
     })
@@ -37,18 +32,12 @@ module.exports = (app, db, Utils) => {
     // UPDATE SMTP - POST
     // =============================================================
     app.post("/updatesmtp", async (req, res) => {
+        const redirect_ul = '/admin/contact/settings?expand=smtp'
+        let { host, _id, password, port, secure, user } = req.body
+        secure = secure == "on" ? true : false
+
         try {
-            let {
-                host,
-                _id,
-                password,
-                port,
-                secure,
-                user
-            } = req.body
-    
-            secure = secure == "on" ? true : false
-    
+            // define db query
             const params = {
                 host,
                 password,
@@ -63,24 +52,26 @@ module.exports = (app, db, Utils) => {
             await Query
 
             req.flash(
-                'success',
+                'admin_success',
                 'SMTP settings successfully updated.'
             )
-            res.redirect('/admin/contact/settings')
+            res.redirect(redirect_ul)
 
         } catch (error) {
             console.error(error)
-            req.flash('error', error.errmsg)
-            res.redirect('/admin/contact/settings')
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirect_ul)
         }
     })
 
     // SEND TEST SMTP EMAIL - POST
     // =============================================================
     app.post("/testsmtp", async (req, res) => {
-        try {
-            const emailTo = req.body.emailTo
+        const redirect_ul = '/admin/contact/settings'
+        const emailTo = req.body.emailTo
 
+        try {
             // some basic validation
             if (!emailTo) {
                 throw new Error('Recipient email not provided for SMTP test email.')
@@ -97,16 +88,16 @@ module.exports = (app, db, Utils) => {
             await Utils.Smtp.send(mailData)
 
             req.flash(
-                'success',
+                'admin_success',
                 'Test email successfully sent.'
             )
-            res.redirect('/admin/contact/settings')
+            res.redirect(redirect_ul)
 
         } catch (error) {
             console.error(error)
             const errorMessage = error.errmsg || error.toString()
-            req.flash('error', errorMessage)
-            res.redirect('/admin/contact/settings')
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirect_ul)
         }
     })
 
@@ -141,13 +132,11 @@ module.exports = (app, db, Utils) => {
     // UPDATE RECAPTCHA - POST
     // =============================================================
     app.post("/updaterecaptcha", async (req, res) => {
+        const redirect_ul = '/admin/contact/settings?expand=recaptcha'
+        let { _id, secret_key, site_key } = req.body
+
         try {
-            let {
-                _id,
-                secret_key,
-                site_key
-            } = req.body
-    
+            // create db query
             const params = {
                 secret_key,
                 site_key
@@ -159,18 +148,17 @@ module.exports = (app, db, Utils) => {
             await Query
 
             req.flash(
-                'success',
+                'admin_success',
                 'reCAPTCHA settings successfully updated.'
             )
-            res.redirect('/admin/contact/settings')
+            res.redirect(redirect_ul)
 
         } catch (error) {
             console.error(error)
             const errorMessage = error.errmsg || error.toString()
-            req.flash('error', errorMessage)
-            res.redirect('/admin/contact/settings')
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirect_ul)
         }
-
     })
 
 }

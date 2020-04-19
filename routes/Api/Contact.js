@@ -14,8 +14,8 @@ module.exports = (app, db) => {
         } catch (error) {
             console.error(error)
             res.status(500).json({
-            "response": error,
-            "message": "Error occurred while fetching recaptcha check."
+                "response": error,
+                "message": "Error occurred while fetching recaptcha check."
             })
         }
     })
@@ -38,8 +38,8 @@ module.exports = (app, db) => {
         } catch (error) {
             console.error(error)
             res.status(500).json({
-            "response": error,
-            "message": "Error occurred while fetching forms."
+                "response": error,
+                "message": "Error occurred while fetching forms."
             })
         }
     })
@@ -54,8 +54,9 @@ module.exports = (app, db) => {
             // check if smtp is configured
             let smtp_setup = false
             const {host, password, port, user} = smtp
+            
             if (host && password && port && user) {
-              smtp_setup = true
+                smtp_setup = true
             }
 
             // respond to client
@@ -64,8 +65,8 @@ module.exports = (app, db) => {
         } catch (error) {
             console.error(error)
             res.status(500).json({
-            "response": error,
-            "message": "Error occurred while fetching smtp configuration."
+                "response": error,
+                "message": "Error occurred while fetching smtp configuration."
             })
         }
     })

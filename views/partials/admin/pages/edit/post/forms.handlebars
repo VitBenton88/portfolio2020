@@ -2,10 +2,12 @@
     <p><i>Select forms to be accessible in this post's template.</i></p>
     {{#if forms}}
         {{#each forms}}
+        {{#with this}}
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="forms" value="{{this.id}}" id="form-check-{{this.id}}" {{#contains ../post.forms this.id}}checked{{/contains}}>
-                <label class="form-check-label" for="form-check-{{this.id}}">{{this.name}}</label>
+                <input class="form-check-input" type="checkbox" name="forms" value="{{_id}}" id="form-check-{{_id}}" {{#contains ../post.forms _id}}checked{{/contains}}>
+                <label class="form-check-label" for="form-check-{{_id}}">{{name}}</label>
             </div>
+        {{/with}}
         {{/each}}
     {{else}}
         <p>No forms setup.</p>

@@ -8,7 +8,7 @@
 
         {{> admin/components/heading heading='Media'}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
 
@@ -16,9 +16,8 @@
           <div class="col-12 col-lg-8 col-xl-6 pr-0 d-flex justify-content-end">
             <form id="searchpages" class="form-inline">
               <div class="form-group">
-                <input name="search" type="search" class="form-control" placeholder="Search Media ..."
-                  value="{{search}}">
-                  {{#if orderBy}}<input type="hidden" name="orderBy" value="{{orderBy}}">{{/if}}
+                <input name="search" type="search" class="form-control" placeholder="Search Media ..." value="{{search}}">
+                {{#if orderBy}}<input type="hidden" name="orderBy" value="{{orderBy}}">{{/if}}
               </div>
               <button type="submit" class="btn btn-light ml-3">Search</button>
             </form>
@@ -69,14 +68,15 @@
                     <div class="custom-fields-notifications"></div>
                     <div class="row">
                       {{#each media}}
-                      <div id="media-{{@key}}" data-id="{{this.id}}" class="col-4 col-md-3 col-lg-2 media-grid-item"
-                        style="background-image: url('{{this.path}}')">
+                      {{#with this}}
+                        <div id="media-{{@key}}" data-id="{{_id}}" class="col-4 col-md-3 col-lg-2 media-grid-item" style="background-image: url('{{path}}')">
                           <i class="fa fa-check-square toggle-control" aria-hidden="true"></i>
                           <div class="media-grid-item-inner d-flex align-items-center justify-content-center">
-                            <button type="button" class="btn btn-primary btn-sm mr-1 media-grid-item-edit" data-media="#media-{{@key}}" data-id="{{this.id}}">Edit</button>
+                            <button type="button" class="btn btn-primary btn-sm mr-1 media-grid-item-edit" data-media="#media-{{@key}}" data-id="{{_id}}">Edit</button>
                             <button type="button" class="btn btn-danger btn-sm media-grid-item-del" data-media="#media-{{@key}}">Delete</button>
                           </div>
                         </div>
+                      {{/with}}
                       {{/each}}
                     </div>
                   </div>

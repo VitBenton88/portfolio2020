@@ -1,0 +1,66 @@
+<div class="container-fluid edit-block page">
+  <div class="row">
+
+    {{> admin/components/menus/main menu-blocks=true}}
+
+    <div class="col-12 col-lg-10">
+      <div class="row no-gutters">
+
+        {{> admin/components/heading heading="Edit Block" slug=block.slug}}
+
+        {{> admin/components/notifications}}
+
+        <div class="container page-body">
+
+          {{#with block}}
+          <form action="/updateblock" method="POST" id="updateblock" class="add-form">
+
+            <div class="form-group row">
+              <div class="col-12 d-block d-md-flex align-items-center mt-3">
+
+                <div class="custom-control custom-switch mr-3">
+                  <input id="activeSwitch" name="active" type="checkbox" class="custom-control-input"{{#if active}} checked{{/if}}>
+                  <label class="custom-control-label" for="activeSwitch">Active</label>
+                </div>
+
+                <div class="custom-control custom-switch mr-3">
+                  <input id="globalSwitch" name="global" type="checkbox" class="custom-control-input"{{#if global}} checked{{/if}}>
+                  <label class="custom-control-label" for="globalSwitch">Global</label>
+                </div>
+                
+              </div>
+            </div>
+
+            <div class="form-group row main-page-form">
+              <div class="col-12 mt-3">
+                <label for="name">Name of block</label>
+                <input name="name" type="text" value="{{name}}" class="form-control" id="name" placeholder="Enter name ..." required></input>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="content">Block Content</label>
+              <textarea id="content" name="content" class="form-control summernote-editor" placeholder="The content ...">{{content}}</textarea>
+            </div>
+
+            <input name="_id" type="hidden" value="{{_id}}">
+            <button type="submit" class="btn btn-info">Update Block</button>
+            <a class="btn btn-outline-warning" href="/admin/content/blocks" role="button">Cancel</a>
+          </form>
+
+          <hr>
+
+          <div class="row">
+            <form action="/deleteblock" method="POST" class="d-inline-block">
+              <input name="_id" type="hidden" value="{{_id}}">
+              <button type="submit" class="btn btn-danger">Delete Block</button>
+            </form>
+          </div>
+          {{/with}}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

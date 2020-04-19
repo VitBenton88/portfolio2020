@@ -1,3 +1,6 @@
+{{#if site_data.settings.maintenance}}
+    <div class="alert alert-danger" role="alert">Site is currently in maintenance mode. <a href="/admin/settings?expand=information" class="alert-link">Click here to change.</a></div>
+{{/if}}
 <div class="heading jumbotron container-fluid">
     <div class="container">
         <div class="row">
@@ -6,25 +9,34 @@
                 {{#if created}}
                     <p><strong>Created:</strong> {{moment created format="MMM DD YYYY LT"}}</p>
                 {{/if}}
+
                 {{#if updated}}
                     <strong><p>Updated:</strong> {{moment updated format="MMM DD YYYY LT"}}</p>
                 {{/if}}
-                {{#if this.author}}
+
+                {{#if slug}}
+                    <div class="form-group">
+                        <label for="slug_display">Slug:</label>
+                        <input id="slug_display" class="readonly_input" type="text" value="{{slug}}" readOnly>
+                    </div>
+                {{/if}}
+
+                {{#if author}}
+                {{#with author}}
                     <p>Created by: 
-                    {{#if this.author.nickname}}
-                        <span> {{this.author.nickname}}</span>
-                    {{else if this.author.username}}
-                        <span> {{this.author.username}}</span>
+                    {{#if nickname}}
+                        <span> {{nickname}}</span>
+                    {{else if username}}
+                        <span> {{username}}</span>
                     {{else}}
                         <span> <i>Authored by user who may have been deleted.</i></span>
                     {{/if}}
                     </strong>
+                {{/with}}
                 {{/if}}
+                
                 {{#if form}}
-                    <p><strong>Form:</strong> {{this.form}}</p>
-                {{/if}}
-                {{#if this.slug}}
-                    <p><strong>Slug:</strong> {{this.slug}}</p>
+                    <p><strong>Form:</strong> {{form.name}}</p>
                 {{/if}}
             </div>
             <div class="col-2">

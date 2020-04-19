@@ -13,7 +13,7 @@
             updated=(moment page.updated)
         }}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
           <form action="/updatepage" method="POST" id="updatepage">
@@ -57,7 +57,7 @@
 
                 {{> admin/components/thumbnail-upload 
                 image=page.image 
-                id=page.id 
+                id=page._id 
                 delurl='/deletepageimage'
                 caption='Featured Image'}}
 
@@ -87,7 +87,9 @@
                 <select class="custom-select" name="parent" aria-describedby="parentHelp">
                   <option value="none">None</option>
                   {{#each pages}}
-                    <option value="{{this.permalink.id}}" {{#eq ../page.permalink.parent.id this.permalink.id}} selected="selected" {{/eq}}>{{this.title}}</option>
+                    {{#with this}}
+                      <option value="{{permalink._id}}" {{#eq ../page.permalink.parent._id permalink._id}} selected="selected" {{/eq}}>{{title}}</option>
+                    {{/with}}
                   {{/each}}
                 </select>
               </div>
@@ -97,9 +99,9 @@
                 <small id="routeHelp" class="form-text text-muted">Permalink of page, leave out the beginning backslash
                   "/"</small>
                 <div class="d-flex align-items-center">
-                  <small class="mr-1">{{site_data.settings.address}}{{remove page.permalink.full page.permalink.route}}</small>
+                  <small class="mr-1">{{root_permalink}}</small>
                   <input name="route" type="text" class="form-control" style="width: auto;" aria-describedby="routeHelp"
-                  placeholder="Enter permalink ..." value="{{page.permalink.route}}" required></input>
+                  placeholder="Enter permalink ..." value="{{page_route}}" required></input>
                 </div>
               </div>
             </div>
@@ -107,31 +109,34 @@
             <hr>
 
             <div class="form-group">
-              <label for="title">Page Content</label>
+              <label for="content">Page Content</label>
               <small id="contentHelp" class="form-text text-muted">The content of the page</small>
-              <textarea name="content" class="form-control summernote-editor" aria-describedby="contentHelp"
+              <textarea id="content" name="content" class="form-control summernote-editor" aria-describedby="contentHelp"
                 placeholder="The content ...">{{page.content}}</textarea>
             </div>
 
             {{> admin/components/accordian name='custom-fields' title='Custom Fields' style="info" content="admin/pages/edit/page/customfields"}}
 
-            {{> admin/components/accordian name='page-meta' title='Meta' style="secondary" content="admin/pages/edit/page/meta"}}
+            {{> admin/components/accordian name='page-blocks' title='Blocks' local_blocks=page.blocks style="success" content="admin/pages/edit/page/blocks"}}
 
             {{> admin/components/accordian name='page-forms' title='Forms' style="primary" content="admin/pages/edit/page/forms"}}
 
-            <input id="_image" name="image" type="hidden" value="{{page.image.id}}">
-            <input name="_id" type="hidden" value="{{page.id}}">
-            <input name="originalRoute" type="hidden" value="{{page.permalink.full}}">
+            {{> admin/components/accordian name='page-meta' title='Meta' style="secondary" content="admin/pages/edit/page/meta"}}
+
+
+            <input id="_image" name="image" type="hidden" value="{{page.image._id}}">
+            <input name="_id" type="hidden" value="{{page._id}}">
+            <input name="originalRoute" type="hidden" value="{{page_full_permalink}}">
             <button type="submit" class="btn btn-outline-info">Update Page</button>
             <a class="btn btn-outline-warning" href="/admin/pages" role="button">Cancel</a>
-            <a class="btn btn-primary" href="/{{page.permalink.full}}" target="_blank" role="button">View</a>
+            <a class="btn btn-primary" href="/{{page_full_permalink}}" target="_blank" role="button">View</a>
           </form>
 
           <hr>
 
           <div class="row">
             <form action="/deletepage" method="POST" class="d-inline-block">
-              <input name="_id" type="hidden" value="{{page.id}}">
+              <input name="_id" type="hidden" value="{{page._id}}">
               <button type="submit" class="btn btn-danger">Delete Page</button>
             </form>
           </div>

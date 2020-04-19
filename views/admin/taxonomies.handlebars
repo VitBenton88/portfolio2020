@@ -8,7 +8,7 @@
 
         {{> admin/components/heading heading='Taxonomies'}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
 
@@ -29,62 +29,65 @@
           <div class="row">
             <div class="col-12">
               {{#if search}}
-              <h5>Search Results: "{{search}}"</h5>
+                <h5>Search Results: "{{search}}"</h5>
               {{/if}}
             </div>
 
             {{#if taxonomies}}
-            <div class="col-12">
-              <select id="multi-edit-select" disabled>
-                <option hidden disabled selected value>select</option>
-                <option value="delete">Delete Taxonomies</option>
-              </select>
-            </div>
+              <div class="col-12">
 
-            <div class="col-12 mt-3">
-              <button id="submit_list_multi_edit" data-url="/updatetaxonomiesmulti" type="button"
-                class="btn btn-primary btn-sm" disabled>Submit</button>
-            </div>
+                <!-- Select criteria for multi update -->
+                <select id="multi-edit-select" disabled>
+                  <option hidden disabled selected value>select</option>
+                  <option value="delete">Delete Taxonomies</option>
+                </select>
+
+              </div>
+
+              <div class="col-12 mt-3">
+                <button id="submit_list_multi_edit" data-url="/updatetaxonomiesmulti" type="button"
+                  class="btn btn-primary btn-sm" disabled>Submit</button>
+              </div>
+              
             {{/if}}
 
             {{#if taxonomies}}
-            <div class="col-12 mt-3"></div>
-            <table class="table table-striped table-responsive-sm mt-3" id="list">
-              <thead>
-                <tr>
-                  <th><input type="checkbox" name="Select All Taxonomies" value class="listCheckbox selectAll"></th>
-                  <th><a href="?orderBy=name&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Name</a></th>
-                  <th>Terms</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each taxonomies}}
-                <tr>
-                  <td><input type="checkbox" name="{{this.name}}" value="{{this.id}}" class="listCheckbox selectSingle">
-                  </td>
-                  <td><a href="taxonomy/edit/{{this.id}}">{{this.name}}</a></td>
-                  <td>{{this.terms.length}}</td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Select
-                      </button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="taxonomy/edit/{{this.id}}">Edit</a>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          </div>
+              <div class="col-12 mt-3"></div>
+              <table class="table table-striped table-responsive-sm mt-3" id="list">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" name="Select All Taxonomies" value class="listCheckbox selectAll"></th>
+                    <th><a href="?orderBy=name&sort={{#if this.sort}}{{this.sort}}{{else}}asc{{/if}}">Name</a></th>
+                    <th>Terms</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each taxonomies}}
+                  {{#with this}}
+                    <tr>
+                      <td><input type="checkbox" name="{{name}}" value="{{_id}}" class="listCheckbox selectSingle"></td>
+                      <td><a href="taxonomy/edit/{{_id}}">{{name}}</a></td>
+                      <td>{{terms.length}}</td>
+                      <td>
+                        <div class="dropdown">
+                          <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select</button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="taxonomy/edit/{{_id}}">Edit</a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  {{/with}}
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
           {{else}}
-          <div class="alert alert-warning fade show mb-3 mt-3" role="alert">
-            <strong>Sorry, no taxonomies found.</strong>
-          </div>
+            <div class="alert alert-warning fade show mb-3 mt-3" role="alert">
+              <strong>Sorry, no taxonomies found.</strong>
+            </div>
           {{/if}}
 
           {{> admin/components/pagination data=taxonomies}}

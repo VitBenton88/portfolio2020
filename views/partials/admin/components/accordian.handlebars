@@ -2,13 +2,13 @@
 
     <div class="section-head alert alert-{{style}} d-flex justify-content-between align-items-center" role="alert" data-toggle="collapse" href="#{{name}}">
         <span>{{title}}</span>
-    <div class="section-toggle-controls{{#if expanded}} expanded{{/if}}">
-        <i class="fa fa-plus toggle-control" aria-hidden="true"></i>
-        <i class="fa fa-minus toggle-control" aria-hidden="true"></i>
-    </div>
+        <div class="section-toggle-controls{{#eq expand name}} expanded{{/eq}}">
+            <i class="fa fa-plus toggle-control" aria-hidden="true"></i>
+            <i class="fa fa-minus toggle-control" aria-hidden="true"></i>
+        </div>
     </div>
 
-    <div id="{{name}}" class="collapse col-12{{#if expanded}} show{{/if}}">
+    <div id="{{name}}" class="collapse col-12{{#eq expand name}} show{{/eq}}">
         {{> (lookup . "content")}}
     </div>
     

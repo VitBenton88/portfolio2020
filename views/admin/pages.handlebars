@@ -8,7 +8,7 @@
 
         {{> admin/components/heading heading='Pages'}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
 
@@ -31,29 +31,34 @@
               <div class="row">
                 <div class="col-12">
                   {{#if search}}
-                  <h5>Search Results: "{{search}}"</h5>
+                    <h5>Search Results: "{{search}}"</h5>
                   {{/if}}
                 </div>
                 {{#if pages}}
                 <div class="col-12">
-                  <select id="multi-edit-select" disabled>
+                  <!-- Select criteria for multi update -->
+                  <select id="multi-edit-select" class="mb-3" disabled>
                     <option hidden disabled selected value>select</option>
                     <option value="delete">Delete Pages</option>
-                    <option value="status">Update Status</option>
-                    <option value="template">Update Template</option>
+                    <option value="status" data-target="#select-status">Update Status</option>
+                    <option value="template" data-target="#select-template">Update Template</option>
                   </select>
-                  <select id="select-template">
-                    <option hidden disabled selected value>select template</option>
+
+                  <!-- Multi update values options -->
+                  <select id="select-template" class="multi-edit-select-hidden">
+                    <option hidden disabled selected value>Select template</option>
                     <option value="defaults/page">Default Page Template</option>
                     {{#each templates}}
                     <option value="{{this}}">{{this}}</option>
                     {{/each}}
                   </select>
-                  <select id="select-status">
-                    <option hidden disabled selected value>select status</option>
+
+                  <select id="select-status" class="multi-edit-select-hidden">
+                    <option hidden disabled selected value>Select status</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                   </select>
+
                 </div>
                 <div class="col-12 mt-3">
                   <button id="submit_list_multi_edit" data-url="/updatepagemulti" type="button"
@@ -75,42 +80,41 @@
                   </thead>
                   <tbody>
                     {{#each pages}}
-                    <tr>
-                      <td><input type="checkbox" name="{{this.title}}" value="{{this.id}}"
-                          class="listCheckbox selectSingle"></td>
-                      <td><a href="pages/edit/{{this.id}}">{{this.title}}</a></td>
-                      <td>
-                        {{#if this.homepage}}
-                        <span class="badge badge-info ml-4"><i class="fas fa-check"></i></span>
-                        {{/if}}
-                      </td>
-                      <td>
-                        {{#contains this.template "defaults"}}
-                        Default
-                        {{else}}
-                        {{this.template}}
-                        {{/contains}}
-                      </td>
-                      <td>
-                        {{#if this.active}}
-                        <span class="badge badge-success">Active</span>
-                        {{else}}
-                        <span class="badge badge-warning">Inactive</span>
-                        {{/if}}
-                      </td>
-                      <td>
-                        <div class="dropdown">
-                          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Select
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="pages/edit/{{this.id}}">Edit</a>
-                            <a class="dropdown-item" href="/{{this.permalink.route}}" target="_blank">View</a>
+                    {{#with this}}
+                      <tr>
+                        <td><input type="checkbox" name="{{title}}" value="{{_id}}" class="listCheckbox selectSingle"></td>
+                        <td><a href="pages/edit/{{_id}}">{{title}}</a></td>
+                        <td>
+                          {{#if homepage}}
+                            <span class="badge badge-info ml-4"><i class="fas fa-check"></i></span>
+                          {{/if}}
+                        </td>
+                        <td>
+                          {{#contains template "defaults"}}
+                            Default
+                          {{else}}
+                            {{template}}
+                          {{/contains}}
+                        </td>
+                        <td>
+                          {{#if active}}
+                            <span class="badge badge-success">Active</span>
+                          {{else}}
+                            <span class="badge badge-warning">Inactive</span>
+                          {{/if}}
+                        </td>
+                        <td>
+                          <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
+                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select</button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="pages/edit/{{_id}}">Edit</a>
+                              <a class="dropdown-item" href="/{{permalink.route}}" target="_blank">View</a>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
+                    {{/with}}
                     {{/each}}
                   </tbody>
                 </table>

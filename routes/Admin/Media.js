@@ -3,23 +3,13 @@ module.exports = (app, db, Utils) => {
     // MEDIA PAGE - GET
     // =============================================================
     app.get("/admin/media", async (req, res) => {
-        try {
-            const {
-                originalUrl,
-                query,
-                site_data,
-                user
-            } = req
-            const sessionUser = {
-                username: user.username,
-                _id: user._id
-            }
-            let {
-                orderBy,
-                search
-            } = query
-            const params = {}
+        const { originalUrl, query, site_data, user } = req
+        let { orderBy, search } = query
+        const { _id, role, username } = user
+        const sessionUser = { username, _id, role }
+        const params = {}
 
+        try {
             if (orderBy) {
                 params['storage'] = orderBy
             }
@@ -30,7 +20,8 @@ module.exports = (app, db, Utils) => {
                 }
             }
 
-            const media = await db.Media.find(params)
+            // db query
+            const media = await db.Media.find(params).lean()
 
             res.render("admin/media", {
                 media,
@@ -45,23 +36,20 @@ module.exports = (app, db, Utils) => {
         } catch (error) {
             // if an error occurred, send it to the client
             console.error(error)
-            req.flash('error', error.errmsg)
+            const errorMessage = error.errmsg || error.toString()
+            req.flash('admin_error', errorMessage)
             res.redirect('/admin')
         }
-
     })
 
-    // ADD MEDIA - POST
+    // CREATE MEDIA - POST
     // =============================================================
     app.post("/uploadmedia", async (req, res) => {
+        const { files, site_data } = req
+        const { type } = site_data.settings.storage
+        const redirect_url = '/admin/media'
+
         try {
-            const {
-                files,
-                site_data
-            } = req
-
-            const {type} = site_data.settings.storage
-
             // basic validation
             if (!files.media) {
                 throw new Error('No file submitted. Please try again.')
@@ -76,64 +64,52 @@ module.exports = (app, db, Utils) => {
             await Utils.Storage.write(files.media, site_data.settings.storage)
 
             req.flash(
-                'success',
+                'admin_success',
                 'Media successfully added.'
             )
-            res.redirect('/admin/media')
+            res.redirect(redirect_url)
 
         } catch (error) {
-            // if an error occurred, send it to the client
+            console.error(error)
             const errorMessage = error.errmsg || error.toString()
-            req.flash('error', errorMessage)
-            res.redirect('/admin/media')
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirect_url)
         }
-
     })
 
     // UPDATE MEDIA - POST
     // =============================================================
     app.post("/updatemedia", async (req, res) => {
-        try {
-            const {
-                alt,
-                caption,
-                description,
-                _id
-            } = req.body
+        const { alt, caption, description, _id } = req.body
+        const redirect_url = '/admin/media'
 
+        try {
             // prepare meta object for db 
             const meta = {alt, caption, description}
             // update media in db
             await db.Media.updateOne({_id}, {meta})
 
             req.flash(
-                'success',
+                'admin_success',
                 'Media successfully updated.'
             )
-            res.redirect('/admin/media')
+            res.redirect(redirect_url)
 
         } catch (error) {
-            // if an error occurred, send it to the client
+            console.error(error)
             const errorMessage = error.errmsg || error.toString()
-            req.flash('error', errorMessage)
-            res.redirect('/admin/media')
+            req.flash('admin_error', errorMessage)
+            res.redirect(redirect_url)
         }
-
     })
 
     // DELETE MEDIA (SINGLE) - POST
     // =============================================================
     app.post("/deletemedia", async (req, res) => {
+        const { body, site_data } = req
+        const { _id } = body
+
         try {
-            const {
-                body,
-                site_data
-            } = req
-
-            const {
-                _id,
-            } = body
-
             // query db for all of the file's info
             const media = await db.Media.findById(_id)
 
@@ -146,31 +122,23 @@ module.exports = (app, db, Utils) => {
             })
 
         } catch (error) {
-            // if an error occurred, send it to the client
             console.error(error)
             res.status(500).json({
                 "response": error,
                 "message": "Media not deleted. Error occurred."
             })
         }
-
     })
 
     // DELETE MEDIA (MULTIPLE) - POST
     // =============================================================
     app.post("/deletemediamulti", async (req, res) => {
-        try {
-            const {
-                body,
-                site_data
-            } = req
+        const { body, site_data } = req
+        const { _id_arr } = body
 
-            const {
-                _id_arr,
-            } = body
-            
+        try {            
             // query db for all of the file's info
-            const media = await db.Media.find({_id: {$in: _id_arr}})
+            const media = await db.Media.find({ _id: {$in: _id_arr} })
 
             // delete file from storage, also deletes media record and removes it from associations
             await Utils.Storage.delete(media, site_data.settings.storage)
@@ -181,7 +149,6 @@ module.exports = (app, db, Utils) => {
             })
 
         } catch (error) {
-            // if an error occurred, send it to the client
             console.error(error)
             res.status(500).json({
                 "response": error,

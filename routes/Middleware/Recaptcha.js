@@ -3,8 +3,8 @@ module.exports = (app, db, Recaptcha) => {
     // =============================================================
     app.post("/analog/form/*", async (req, res, next) => {
         // get url where the form post came from
-        const {body, originalUrl} = req
-        const {formLocation} = body
+        const { body, originalUrl } = req
+        const { formLocation } = body
 
         try {
             // query reCAPTCHA config
@@ -30,18 +30,18 @@ module.exports = (app, db, Recaptcha) => {
             // fire verification
             recaptcha.verify(req, (error, data) => {
                 if (error) {
-                    const errorMessage = `reCAPTCHA error: ${error}`
-                    console.error(errorMessage)
-                    req.flash(errorMessage)
-                    return res.status(400).redirect(formLocation)
+                    console.error(`reCAPTCHA error: ${error}`)
                 }
-                // check if reCAPTCHA score passes the recommended threshold of 0.5
-                if (data.score < 0.5) {
-                    req.flash('error', 'reCAPTCHA not passed!')
-                    return res.status(400).redirect(formLocation)
+
+                if (data) {
+                    // check if reCAPTCHA score passes the recommended threshold of 0.5
+                    if (data.score < 0.5) {
+                        req.flash('admin_warning', 'reCAPTCHA not passed!')
+                        return res.status(400).redirect(formLocation)
+                    }
+                    // if form submission passes reCAPTCHA, add score to req and pass it on
+                    req.recaptchaScore = data.score
                 }
-                // if form submission passes reCAPTCHA, add score to req and pass it on
-                req.recaptchaScore = data.score
                 
                 next()
             })

@@ -1,0 +1,18 @@
+<div class="blocks-wrap mb-5">
+    <p><i>Select blocks to be accessible in this page's template. Globally available blocks should not be selected.</i></p>
+    {{#if blocks}}
+        {{#each blocks}}
+        {{#with this}}
+            <div class="block-check">
+                <input class="block-check-input" type="checkbox" name="blocks" value="{{_id}}" id="block-check-{{_id}}"{{inArray ../local_blocks _id 0 " checked"}}>
+                <label class="block-check-label" for="block-check-{{_id}}">{{name}}</label>
+                {{#if global}}
+                    <small>(Available Globally)</small>
+                {{/if}}
+            </div>
+        {{/with}}
+        {{/each}}
+    {{else}}
+        <p>No blocks setup.</p>
+    {{/if}}
+</div>

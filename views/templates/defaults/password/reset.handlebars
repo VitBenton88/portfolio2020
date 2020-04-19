@@ -5,17 +5,20 @@
                 <h1>Password Reset</h1>
             </div>
             <div class="col-12 col-md-6 mx-auto mt-5">
-                {{> shared/notifications}}
+                {{> frontend/notifications}}
                 <form id="resetpassword" action="/resetpassword" method="POST">
                     <div class="form-group">
                         <label for="newPassword">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Enter new password" required>
+                        <input type="password" class="form-control password_target" id="newPassword" name="newPassword" placeholder="Enter new password" required>
+                        <small class="form-text text-muted password_helper">Password: <input type="text" readonly></small>
                     </div>
                     <div class="form-group">
                         <label for="verifyPassword">Verify Password</label>
-                        <input type="password" class="form-control" id="verifyPassword" name="verifyPassword" placeholder="Re-enter new password" required>
+                        <input type="password" class="form-control password_target" id="verifyPassword" name="verifyPassword" placeholder="Re-enter new password" required>
+                        <small class="form-text text-muted password_helper">The password has been inserted.</small>
                     </div>
                     <input type="hidden" name="token" value="{{token}}">
+                    <button id="get_strong_pass" type="button" class="btn btn-info">Use Strong Password</button>
                     <button type="submit" class="btn btn-primary">Reset Password</button>
                 </form>
                 <a class="mt-3 d-block" href="/login">Return to login page</a>

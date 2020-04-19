@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-// Analog Schema
+// Schema
 const PasswordTokenSchema = new Schema({
     token: {
         type: String,
@@ -19,8 +19,8 @@ const PasswordTokenSchema = new Schema({
     }
 })
 
-// This creates our model from the above schema, using mongoose's model method
+// Create model using mongoose's model method
 const PasswordToken = mongoose.model("PasswordToken", PasswordTokenSchema)
 
-// Export the Menu model
+// Export model
 module.exports = PasswordToken

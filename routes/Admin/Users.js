@@ -1,353 +1,294 @@
 module.exports = (app, bcrypt, db, Utils, validator) => {
 
-  // USERS PAGE - GET
-  // =============================================================
-  app.get("/admin/users", async (req, res) => {
-    try {
-      const {
-        body,
-        query,
-        site_data,
-        user
-      } = req
-  
-      let {
-        limit,
-        orderBy,
-        paged,
-        search,
-        sort
-      } = query
+	// USERS PAGE - GET
+	// =============================================================
+	app.get("/admin/users", async (req, res) => {
+		const { body, query, site_data, user } = req
+		let { limit, orderBy, paged, search, sort } = query
+		const { role, username, _id } = user
+		const sessionUser = { role, username, _id }
 
-      const sessionUser = {
-        role: user.role,
-        username: user.username,
-        _id: user._id
-      }
+		try {
+			// if the orderBy queries don't exist in the url params, this is to ensure orderBy works with a search form
+			orderBy = orderBy || body.orderBy
+			sort = sort || body.sort
 
-      // if the orderBy queries don't exist in the url params, this is to ensure orderBy works with a search form
-      orderBy = orderBy || body.orderBy
-      sort = sort || body.sort
-  
-      // set query limit to 10 as default, or use defined limit (converted to int)
-      limit = limit ? parseInt(limit) : 10
-  
-      // set paged to 1 as default, or use defined query (converted to int)
-      paged = paged ? parseInt(paged) : 1
-  
-      // determine offset in query by current page in pagination
-      const skip = paged > 0 ? ((paged - 1) * limit) : 0
+			// set query limit to 10 as default, or use defined limit (converted to int)
+			limit = limit ? parseInt(limit) : 10
 
-      // get query count for pagination
-      const count = await db.Users.find().count()
-      const pageCount = Math.ceil(count / limit)
-      // setup query params
-      const sortConfig = orderBy ? Utils.Sort.getConfig(orderBy, sort) : {'created': 1}
-      const searchParams = search ? {$text: {$search: search} } : {}
+			// set paged to 1 as default, or use defined query (converted to int)
+			paged = paged ? parseInt(paged) : 1
 
-      // query db
-      const users = await db.Users.find(searchParams).sort(sortConfig).skip(skip).limit(limit)
-      // swap sort after the query if there is an order requested, e.g. desc to asc
-      sort = orderBy ? Utils.Sort.swapOrder(sort) : null
+			// determine offset in query by current page in pagination
+			const skip = paged > 0 ? ((paged - 1) * limit) : 0
 
-      res.render("admin/users", {
-        limit,
-        orderBy,
-        pageCount,
-        paged,
-        search,
-        sessionUser,
-        site_data,
-        sort,
-        users,
-        layout: "admin"
-      })
+			// get query count for pagination
+			const count = await db.Users.find().count().lean()
+			const pageCount = Math.ceil(count / limit)
+			// setup query params
+			const sortConfig = orderBy ? Utils.Sort.getConfig(orderBy, sort) : {'created': 1}
+			const searchParams = search ? {$text: {$search: search} } : {}
 
-    } catch (error) {
-      console.error(error)
-      req.flash('error', error.errmsg)
-      res.redirect('/admin')
-    }
-  })
+			// query db
+			const users = await db.Users.find(searchParams).sort(sortConfig).skip(skip).limit(limit).lean()
+			// swap sort after the query if there is an order requested, e.g. desc to asc
+			sort = orderBy ? Utils.Sort.swapOrder(sort) : null
 
-  // EDIT USER PAGE - GET
-  // =============================================================
-  app.get("/admin/users/edit/:id", async (req, res) => {
-    let {
-      params,
-      site_data
-    } = req
+			res.render("admin/users", {
+				limit,
+				orderBy,
+				pageCount,
+				paged,
+				search,
+				sessionUser,
+				site_data,
+				sort,
+				users,
+				layout: "admin"
+			})
 
-    const _id = params.id
+		} catch (error) {
+			console.error(error)
+			const errorMessage = error.errmsg || error.toString()
+			req.flash('admin_error', errorMessage)
+			res.redirect('/admin')
+		}
+	})
 
-    try {
-      const sessionUser = {
-        role: req.user.role,
-        username: req.user.username,
-        _id: req.user._id
-      }
+	// UPDATE USER PAGE - GET
+	// =============================================================
+	app.get("/admin/users/edit/:id", async (req, res) => {
+		let { params, query, site_data } = req
+		const { id } = params
+		const { expand } = query
+		const session_user = req.user
+		const { role, username, _id } = session_user
+		const sessionUser = { role, username, _id }
 
-      const user = await db.Users.findById({_id})
+		try {
+			// query user
+			const user_query = await db.Users.findById({_id: id})
+			const user = user_query ? user_query.toObject({ getters: true }) : null
 
-      // if by chance the url is attempted by a non-admin user, reject it
-      // or this isn't the current user trying to edit their account
-      if (sessionUser.role !== "Administrator" && sessionUser._id != user.id) {
-        throw new Error('You do not have the proper permissions to view this page.')
-      }
+			// if by chance the url is attempted by a non-admin user, reject it
+			// or this isn't the current user trying to edit their account
+			if (sessionUser.role !== "Administrator" && sessionUser._id != user.id) {
+				throw new Error('You do not have the proper permissions to view this page.')
+			}
 
-      res.render("admin/edit/user", {
-        site_data,
-        user,
-        sessionUser,
-        layout: "admin"
-      })
+			res.render("admin/edit/user", {
+				expand,
+				site_data,
+				user,
+				sessionUser,
+				layout: "admin"
+			})
 
-    } catch (error) {
-      console.error(error)
-      const errorMessage = error.errmsg || error.toString()
-      req.flash('error', errorMessage)
-      res.redirect(`/admin/users`)
-    }
+		} catch (error) {
+			console.error(error)
+			const errorMessage = error.errmsg || error.toString()
+			req.flash('admin_error', errorMessage)
+			res.redirect('/admin/users')
+		}
+	})
 
-  })
+	// CREATE USER - POST
+	// =============================================================
+	app.post("/adduser", async (req, res) => {
+		const { body } = req
+		let { email, nickname, password, passwordCheck, role, username } = body
+		const redirect_url = '/admin/users'
 
-  // ADD USER - POST
-  // =============================================================
-  app.post("/adduser", async (req, res) => {
-    try {
-      const {
-        body
-      } = req
-  
-      let {
-        email,
-        nickname,
-        password,
-        passwordCheck,
-        role,
-        username
-      } = body
-  
-      // basic validation
-      if (!username || !email || !password || !passwordCheck || !role) {
-        throw new Error('Please fill out all fields when adding a new user.')
-      }
-      // check if email provided is an email
-      if (!validator.isEmail(email)) {
-        throw new Error('Email provided is not an email.')
-      }
-  
-      // check if password verification passes
-      if (password !== passwordCheck) {
-        throw new Error('Password verification failed.')
-      }
-      
-      // generate encryption salt
-      const salt = await bcrypt.genSalt(10)
-      // reassign password var to generated hash
-      password = await bcrypt.hash(password, salt)
-      // create user in database
-      await db.Users.create({email, nickname, password, role, username})
+		try {
+			// basic validation
+			if (!username || !email || !password || !passwordCheck || !role) {
+				throw new Error('Please fill out all fields when adding a new user.')
+			}
+			// check if email provided is an email
+			if (!validator.isEmail(email)) {
+				throw new Error('Email provided is not an email.')
+			}
 
-      req.flash(
-        'success',
-        'User successfully added.'
-      )
-      res.redirect('/admin/users')
+			// check if password verification passes
+			if (password !== passwordCheck) {
+				throw new Error('Password verification failed.')
+			}
 
-    } catch (error) {
-      console.error(error)
-      const errorMessage = error.errmsg || error.toString()
-      req.flash('error', errorMessage)
-      res.redirect(`/admin/users`)
-    }
+			// generate encryption salt
+			const salt = await bcrypt.genSalt(10)
+			// reassign password var to generated hash
+			password = await bcrypt.hash(password, salt)
+			// create user in database
+			await db.Users.create({email, nickname, password, role, username})
 
-  })
+			req.flash(
+				'admin_success',
+				'User successfully added.'
+			)
+			res.redirect(redirect_url)
 
-  // UPDATE USER (BASIC INFORMATION) - POST
-  // =============================================================
-  app.post("/edituserbasic", async (req, res) => {
-    const {
-      body,
-      user
-    } = req
+		} catch (error) {
+			console.error(error)
+			const errorMessage = error.errmsg || error.toString()
+			req.flash('admin_error', errorMessage)
+			res.redirect(redirect_url)
+		}
+	})
 
-    let {
-      _id,
-      email,
-      image,
-      nickname,
-      role,
-      username
-    } = body
+	// UPDATE USER (BASIC INFORMATION) - POST
+	// =============================================================
+	app.post("/edituserbasic", async (req, res) => {
+		const { body, user } = req
+		let { _id, email, image, nickname, role, username } = body
+		const redirect_url = `/admin/users/edit/${_id}?expand=basic`
+		const sessionUser = { role: user.role, username: user.username, _id: user._id }
+		// format image value  
+		image = image === '' ? null : image
 
-    image = image === '' ? null : image
+		try {
+			// basic validation
+			if (!username || !email || !role) {
+				throw new Error('Please fill out all fields when editing user.')
+			}
 
-    let updateParams = {
-      email,
-      image,
-      nickname,
-      role,
-      username
-    }
+			// prevent last admin from losing admin privileges ...
+			const onlyOneAdmin = await Utils.Users.onlyOneAdmin(_id)
 
-    try {
-      const sessionUser = {
-        role: user.role,
-        username: user.username,
-        _id: user._id
-      }
+			if (onlyOneAdmin && role !== "Administrator") {
+				throw new Error('Cannot remove admin privileges from last admin user account.')
+			}
 
-      // basic validation
-      if (!username || !email || !role) {
-        throw new Error('Please fill out all fields when editing user.')
-      }
-  
-      // check if this is the last user ...
-      const onlyOneAdmin = await Utils.Users.onlyOneAdmin(_id)
+			// define db params
+			const updateParams = { email, image, nickname, role, username }
 
-      // ... if so then error out
-      if (onlyOneAdmin) {
-        throw new Error('Cannot remove last admin user account.')
-      }
-  
-      // prevent non-admins from updating admin status
-      if (sessionUser.role !== "Administrator") {
-        delete updateParams.role
-      }
+			// prevent non-admins from updating admin status
+			if (sessionUser.role !== "Administrator") {
+				delete updateParams.role
+			}
 
-      // update user in database
-      await db.Users.updateOne({_id}, updateParams)
+			// update user in database
+			await db.Users.updateOne({_id}, updateParams)
 
-      req.flash(
-        'success',
-        'User successfully edited.'
-      )
-      res.redirect(`/admin/users/edit/${_id}`)
+			req.flash(
+				'admin_success',
+				'User info successfully updated.'
+			)
+			res.redirect(redirect_url)
 
-    } catch (error) {
-      console.error(error)
-      const dupKeyError = error.code == 11000
-      let errorMsg = error.errmsg || error.toString()
+		} catch (error) {
+			console.error(error)
+			const dupKeyError = error.code == 11000
+			let errorMsg = error.errmsg || error.toString()
 
-      // log error as dup username if so
-      if (dupKeyError && errorMsg.includes('username')) {
-        errorMsg = `The username '${username}' is already taken.`
-      }
+			// log error as dup username if so
+			if (dupKeyError && errorMsg.includes('username')) {
+				errorMsg = `The username '${username}' is already taken.`
+			}
 
-      // log error as dup email if so
-      if (dupKeyError && errorMsg.includes('email')) {
-        errorMsg = `The email '${email}' is already taken.`
-      }
+			// log error as dup email if so
+			if (dupKeyError && errorMsg.includes('email')) {
+				errorMsg = `The email '${email}' is already taken.`
+			}
 
-      req.flash('error', errorMsg)
-      res.redirect(`/admin/users/edit/${_id}`)
-    }
-  })
+			req.flash('admin_error', errorMsg)
+			res.redirect(redirect_url)
+		}
+	})
 
-  // UPDATE USER (PASSWORD) - POST
-  // =============================================================
-  app.post("/edituserpassword", async (req, res) => {
-    let {
-      _id,
-      password,
-      passwordCheck
-    } = req.body
+	// UPDATE USER (PASSWORD) - POST
+	// =============================================================
+	app.post("/edituserpassword", async (req, res) => {
+		let { _id, password, passwordCheck } = req.body
+		const redirect_url = `/admin/users/edit/${_id}`
 
-    try {
-      // basic validation
-      if (!password || !passwordCheck) {
-        throw new Error('Please fill out both password fields.')
-      }
-  
-      //check if password verification passes
-      if (password !== passwordCheck) {
-        throw new Error('Password verification failed.')
-      }
+		try {
+			// basic validation
+			if (!password || !passwordCheck) {
+				throw new Error('Please fill out both password fields.')
+			}
 
-      // get salt for hash
-      const salt = await bcrypt.genSalt(10)
-      // reassign password var to newley hashed password
-      password = await bcrypt.hash(password, salt)
+			//check if password verification passes
+			if (password !== passwordCheck) {
+				throw new Error('Password verification failed.')
+			}
 
-      // update user in database
-      await db.Users.updateOne({_id}, {password})
+			// get salt for hash
+			const salt = await bcrypt.genSalt(10)
+			// reassign password var to newley hashed password
+			password = await bcrypt.hash(password, salt)
 
-      req.flash(
-        'success',
-        'User successfully edited.'
-      )
-      res.redirect(`/admin/users/edit/${_id}`)
-      
-    } catch (error) {
-      console.error(error)
-      const errorMessage = error.errmsg || error.toString()
-      req.flash('error', errorMessage)
-      res.redirect(`/admin/users/edit/${_id}`)
-    }
-  })
+			// update user in database
+			await db.Users.updateOne({_id}, {password})
 
-  // DELETE USER IMAGE - POST
-  // =============================================================
-  app.post("/deleteuserimage", async (req, res) => {
-    try {
-      // remove image from user account in db
-      await db.Users.updateOne({_id: req.body._id}, { $unset: {image: 1} })
+			req.flash(
+				'admin_success',
+				'User password successfully edited.'
+			)
+			res.redirect(redirect_url)
 
-      res.json({
-        "response": 'Success.',
-        "message": 'User image successfully deleted.'
-      })
+		} catch (error) {
+			console.error(error)
+			const errorMessage = error.errmsg || error.toString()
+			req.flash('admin_error', errorMessage)
+			res.redirect(redirect_url)
+		}
+	})
 
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({
-        "response": error,
-        "message": "User image not deleted. Error occurred."
-      })
-    }
-  })
+	// DELETE USER IMAGE - POST
+	// =============================================================
+	app.post("/deleteuserimage", async (req, res) => {
+		try {
+			// remove image from user account in db
+			await db.Users.updateOne({_id: req.body._id}, { $unset: {image: 1} })
 
-  // DELETE USER - POST
-  // =============================================================
-  app.post("/deleteuser", async (req, res) => {
-    const {
-      body,
-      user
-    } = req
+			res.json({
+				"response": 'Success.',
+				"message": 'User image successfully deleted.'
+			})
 
-    const {
-      _id
-    } = body
+		} catch (error) {
+			console.error(error)
+			res.status(500).json({
+				"response": error,
+				"message": "User image not deleted. Error occurred."
+			})
+		}
+	})
 
-    try {
-      // prevent non-admins from updating admin status
-      if (sessionUser.role !== "Administrator") {
-        throw new Error('You do not have permission to delete users.')
-      }
+	// DELETE USER - POST
+	// =============================================================
+	app.post("/deleteuser", async (req, res) => {
+		const { body, user } = req
+		const { _id } = body
+		const sessionUser = { role: user.role, username: user.username, _id: user._id }
 
-      const userIsLastAdmin = await Utils.Users.onlyOneAdmin(_id)
+		try {
+			// prevent non-admins from updating admin status
+			if (sessionUser.role !== "Administrator") {
+				throw new Error('You do not have permission to delete users.')
+			}
 
-      // prevent last admin removal
-      if (userIsLastAdmin) {
-        throw new Error('Cannot delete last admin user account.')
-      }
+			// prevent last admin removal
+			const userIsLastAdmin = await Utils.Users.onlyOneAdmin(_id)
 
-      await db.Users.deleteOne({_id})
+			if (userIsLastAdmin) {
+				throw new Error('Cannot delete last admin user account.')
+			}
 
-      req.flash(
-        'success',
-        'User successfully deleted.'
-      )
-      res.redirect('/admin/users')
+			await db.Users.deleteOne({_id})
 
-    } catch (error) {
-      console.error(error)
-      const errorMessage = error.errmsg || error.toString()
-      req.flash('error', errorMessage)
-      res.redirect(`/admin/users`)
-    }
+			req.flash(
+				'admin_success',
+				'User successfully deleted.'
+			)
+			res.redirect('/admin/users')
 
-  })
+		} catch (error) {
+			console.error(error)
+			const errorMessage = error.errmsg || error.toString()
+			req.flash('admin_error', errorMessage)
+			res.redirect(`/admin/users/edit/${_id}`)
+		}
+	})
 
 }

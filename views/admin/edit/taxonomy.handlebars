@@ -8,7 +8,7 @@
 
         {{> admin/components/heading heading=(add "Edit Taxonomy: " taxonomy.name)}}
 
-        {{> shared/notifications}}
+        {{> admin/components/notifications}}
 
         <div class="container page-body">
 
@@ -18,7 +18,7 @@
                   <div class="form-group">
                     <label for="taxonomyName">Edit Name</label>
                     <input name="name" type="text" class="form-control" id="taxonomyName" placeholder="Taxonomy Name" value="{{taxonomy.name}}">
-                    <input name="_id" type="hidden" value="{{taxonomy.id}}">
+                    <input name="_id" type="hidden" value="{{taxonomy._id}}">
                   </div>
                   <button type="submit" class="btn btn-success">Submit</button>
               </form>
@@ -31,7 +31,7 @@
                   <div class="form-group">
                     <label for="termName">Add Term</label>
                     <input name="name" type="text" class="form-control" id="termName" placeholder="Term Name">
-                    <input name="_owner" type="hidden" value="{{taxonomy.id}}">
+                    <input name="_owner" type="hidden" value="{{taxonomy._id}}">
                   </div>
                   <button type="submit" class="btn btn-info">Add</button>
               </form>
@@ -43,9 +43,11 @@
               <h4>Terms</h4>
               {{#if taxonomy.terms}}
                 {{#each taxonomy.terms}}
-                  <a href="/admin/term/edit/{{this.id}}" role="button" class="btn btn-primary">
-                    {{this.name}} <span class="badge badge-light">{{this.associations.length}}</span>
+                {{#with this}}
+                  <a href="/admin/term/edit/{{_id}}" role="button" class="btn btn-primary">
+                    {{name}} <span class="badge badge-light">{{associations.length}}</span>
                   </a>
+                {{with}}
                 {{/each}}
               {{else}}
               <p>No terms set for this taxonomy.</p>
@@ -57,7 +59,7 @@
 
           <div class="row">
               <form action="/deletetaxonomy" method="POST" class="d-inline-block">
-                  <input name="_id" type="hidden" value="{{taxonomy.id}}">
+                  <input name="_id" type="hidden" value="{{taxonomy._id}}">
                   <button type="submit" class="btn btn-outline-danger">Delete Taxonomy</button>
               </form>
           </div>

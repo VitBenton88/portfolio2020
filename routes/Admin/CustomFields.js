@@ -1,140 +1,121 @@
 module.exports = (app, db, slugify) => {
 
-  // ADD CUSTOM FIELD - POST
-  // =============================================================
-  app.post("/addcustomfield", async (req, res) => {
-    let {
-      owner,
-      ownerModel,
-      slug,
-      value
-    } = req.body
+	// CREATE CUSTOM FIELD - POST
+	// =============================================================
+	app.post("/addcustomfield", async (req, res) => {
+		let { owner, ownerModel, slug, value } = req.body
+		const isPage = ownerModel == "Pages"
 
-    try {
-      const isPage = ownerModel == "Pages"
-  
-      if (!slug || !owner || !ownerModel) {
-        return res.status(406).json({
-          "response": "Error",
-          "message": "Custom field not created. Please provide slug."
-        })
-      }
-  
-      if (!owner) {
-        return res.status(406).json({
-          "response": "Error",
-          "message": `Custom field not created. Create ${isPage ? 'page' : 'post'} first.`
-        })
-      }
+		try {
+			if (!slug || !owner || !ownerModel) {
+				return res.status(406).json({
+					"response": "Error",
+					"message": "Custom field not created. Please provide slug."
+				})
+			}
 
-      // make sure route is in slug format
-      slug = slugify(slug)
-      const createdField = await db.CustomFields.create({owner, ownerModel, slug, value})
+			if (!owner) {
+				return res.status(406).json({
+					"response": "Error",
+					"message": `Custom field not created. Create ${isPage ? 'page' : 'post'} first.`
+				})
+			}
 
-      const ownerQuery = isPage ? db.Pages.updateOne({
-        _id: owner
-      }, {
-        $push: {
-          customFields: createdField._id
-        }
-      }) : db.Posts.updateOne({
-        _id: owner
-      }, {
-        $push: {
-          customFields: createdField._id
-        }
-      })
+			// make sure route is in slug format
+			slug = slugify(slug)
+			const createdField = await db.CustomFields.create({owner, ownerModel, slug, value})
+			// setup db query params
+			const _id = owner
+			const $push = { customFields: createdField._id }
 
-      await ownerQuery
+			const ownerQuery = isPage ? db.Pages.updateOne({ _id }, { $push }) : db.Posts.updateOne({ _id }, { $push })
 
-      res.json({
-        "response": 'Success.',
-        "message": "Custom field successfully created.",
-        "created": createdField
-      })
-  
-    } catch (error) {
-      console.error(error)
-      // If dup error, specify in message
-      if (error.code == "11000") {
-        return res.status(406).json({
-          "response": error,
-          "message": `Custom field not created. The slug '${slug}' already exists.`
-        })
-      }
+			await ownerQuery
 
-      res.status(500).json({
-        "response": error,
-        "message": "Custom field not created. Error occurred."
-      })
-    }
-  })
+			res.json({
+				"response": 'Success.',
+				"message": "Custom field successfully created.",
+				"created": createdField
+			})
 
-  // UPDATE CUSTOM FIELD - POST
-  // =============================================================
-  app.post("/updatecustomfield", async (req, res) => {
-    let {
-      _id,
-      slug,
-      value
-    } = req.body
+		} catch (error) {
+			console.error(error)
+			// If dup error, specify in message
+			if (error.code == "11000") {
+				return res.status(406).json({
+					"response": error,
+					"message": `Custom field not created. The slug '${slug}' already exists.`
+				})
+			}
 
-    try {
-      if (!slug) {
-        return res.status(406).json({
-          "response": "Error",
-          "message": "Custom field not updated. Please provide slug."
-        })
-      }
+			res.status(500).json({
+				"response": error,
+				"message": "Custom field not created. Error occurred."
+			})
+		}
+	})
 
-      // make sure route is in slug format
-      slug = slugify(slug)
+	// UPDATE CUSTOM FIELD - POST
+	// =============================================================
+	app.post("/updatecustomfield", async (req, res) => {
+		let { _id, slug, value } = req.body
 
-      // update in db
-      await db.CustomFields.updateOne({_id}, {slug, value})
+		try {
+			if (!slug) {
+				return res.status(406).json({
+					"response": "Error",
+					"message": "Custom field not updated. Please provide slug."
+				})
+			}
 
-      res.json({
-        "response": 'Success.',
-        "message": "Custom field successfully updated."
-      })
-      
-    } catch (error) {
-      console.error(error)
-      // If an error occurred, send it to the client
-      if (error.code == "11000") {
-        res.status(406).json({
-          "response": error,
-          "message": `Custom field not created. The slug '${slug}' already exists.`
-        })
-        return false
-      }
+			// make sure route is in slug format
+			slug = slugify(slug)
 
-      res.status(500).json({
-        "response": error,
-        "message": "Custom field not created. Error occurred."
-      })
-    }
-  })
+			// update in db
+			await db.CustomFields.updateOne({_id}, {slug, value})
 
-  // DELETE CUSTOM FIELD - POST
-  // =============================================================
-  app.post("/deletecustomfield", async (req, res) => {
-    try {
-      // delete query to db
-      await db.CustomFields.deleteOne({_id: req.body._id})
+			res.json({
+				"response": 'Success.',
+				"message": "Custom field successfully updated."
+			})
 
-      res.json({
-        "response": 'Success.',
-        "message": "Custom field successfully deleted."
-      })
-      
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({
-        "response": error,
-        "message": "Custom field not deleted. Error occurred."
-      })
-    }
-  })
+		} catch (error) {
+			console.error(error)
+			// If an error occurred, send it to the client
+			if (error.code == "11000") {
+				res.status(406).json({
+					"response": error,
+					"message": `Custom field not created. The slug '${slug}' already exists.`
+				})
+				return false
+			}
+
+			res.status(500).json({
+				"response": error,
+				"message": "Custom field not created. Error occurred."
+			})
+		}
+	})
+
+	// DELETE CUSTOM FIELD - POST
+	// =============================================================
+	app.post("/deletecustomfield", async (req, res) => {
+		try {
+			// delete query to db
+			await db.CustomFields.deleteOne({_id: req.body._id})
+
+			res.json({
+				"response": 'Success.',
+				"message": "Custom field successfully deleted."
+			})
+
+		} catch (error) {
+			console.error(error)
+			res.status(500).json({
+				"response": error,
+				"message": "Custom field not deleted. Error occurred."
+			})
+		}
+	})
 
 }
