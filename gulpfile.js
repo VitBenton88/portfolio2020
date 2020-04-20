@@ -40,17 +40,8 @@ const paths = {
    handlebars: {
     source: 'views/**/*.handlebars'
   },
-
-   admin: {
-        scripts: {
-            source: 'source/admin/scripts/**/*.js'
-        },
-        styles: {
-            source: 'source/admin/sass/**/*.scss'
-        }
-    },
     
-    destination: 'public/assets',
+    destination: 'public/assets/theme',
 };
 
 /**
@@ -90,15 +81,6 @@ function develop_scripts() {
        .pipe(concat('scripts.js'))
        .pipe(sourcemaps.write('/'))
        .pipe(gulp.dest(paths.destination))
-       .pipe(browserSync.stream()),
-
-       //concat custom admin javascript
-       gulp
-       .src(paths.admin.scripts.source)
-       .pipe(sourcemaps.init())
-       .pipe(concat('admin.js'))
-       .pipe(sourcemaps.write('/'))
-       .pipe(gulp.dest(paths.destination))
        .pipe(browserSync.stream())
    );
 }
@@ -108,23 +90,6 @@ function develop_styles() {
        //compile and minify sass
        gulp
        .src(paths.styles.source)
-       .pipe(sourcemaps.init())
-       .pipe(sass())
-       .on('error', sass.logError)
-
-       .pipe(postcss([
-           autoprefixer(),
-
-           cssnano()
-       ]))
-
-       .pipe(sourcemaps.write('/'))
-       .pipe(gulp.dest(paths.destination))
-       .pipe(browserSync.stream()),
-
-       //compile and minify admin sass
-       gulp
-       .src(paths.admin.styles.source)
        .pipe(sourcemaps.init())
        .pipe(sass())
        .on('error', sass.logError)
@@ -168,16 +133,6 @@ function production_scripts() {
           presets: ['@babel/env']
         }))
         .pipe(uglify())
-       .pipe(gulp.dest(paths.destination)),
-
-       //concat & minify custom admin javascript
-       gulp
-       .src(paths.admin.scripts.source)
-       .pipe(concat('admin.js'))
-       .pipe(babel({
-          presets: ['@babel/env']
-        }))
-        .pipe(uglify())
        .pipe(gulp.dest(paths.destination))
    );
 }
@@ -187,20 +142,6 @@ function production_styles() {
        //compile and minify sass
        gulp
        .src(paths.styles.source)
-       .pipe(sass())
-       .on('error', sass.logError)
-
-       .pipe(postcss([
-           autoprefixer(),
-
-           cssnano()
-       ]))
-
-       .pipe(gulp.dest(paths.destination)),
-
-       //compile and minify admin sass
-       gulp
-       .src(paths.admin.styles.source)
        .pipe(sass())
        .on('error', sass.logError)
 
@@ -228,10 +169,10 @@ function reload() {
 function sync() {
    browserSync.init({
         proxy: "http://localhost:3000",
-        files: [paths.styles.source, paths.admin.styles.source]
+        files: [paths.styles.source]
    });
 
-   gulp.watch([paths.scripts.source.custom, paths.admin.scripts.source], develop_scripts);
-   gulp.watch([paths.styles.source, paths.admin.styles.source], develop_styles);
+   gulp.watch([paths.scripts.source.custom], develop_scripts);
+   gulp.watch([paths.styles.source], develop_styles);
    gulp.watch([paths.html.source, paths.handlebars.source], reload);
 }
