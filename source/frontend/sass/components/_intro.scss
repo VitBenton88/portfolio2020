@@ -8,14 +8,14 @@
 
     @include max-width($screen-sm-max) {
         height: 93vh;
-        margin-top: 65px;
+        margin-top: calc(100vh * .2);
     }
 
     .social-icon-wrap {
         margin: 100px auto 0;
 
         @include max-width($screen-sm-max) {
-            margin-top: calc(100vh * .2);
+            margin-top: 65px;
         }
 
         @include landscape-sm() {
