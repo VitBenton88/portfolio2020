@@ -1,6 +1,13 @@
 nav {
     margin-top: 10px;
 
+    .mobile-nav-menu, .desktop-nav-wrap {
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+    }
+
     .desktop-nav-wrap {
         border: $commonBorder;
         height: 50px;
@@ -8,9 +15,7 @@ nav {
 
         ul {
           display: flex;
-          list-style: none;
           justify-content: space-around;
-          padding: 0;
           width: 100%;
 
           li {
@@ -101,17 +106,22 @@ nav {
         height: 100%;
         width: 100%;
 
-        a {
-            cursor: pointer;
-            display: block;
-            font-size: 28px;
-            font-weight: bold;
-            margin-top: 100px;
-            margin-right: 200px;
-            opacity: 0;
-            visibility: hidden;
-            text-transform: uppercase;
-            text-decoration: none;
+        ul {
+          text-align: center;
+
+            a {
+              cursor: pointer;
+              display: block;
+              font-size: 28px;
+              font-weight: bold;
+              margin-top: 100px;
+              margin-right: 200px;
+              opacity: 0;
+              visibility: hidden;
+              text-transform: uppercase;
+              text-decoration: none;
+          }
+
         }
 
         &.mobile-nav-menu-port {
