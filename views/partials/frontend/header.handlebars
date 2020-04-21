@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 
     {{#if page_data.meta.title}}
-    <title>{{page_data.meta.title}} - {{site_data.settings.name}}</title>
+    <title>{{page_data.meta.title}} | {{site_data.settings.name}}</title>
     {{else if page_data.title}}
-    <title>{{page_data.title}} - {{site_data.settings.name}}</title>
+    <title>{{page_data.title}} | {{site_data.settings.name}}</title>
     {{else}}
     <title>{{site_data.settings.name}}</title>
     {{/if}}
@@ -22,24 +22,34 @@
     <!--VIEWPORT -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    {{{site_data.meta_head}}}
+    {{{site_data.settings.meta_head}}}
 
     <!--GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Karla|Quicksand|" rel="stylesheet">
     <!--FONT AWESOME -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+    <!--ANALOG CORE CSS -->
+    <link rel="stylesheet" type="text/css" href="/assets/style.css">
     <!--LOCAL CSS -->
-    <link rel="stylesheet" type="text/css" href="/assets/style.css?v=2.0">
+    <link rel="stylesheet" type="text/css" href="/assets/theme/style.css">
     <!--FAVICON -->
     <link rel="icon" type="image/ico" href="/assets/favicon.png">
 </head>
 
 <body class="{{generateBodyClasses}}">
-    {{{site_data.meta_body}}}
+    {{{site_data.settings.meta_body}}}
+
+<div class="container notifications">
+    <div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            {{> frontend/notifications}}
+        </div>
+    </div>
+</div>
 
 <nav class="container">
-    <div class="col-10 offset-1 d-none d-lg-flex justify-content-around align-items-center desktop-nav-wrap">
-        {{> frontend/navigation}}
+    <div class="col-10 offset-1 d-none d-lg-flex align-items-center desktop-nav-wrap">
+        {{{renderMenu menus.header-menu}}}
     </div>
     <div class="col-12 d-block d-lg-none">
         <div id="nav-icon">
@@ -49,6 +59,6 @@
         </div>
     </div>
     <div class="mobile-nav-menu mobile-nav-menu-port d-flex d-lg-none flex-column justify-content-center align-items-center">
-        {{> frontend/navigation}}
+        {{{renderMenu menus.header-menu}}}
     </div>
 </nav>

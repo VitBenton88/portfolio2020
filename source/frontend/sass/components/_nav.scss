@@ -6,16 +6,26 @@ nav {
         height: 50px;
         background: $secondary;
 
-        a {
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            transition: border-bottom 0.3s ease-in-out;
-            text-decoration: none;
-            text-transform: uppercase;
+        ul {
+          display: flex;
+          list-style: none;
+          justify-content: space-around;
+          padding: 0;
+          width: 100%;
 
-            &:hover {
-                border-bottom: 2px solid $darkGreen;
-            }
+          li {
+            a {
+              border-bottom: 2px solid transparent;
+              cursor: pointer;
+              transition: border-bottom 0.3s ease-in-out;
+              text-decoration: none;
+              text-transform: uppercase;
+  
+              &:hover {
+                  border-bottom: 2px solid $darkGreen;
+              }
+          }
+          }
         }
     }
 

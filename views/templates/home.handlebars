@@ -1,0 +1,128 @@
+<header id="intro">
+    <div id="particles-js" class="container">
+        <div class="col-12 col-md-10 offset-md-1">
+            {{#with blocks.global}}
+                <h1>{{{title.content}}}</h1>
+                <p>{{{subtitle.content}}}</p>
+            {{/with}}
+        </div>
+        <div class="col-8 col-sm-5 col-md-5 col-lg-4 col-xl-3 d-flex justify-content-between social-icon-wrap">
+            {{#each menus.social-menu.links}}
+            {{#with this}}
+                <a href="{{route}}" target="{{target}}">{{{text}}}</a>
+            {{/with}}
+            {{/each}}
+        </div>
+        <a href="#about" class="col-7 col-sm-5 col-md-3 col-xl-2 learn-more-wrap">
+            <h2>Learn More</h2>
+            <i class="fas fa-angle-down fa-3x"></i>
+        </a>
+    </div>
+</header>
+
+<section id="about">
+    <div class="container">
+        <div class="col-12 col-md-10 offset-md-1">
+            <h2>About Me</h2>
+            <article>{{{page_data.content}}}</article>
+        </div>
+    </div>
+</section>
+
+<section id="graphs">
+    <div class="container">
+        <canvas id="canvas-frontend" class="col-12"></canvas>
+        <canvas id="canvas-backend" class="col-12"></canvas>
+    </div>
+</section>
+
+<div class="d-none technology-collection">
+    {{#each page_data.customFields}}
+    {{#with this}}
+        <div class="tech" aria-hidden="true" data-label="{{getSkillLabel slug}}" data-score="{{value}}" data-type="{{getSkillType slug}}"></div>
+    {{/with}}
+    {{/each}}
+</div>
+
+<section id="portfolio">
+    <div class="container">
+        <div class="col-12 col-md-10 offset-md-1">
+            {{#if plugins.projects}}
+                <h2>Portfolio</h2>
+                <article>{{{blocks.global.portfolio-introduction.content}}}</article>
+                <h3 class="slider-title">Battle Medialab Client Work</h3>
+                <article class="slider-article bml-projects-slider">
+                    <p class="mobile-slider-instructions d-block d-sm-block d-md-none">Swipe to see more projects</p>
+                    <i class="fas fa-chevron-circle-left fa-2x d-none d-lg-block"></i>
+                    <i class="fas fa-chevron-circle-right fa-2x d-none d-lg-block"></i>
+                    <div class="portfolio-slider bml-projects">
+                        {{#each plugins.projects.bml}}
+                        {{#with this}}
+                        <div>
+                            <h3>{{title}}</h3>
+                            <ul>
+                                {{#each customFields}}
+                                    <li>{{this.value}}</li>
+                                {{/each}}
+                            </ul>
+                            {{{content}}}
+                        </div>
+                        {{/with}}
+                        {{/each}}
+                    </div>
+                </article>
+
+                <h3 class="slider-title">Web Application Projects</h3>
+                <article class="slider-article app-projects-slider">
+                    <p class="mobile-slider-instructions d-block d-md-none">Swipe to see more projects</p>
+                    <i class="fas fa-chevron-circle-left fa-2x d-none d-lg-block"></i>
+                    <i class="fas fa-chevron-circle-right fa-2x d-none d-lg-block"></i>
+                    <div class="portfolio-slider app-projects">
+                        {{#each plugins.projects.webApps}}
+                        {{#with this}}
+                        <div>
+                            <h3>{{title}}</h3>
+                            <ul>
+                                {{#each customFields}}
+                                    <li>{{this.value}}</li>
+                                {{/each}}
+                            </ul>
+                            {{{content}}}
+                        </div>
+                        {{/with}}
+                        {{/each}}
+                    </div>
+                </article>
+            {{/if}}
+        </div>
+    </div>
+</section>
+
+<section id="resume">
+    <div class="container">
+        <div class="col-12 col-md-10 offset-md-1">
+            <h2>Resume</h2>
+            <div class="download"><a href="public/assets/resume/VitBentonResume.pdf" download><p>Download Full Resume</p><i class="fas fa-download"></i></a></div>
+            <article>{{{blocks.global.resume.content}}}</article>
+        </div>
+    </div>
+</section>
+
+<section id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-10 col-lg-6 offset-md-1">
+                <h2>Contact</h2>
+                <article>
+                    {{{form 'contact'}}}
+                </article>
+            </div>
+            <div class="col-12 col-md-10 col-lg-4 offset-md-1">
+                <a href="nav" class="col-6 col-sm-5 col-md-4 col-lg-8 col-xl-7 totop-wrap">
+                    <i class="fas fa-angle-up fa-3x"></i>
+                    <h2>Back to Top</h2>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

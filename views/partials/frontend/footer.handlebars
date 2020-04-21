@@ -1,19 +1,19 @@
-    <footer class="container-fluid">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-around align-items-center">
+    <div class="container footer">
+        <div class="col-12 offset-0 col-md-10 offset-md-1 footer-wrap">
+            <footer class="d-flex justify-content-around align-items-center">
                 <p>Copyright &copy;{{year}}</p>
-            </div>
+            </footer>
         </div>
-    </footer>
+    </div>
 
     {{~#if captcha}}
     <!--recaptcha scripts -->
     {{{captcha}}}
     {{~/if~}}
     <!--minified & concat JS libraries -->
-    <script src="/assets/libraries.js"></script>
+    <script src="/assets/theme/libraries.js"></script>
     <!--minified & concat JS file -->
-    <script src="/assets/scripts.js"></script>
+    <script src="/assets/theme/scripts.js"></script>
 </body>
 
 </html>

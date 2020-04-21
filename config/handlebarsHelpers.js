@@ -222,5 +222,66 @@ module.exports = {
         }
 
         return returnValue
+    },
+
+    getSkillType: (slug) => {
+        let returnValue
+        if (slug) {
+            const backend_arr = ['php', 'ajax', 'nodejs', 'expressjs', 'firebase', 'mysql', 'mongodb']
+            returnValue = backend_arr.includes(slug) ? "Backend" : "Frontend"
+        }
+
+        return returnValue
+    },
+
+    getSkillLabel: (slug) => {
+        let returnValue
+        if (slug) {
+            switch(slug) {
+                case 'html':
+                    returnValue = "HTML"
+                  break;
+                case 'css3':
+                    returnValue = "CSS3"
+                  break;
+                case 'bootstrap':
+                    returnValue = "Bootstrap"
+                break;
+                case 'javascript':
+                    returnValue = "JavaScript"
+                break;
+                case 'jquery':
+                    returnValue = "jQuery"
+                break;
+                case 'react':
+                    returnValue = "React JS"
+                break;
+                case 'rd':
+                    returnValue = "Responsive Design"
+                break;
+                case 'php':
+                    returnValue = "pHp"
+                break;
+                case 'ajax':
+                    returnValue = "AJAX"
+                break;
+                case 'nodejs':
+                    returnValue = "Node JS"
+                break;
+                case 'firebase':
+                    returnValue = "Firebase"
+                break;
+                case 'mysql':
+                    returnValue = "MYSQL"
+                break;
+                case 'mongodb':
+                    returnValue = "MongoDB"
+                break;
+                case 'expressjs':
+                    returnValue = "Express JS"
+                break;
+            }
+        }
+        return returnValue
     }
 }

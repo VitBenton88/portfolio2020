@@ -1,5 +1,6 @@
 #intro {
     height: 90vh;
+    margin-top: 16px;
 
     @include max-width($screen-md-max) {
         height: 95vh;

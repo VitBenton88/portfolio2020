@@ -1,4 +1,5 @@
 form {
+    @extend .col-12;
     margin: 0 auto;
 
     textarea {
@@ -39,6 +40,8 @@ form {
     }
 
     button {
+        @extend .standardBtn;
+
         display: block;
         margin: 20px auto 0;
     }

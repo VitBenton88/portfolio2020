@@ -15,7 +15,8 @@ $(document).ready( () => {
         const frontendLabels = $.map(frontendEle, function(el) {
             return $(el).data('label')
         });
-    const backendLabels = $.map(backendEle, function(el) {
+
+        const backendLabels = $.map(backendEle, function(el) {
             return $(el).data('label')
         });
 
@@ -52,7 +53,6 @@ $(document).ready( () => {
         };
 
         if (window.matchMedia('(max-width: 1199px)').matches) { //mobile chart
-            frontendLabels[6] = 'Responsive Design';
             barChartOrientation = 'horizontalBar';
             chartOptions.scales.yAxes[0].display = true;
             chartOptions.scales.xAxes[0].display = false;
@@ -105,7 +105,6 @@ $(document).ready( () => {
         $(window).on('resize', function(){
             let win = $(this);
             if (win.width() <= 1199) {
-                frontendLabels[6] = 'Responsive Design';
                 barChartOrientation = 'horizontalBar';
                 chartOptions.scales.yAxes[0].display = true;
                 chartOptions.scales.xAxes[0].display = false;
@@ -113,7 +112,6 @@ $(document).ready( () => {
                 myBackendChart();
                 myFrontendChart();
             } else {
-                frontendLabels[6] = ["Responsive", "Design"];
                 barChartOrientation = 'bar';
                 chartOptions.scales.yAxes[0].display = false;
                 chartOptions.scales.xAxes[0].display = true;

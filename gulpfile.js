@@ -15,7 +15,7 @@ const uglify = require('gulp-uglify');
 
 const paths = {
    styles: {
-       source: 'source/frontend/sass/**/*.scss'
+       source: 'source/frontend/sass/style.scss'
    },
 
    scripts: {
@@ -96,7 +96,6 @@ function develop_styles() {
 
        .pipe(postcss([
            autoprefixer(),
-
            cssnano()
        ]))
 
@@ -147,7 +146,6 @@ function production_styles() {
 
        .pipe(postcss([
            autoprefixer(),
-
            cssnano()
        ]))
 
