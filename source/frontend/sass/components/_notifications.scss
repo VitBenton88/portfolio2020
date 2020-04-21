@@ -14,6 +14,10 @@
     }
 
     &.alert-warning {
+        background: $msg-warning-yellow;
+    }
+
+    &.alert-danger {
         background: $msg-error-red;
     }
 
