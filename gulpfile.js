@@ -15,7 +15,7 @@ const uglify = require('gulp-uglify');
 
 const paths = {
    styles: {
-       source: 'source/frontend/sass/style.scss'
+       source: 'source/frontend/sass/**/*.scss'
    },
 
    scripts: {
