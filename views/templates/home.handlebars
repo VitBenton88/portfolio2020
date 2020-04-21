@@ -1,4 +1,11 @@
 <header id="intro">
+    <div class="container notifications mobile d-block d-md-none">
+        <div class="row">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                {{> frontend/notifications}}
+            </div>
+        </div>
+    </div>
     <div id="particles-js" class="container">
         <div class="col-12 col-md-10 offset-md-1">
             {{#with blocks.global}}
