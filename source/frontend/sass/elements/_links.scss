@@ -1,0 +1,30 @@
+a {
+    &.standardBtn {
+        background: transparent;
+        border: $commonBorder;
+        color: $darkGreen;
+        cursor: pointer;
+        font-size: 16px;
+        width: 150px;
+        transition: all ease 0.8s;
+        user-select: none;
+        outline: none !important;
+        text-decoration: none;
+        padding: 10px 0;
+        display: inline-block;
+    
+        &:hover {
+            box-shadow: inset 150px 0 0 0 $secondary;
+        }
+    
+    }
+    
+        &.widerBtn {
+            width: 200px;
+            transition: all ease 0.8s;
+    
+            &:hover {
+                box-shadow: inset 200px 0 0 0 $secondary;
+            }
+    }
+}

@@ -1,0 +1,60 @@
+body {
+    background: $primary;
+    margin: 0;
+
+    &.nav-menu-open {
+        height: 100%;
+    }
+}
+
+.nav-menu-open {
+    overflow: hidden !important;
+}
+
+.container {
+    @include max-width($screen-sm-max) {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+::selection {
+    background: $white;
+}
+
+section, footer {
+    margin-top: 50px;
+
+    @include max-width($screen-sm-max) {
+        margin-top: 25px;
+    }
+
+    &:first-of-type {
+        @include max-width($screen-sm-max) {
+            margin-top: 40px;
+        }
+    }
+}
+
+hr {
+    border: 1px solid $darkGreen;
+    margin-top: 55px;
+    width: 60px;
+
+    @include max-width($screen-sm-max) {
+        margin-top: 25px;
+    }
+}
+
+article {
+    border: $commonBorder;
+    margin-top: 30px;
+    padding: 10px 40px;
+    text-align: center;
+
+    @include max-width($screen-sm-max) {
+        padding: 10px 25px;
+        text-align: justify;
+    }
+
+}

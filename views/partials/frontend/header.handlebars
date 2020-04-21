@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 
     {{#if page_data.meta.title}}
-    <title>{{page_data.meta.title}} - {{site_data.settings.name}}</title>
+    <title>{{page_data.meta.title}} | {{site_data.settings.name}}</title>
     {{else if page_data.title}}
-    <title>{{page_data.title}} - {{site_data.settings.name}}</title>
+    <title>{{page_data.title}} | {{site_data.settings.name}}</title>
     {{else}}
     <title>{{site_data.settings.name}}</title>
     {{/if}}
@@ -22,49 +22,43 @@
     <!--VIEWPORT -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    {{{site_data.meta_head}}}
+    {{{site_data.settings.meta_head}}}
 
-    <!--BOOTSTRAP -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!--GOOGLE FONT -->
+    <link href="https://fonts.googleapis.com/css?family=Karla|Quicksand|" rel="stylesheet">
     <!--FONT AWESOME -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
-    <!--LOCAL CSS -->
+    <!--ANALOG CORE CSS -->
     <link rel="stylesheet" type="text/css" href="/assets/style.css">
+    <!--LOCAL CSS -->
+    <link rel="stylesheet" type="text/css" href="/assets/theme/style.css">
     <!--FAVICON -->
     <link rel="icon" type="image/ico" href="/assets/favicon.png">
 </head>
 
 <body class="{{generateBodyClasses}}">
-    {{{site_data.meta_body}}}
+    {{{site_data.settings.meta_body}}}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <!-- DESKTOP MENU -->
-    <div class="d-flex justify-content-between" style="width: 100%">
-        <div class="d-none d-lg-flex justify-content-between" id="navbarNavDesktop">
-            {{{renderMenu menus.main-menu}}}
+<div class="container notifications">
+    <div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            {{> frontend/notifications}}
         </div>
-        <form class="form-inline my-2 my-lg-0 d-none d-lg-flex" action="/search" method="GET">
-            <input class="form-control mr-sm-2" name="term" type="search" placeholder="Search" aria-label="Search" value="{{term}}" required>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
     </div>
-    
-    <!-- MOBILE MENU -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavMobile" aria-controls="navbarNavMobile" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+</div>
 
-    <div class="collapse navbar-collapse" id="navbarNavMobile">
-        <ul class="navbar-nav d-block d-lg-none">
-            {{{renderMenu menus.main-menu}}}
-        </ul>
-        <form class="form-inline my-2 my-lg-0 d-block d-lg-none" action="/analog/search" method="POST">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+<nav class="container">
+    <div class="col-10 offset-1 d-none d-lg-flex align-items-center desktop-nav-wrap">
+        {{{renderMenu menus.header-menu}}}
     </div>
-
+    <div class="col-12 d-block d-lg-none">
+        <div id="nav-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
+    </div>
+    <div class="mobile-nav-menu mobile-nav-menu-port d-flex d-lg-none flex-column justify-content-center align-items-center">
+        {{{renderMenu menus.header-menu}}}
+    </div>
 </nav>

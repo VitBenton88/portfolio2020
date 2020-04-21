@@ -127,7 +127,18 @@ if (production) {
 	// set proxy for identifying user's IP address
 	app.set('trust proxy', true)
 	// cache templates
-	app.enable('view cache');
+	app.enable('view cache')
+
+	if (process.env.FORCE_HTTPS == true) {
+		//force https
+		app.use((req, res, next) => {
+			if (req.header('x-forwarded-proto') !== 'https' && process.env._.indexOf("heroku")) {
+				res.redirect(`https://${req.header('host')}${req.url}`)
+			} else {
+				next();
+			}
+		})
+	}
 } else {
 	//load environment variables
 	dotenv.config()

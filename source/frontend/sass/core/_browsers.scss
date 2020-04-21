@@ -1,0 +1,153 @@
+/**
+ * Desktop
+**/
+
+.ua-desktop {}
+
+    /**
+     * Chrome (Desktop)
+    **/
+
+    .ua-desktop.ua-chrome {
+        // Inputs
+        input[type="email"], input[type="password"], input[type="tel"], input[type="text"], input[type="url"] {
+        	&:-webkit-autofill {
+        		-webkit-box-shadow: 0 0 0px 1000px $white inset;
+        	}
+        }
+    }
+
+    /**
+     * Firefox (Desktop)
+    **/
+
+    .ua-desktop.ua-firefox {
+        // Selects
+        select {
+        	&:-moz-focusring {
+        		color: transparent;
+        		text-shadow: 0 0 0 $black;
+        	}
+        }
+    }
+
+/**
+ * Mobile
+**/
+
+.ua-mobile {}
+
+/**
+ * Android
+**/
+
+.ua-android {}
+
+    /**
+     * Chrome (Android)
+    **/
+
+    .ua-android.ua-chrome {}
+
+    /**
+     * Firefox (Android)
+    **/
+
+    .ua-android.ua-firefox {
+        // Selects
+        select {
+        	&:-moz-focusring {
+        		color: transparent;
+        		text-shadow: 0 0 0 $black;
+        	}
+        }
+    }
+
+/**
+ * iOS
+**/
+
+.ua-ios {}
+
+    /**
+     * Chrome (iOS)
+    **/
+
+    .ua-ios.ua-chrome {}
+
+    /**
+     * Firefox (iOS)
+    **/
+
+    .ua-ios.ua-firefox {}
+
+    /**
+     * Safari (iOS)
+    **/
+
+    .ua-ios.ua-safari {}
+
+/**
+ * macOS
+**/
+
+.ua-mac_os_x {}
+
+    /**
+     * Chrome (macOS)
+    **/
+
+    .ua-mac_os_x.ua-chrome {}
+
+    /**
+     * Firefox (macOS)
+    **/
+
+    .ua-mac_os_x.ua-firefox {}
+
+    /**
+     * Safari (macOS)
+    **/
+
+    .ua-mac_os_x.ua-safari {}
+
+/**
+ * Windows
+**/
+
+.ua-windows_nt {}
+
+    /**
+     * Chrome (Windows)
+    **/
+
+    .ua-windows_nt.ua-chrome {}
+
+    /**
+     * Firefox (Windows)
+    **/
+
+    .ua-windows_nt.ua-firefox {}
+
+    /**
+     * Internet Explorer (Windows)
+    **/
+
+    .ua-windows_nt.ua-ie {
+        // Selects
+        select {
+            &::-ms-expand {
+                display: none;
+            }
+        }
+        //browser warning
+        #browser-warning {
+            display: block;
+        }
+    }
+
+    /**
+     * Microsoft Edge (Windows)
+    **/
+
+    .ua-windows_nt.ua-edge {}

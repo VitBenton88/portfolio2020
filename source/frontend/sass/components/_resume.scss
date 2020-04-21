@@ -1,0 +1,64 @@
+#resume {
+
+    .download {
+        cursor: pointer;
+        width: 205px;
+        float: right;
+
+        &:hover {
+            p, i {
+                color: $darkBlue;
+            }
+        }
+
+        p {
+            display: inline-block;
+            margin: 0 10px 0 0;
+            transition: .3s ease-in-out;
+        }
+    }
+
+    article {
+        padding: 30px;
+        text-align: left;
+
+        p {
+            @include max-width($screen-sm-max) {
+                text-align: justify;
+            }
+        }
+
+        ul {
+            @include max-width($screen-sm-max) {
+                padding-left: 17px;
+            }
+        }
+
+        i {
+            cursor: auto;
+            &:hover {
+                color: $darkGreen;
+            }
+        }
+
+        h4 {
+          font-weight: bold;
+        }
+
+        #resumeTitle {
+          text-align: center;
+        }
+
+        .resumeDate {
+          float: right;
+
+          @include max-width($screen-md-max) {
+               float: none;
+          }
+        }
+
+        .subHeader {
+          font-weight: bold;
+        }
+    }
+}

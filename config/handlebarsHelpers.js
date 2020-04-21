@@ -205,12 +205,81 @@ module.exports = {
 
     inArray: (array, value, index=0, returnValueIfTrue) => {
         let returnValue
-        if ( Array.isArray(array) ) {
-            for (let i = index; i < array.length; i++) {
-                if (array[i].toString() === value.toString()) {
-                    returnValue = returnValueIfTrue;
-                    break;
+        if (value) {
+            const value_formatted = typeof value == "string" ? value : value.toString()
+            if ( Array.isArray(array) ) {
+                for (let i = index; i < array.length; i++) {
+                    const element = array[i]
+                    if (element) {
+                        const arr_value = typeof element == "string" ? element : element.toString()
+                        if (arr_value === value_formatted) {
+                            returnValue = returnValueIfTrue;
+                            break;
+                        }
+                    }
                 }
+            }
+        }
+
+        return returnValue
+    },
+
+    getSkillType: (slug) => {
+        let returnValue
+        if (slug) {
+            const backend_arr = ['php', 'ajax', 'nodejs', 'expressjs', 'firebase', 'mysql', 'mongodb']
+            returnValue = backend_arr.includes(slug) ? "Backend" : "Frontend"
+        }
+
+        return returnValue
+    },
+
+    getSkillLabel: (slug) => {
+        let returnValue
+        if (slug) {
+            switch(slug) {
+                case 'html':
+                    returnValue = "HTML"
+                  break;
+                case 'css3':
+                    returnValue = "CSS3"
+                  break;
+                case 'bootstrap':
+                    returnValue = "Bootstrap"
+                break;
+                case 'javascript':
+                    returnValue = "JavaScript"
+                break;
+                case 'jquery':
+                    returnValue = "jQuery"
+                break;
+                case 'react':
+                    returnValue = "React JS"
+                break;
+                case 'rd':
+                    returnValue = "Responsive Design"
+                break;
+                case 'php':
+                    returnValue = "pHp"
+                break;
+                case 'ajax':
+                    returnValue = "AJAX"
+                break;
+                case 'nodejs':
+                    returnValue = "Node JS"
+                break;
+                case 'firebase':
+                    returnValue = "Firebase"
+                break;
+                case 'mysql':
+                    returnValue = "MYSQL"
+                break;
+                case 'mongodb':
+                    returnValue = "MongoDB"
+                break;
+                case 'expressjs':
+                    returnValue = "Express JS"
+                break;
             }
         }
         return returnValue
