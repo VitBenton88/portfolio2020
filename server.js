@@ -25,7 +25,7 @@ const validator = require('validator')
 // =============================================================
 const db = require("./models")
 
-// Passport Config
+// passport Config
 require('./config/passport')(passport)
 
 // load environment variables
@@ -36,7 +36,7 @@ dotenv.config()
 // =============================================================
 const production = process.env.NODE_ENV == "production"
 
-// Sets up the Express app
+// sets up the Express app
 // =============================================================
 const app = express()
 let PORT = process.env.PORT || 3000
@@ -49,7 +49,7 @@ app.use(fileUpload({
 	},
 }))
 
-// Handlebars Config
+// handlebars Config
 // =============================================================
 const hbs = exphbs.create({
 	defaultLayout: 'frontend',
@@ -82,7 +82,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Connect Flash and setup global variables to be passed into every view
+// connect Flash and setup global variables to be passed into every view
 // =============================================================
 app.use(flash())
 app.use((req, res, next) => {
