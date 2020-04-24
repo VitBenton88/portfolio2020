@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^4.7.0",
-    "aws-sdk": "^2.658.0",
+    "aws-sdk": "^2.662.0",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -22,7 +22,7 @@
     "express-recaptcha": "^5.0.1",
     "express-session": "^1.17.1",
     "handlebars-helpers": "^0.10.0",
-    "mongoose": "^5.9.9",
+    "mongoose": "^5.9.10",
     "mongoose-autopopulate": "^0.12.1",
     "mongoose-sequence": "^5.2.2",
     "nodemailer": "^6.4.6",
@@ -44,10 +44,10 @@
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-postcss": "^8.0.0",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
-    "node-sass": "^4.13.1"
+    "node-sass": "^4.14.0"
   },
   "browserslist": [
     "defaults"
