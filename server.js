@@ -129,16 +129,8 @@ if (production) {
 	// cache templates
 	app.enable('view cache')
 
-	// force https
-	if ( process.env.FORCE_HTTPS == true ) {
-		app.use((req, res, next) => {
-			if ( req.header('x-forwarded-proto') !== 'https' ) {
-				res.redirect(`https://${req.header('host')}${req.url}`)
-			} else {
-				next();
-			}
-		})
-	}
+	PORT = process.env.FORCE_HTTPS == true ? 443 : 80
+
 } else {
 	// load environment variables
 	dotenv.config()
