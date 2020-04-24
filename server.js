@@ -92,6 +92,7 @@ app.use(favicon(path.join(__dirname, 'public', 'assets/favicon.png')))
 // apply production settings
 // =============================================================
 if (production) {
+	console.log('Analog CMS running in production mode.')
 	// compress responses
 	app.use(compression())
 	// permit access to public file
@@ -186,7 +187,7 @@ app.use( async (req, res) => {
 
 	try {
 		// update hit count in db
-		await db.PagesNotFound.update({ source: originalUrl }, { source: originalUrl, $inc: { "hits": 1 }}, { upsert: true })
+		await db.PagesNotFound.updateOne({ source: originalUrl }, { source: originalUrl, $inc: { "hits": 1 }}, { upsert: true })
 
 		res.status(404).render('templates/defaults/404', {
 			menus,
