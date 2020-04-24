@@ -17,6 +17,7 @@ const Recaptcha = require('express-recaptcha').RecaptchaV3
 const passport = require('passport')
 const path = require("path")
 const session = require('express-session')
+const MongoStore = require('connect-mongo')(session);
 const { ensureAuthenticated } = require('./config/auth')
 const slugify = require('url-slug')
 const validator = require('validator')
@@ -65,37 +66,10 @@ app.set('view engine', 'handlebars')
 // =============================================================
 app.use(cookieParser('keyboardCats'))
 
-// sets up the Express app to use session
-// =============================================================
-app.use(session({
-		secret: 'keyboardCats',
-		resave: true,
-		saveUninitialized: true,
-		rolling: true,
-		cookie: {
-		maxAge: 3600000
-	}
-}))
-
 // Sets up Passport middleware
 // =============================================================
 app.use(passport.initialize())
 app.use(passport.session())
-
-// connect Flash and setup global variables to be passed into every view
-// =============================================================
-app.use(flash())
-app.use((req, res, next) => {
-	// admin messages
-	res.locals.admin_success = req.flash('admin_success')
-	res.locals.admin_warning = req.flash('admin_warning')
-	res.locals.admin_error = req.flash('admin_error')
-	// frontend messages
-	res.locals.success = req.flash('success')
-	res.locals.warning = req.flash('warning')
-	res.locals.error = req.flash('error')
-	next()
-})
 
 // sets up the Express app to handle data parsing
 // =============================================================
@@ -129,6 +103,14 @@ if (production) {
 	// cache templates
 	app.enable('view cache')
 
+	// store sessions in mongodb
+	app.use(session({
+		saveUninitialized: true,
+		resave: true,
+		secret: 'keyboardCats',
+		store: new MongoStore( {url: process.env.MONGODB_URI || `mongodb://localhost/portfolio_2020` } )
+	}))
+
 	// force https
 	if ( process.env.FORCE_HTTPS == true ) {
 		app.use((req, res, next) => {
@@ -140,11 +122,34 @@ if (production) {
 		})
 	}
 } else {
-	// load environment variables
-	dotenv.config()
 	// permit access to public file
 	app.use(express.static( path.join(__dirname, '/public') ))
+	// store session in default memory cache
+	app.use(session({
+		secret: 'keyboardCats',
+		resave: true,
+		saveUninitialized: true,
+		rolling: true,
+		cookie: {
+			maxAge: 3600000
+		}
+	}))
 }
+
+// connect Flash and setup global variables to be passed into every view
+// =============================================================
+app.use(flash())
+app.use((req, res, next) => {
+	// admin messages
+	res.locals.admin_success = req.flash('admin_success')
+	res.locals.admin_warning = req.flash('admin_warning')
+	res.locals.admin_error = req.flash('admin_error')
+	// frontend messages
+	res.locals.success = req.flash('success')
+	res.locals.warning = req.flash('warning')
+	res.locals.error = req.flash('error')
+	next()
+})
 
 // connect to the database
 // =============================================================
