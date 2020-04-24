@@ -131,11 +131,11 @@ if (production) {
 
 	// force https
 	if ( process.env.FORCE_HTTPS == true ) {
-		app.all((req, res, next) => {
-			if ( req.header('x-forwarded-proto') !== 'https' ) {
+		app.use((req, res, next) => {
+			if ( req.protocol !== 'https' ) {
 				res.redirect(`https://${req.header('host')}${req.url}`)
 			} else {
-				next();
+				next()
 			}
 		})
 	}
