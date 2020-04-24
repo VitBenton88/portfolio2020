@@ -62,15 +62,6 @@ const hbs = exphbs.create({
 app.engine('handlebars', hbs.engine)
 app.set('view engine', 'handlebars')
 
-// sets up cookies with the Express App
-// =============================================================
-app.use(cookieParser('keyboardCats'))
-
-// Sets up Passport middleware
-// =============================================================
-app.use(passport.initialize())
-app.use(passport.session())
-
 // sets up the Express app to handle data parsing
 // =============================================================
 app.use(bodyParser.json())
@@ -136,6 +127,15 @@ if (production) {
 		}
 	}))
 }
+
+// sets up cookies with the Express App
+// =============================================================
+app.use(cookieParser('keyboardCats'))
+
+// sets up Passport middleware
+// =============================================================
+app.use(passport.initialize())
+app.use(passport.session())
 
 // connect Flash and setup global variables to be passed into every view
 // =============================================================
