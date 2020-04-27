@@ -50,7 +50,6 @@ module.exports = (app, bcrypt, db, Utils, validator) => {
 			const { email } = body
 			const site_name = site_data.settings.name || "a site powered by Analog CMS."
 			const site_url = site_data.settings.address || `${req.protocol}://${req.headers.host}`
-			const redirect_url = '/password/forgot'
 
 			// validate
 			if ( !email || !validator.isEmail(email) ) {
@@ -81,11 +80,9 @@ module.exports = (app, bcrypt, db, Utils, validator) => {
 			}
 
 			req.flash(
-				'admin_success',
+				'success',
 				`A link to reset your password has been sent to <b>${email}</b>.<em> This link will expire in 15 minutes</em>.`
 			)
-
-			res.redirect(redirect_url)
 
 		} catch (error) {
 			console.error(error)
@@ -97,7 +94,9 @@ module.exports = (app, bcrypt, db, Utils, validator) => {
 			}
 
 			req.flash('error', errorMessage)
-			res.redirect(redirect_url)
+			
+		} finally {
+			res.redirect('/password/forgot')
 		}
 	})
 
@@ -137,7 +136,7 @@ module.exports = (app, bcrypt, db, Utils, validator) => {
 			await db.PasswordToken.deleteOne({token})
 
 			req.flash(
-				'admin_success',
+				'success',
 				'Password successfully updated.'
 			)
 
