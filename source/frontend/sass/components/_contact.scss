@@ -20,6 +20,13 @@
         color: $faded-darkGreen;
     }
 
+    form {
+        textarea {
+            max-width: 100%;
+            min-width: 50%;
+        }
+    }
+
     a.totop-wrap {
         bottom: 10px;
         left: 0;
