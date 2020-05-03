@@ -106,6 +106,7 @@ if (production) {
 
 	// force https
 	if ( process.env.FORCE_HTTPS == true ) {
+		console.log('Express server forcing HTTPS.')
 		app.use(enforce.HTTPS())
 	}
 } else {
