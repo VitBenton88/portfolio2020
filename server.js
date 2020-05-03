@@ -105,10 +105,8 @@ if (production) {
 	}))
 
 	// force https
-	if ( process.env.FORCE_HTTPS == true ) {
-		console.log('Express server forcing HTTPS.')
-		app.use(enforce.HTTPS())
-	}
+	app.use(enforce.HTTPS())
+	
 } else {
 	// permit access to public file
 	app.use(express.static( path.join(__dirname, '/public') ))
