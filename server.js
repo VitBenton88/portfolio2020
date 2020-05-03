@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv')
+const enforce = require('express-sslify')
 const exphbs = require('express-handlebars')
 const favicon = require('serve-favicon')
 const fileUpload = require('express-fileupload')
@@ -105,13 +106,7 @@ if (production) {
 
 	// force https
 	if ( process.env.FORCE_HTTPS == true ) {
-		app.use((req, res, next) => {
-			if ( req.protocol !== 'https' ) {
-				res.redirect(`https://${req.header('host')}${req.url}`)
-			} else {
-				next()
-			}
-		})
+		app.use(enforce.HTTPS())
 	}
 } else {
 	// permit access to public file
