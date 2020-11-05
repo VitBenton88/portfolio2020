@@ -101,7 +101,7 @@ if (production) {
 		saveUninitialized: true,
 		resave: true,
 		secret: 'keyboardCats',
-		store: new MongoStore( {url: process.env.MONGODB_URI || `mongodb://localhost/portfolio_2020` } )
+		store: new MongoStore( {url: process.env.DB_URI || `mongodb://localhost/portfolio_2020` } )
 	}))
 
 	// force https
