@@ -11,7 +11,7 @@ module.exports = (app, ensureAuthenticated) => {
     const safe_paths = ['/api/password']
       
     if (!req.isAuthenticated() && !safe_paths.includes(originalUrl) ) {
-        return req.sendStatus(403)
+        return res.status(403).send('Forbidden')
     }
     
     next()
