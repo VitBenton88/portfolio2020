@@ -33,7 +33,7 @@
     "serve-favicon": "^2.5.0",
     "sitemap": "^6.1.2",
     "url-slug": "^2.3.1",
-    "validator": "^13.0.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
